@@ -1,0 +1,12 @@
+server:
+  port: 8822
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/tour?useUnicode=true&serverTimezone=UTC
+    username: ld
+    password: ld
+  http:
+    encoding:
+      charset: UTF-8
+
