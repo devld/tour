@@ -5,14 +5,20 @@
 # * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
-GET localhost:8822/api/test
-Authorization: Basic bGQ6bGQ=
+POST localhost:8822/api/auth/token
+Content-Type: application/json
+
+{
+  "username": "ld",
+  "password": "ld123"
+}
+###
+
+GET localhost:8822/api/admin
+Authorization: token MTU1MjIwMzk0MjMxNzpmYTYwZGJmMDllOTIxMDRhZjhjMjEyNjA5MTYzMWQ4ZmM3N2VkODJjNWRhZGVlNGZhNTk5ZTQ2YWE3YzBjM2JiOmxkOjViZWIzMjBlNjUyZWI4ZjAxYjRiZWJiYmRhZTJlOWMzZGYwNTA4NGUxNGU1OTIzYzYwZmZiYzhlZGYwYTM3MzQzYjJiYTA2YTQyZWYwMTE1YjZkZGVjMGU0NWUyMWU2MGZlZDQ1ZjNmYjA4ZjdmMWRmNmRhMzMxNjI3NDg0YjFj
 
 ###
 
-GET localhost:8822/api/me
-Authorization: Basic bGQ6bGQ=
 
-###
 
 

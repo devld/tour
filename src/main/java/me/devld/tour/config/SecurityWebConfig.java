@@ -18,9 +18,15 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin().permitAll();
+        http
+                .formLogin()
+                .loginPage("/login")
+                .failureUrl("/login?error")
+                .permitAll();
 
         http.authorizeRequests()
+                .antMatchers("/**/favicon.ico").permitAll()
+                .antMatchers("/static/**").permitAll()
                 .antMatchers("/admin").hasRole("ADMIN");
 
         http.authorizeRequests().anyRequest().authenticated();

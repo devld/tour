@@ -1,5 +1,6 @@
 package me.devld.tour.controller.api;
 
+import me.devld.tour.dto.ApiResult;
 import me.devld.tour.util.SecurityUtil;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,14 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExampleController {
 
     @GetMapping("/me")
-    public Object me() {
-        return SecurityUtil.user();
+    public ApiResult me() {
+        return ApiResult.ok(SecurityUtil.user());
     }
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/admin")
-    public String adminOnly() {
-        return "Hello, admin";
+    public ApiResult adminOnly() {
+        return ApiResult.ok("Hello, admin");
     }
 
 }
