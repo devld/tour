@@ -10,7 +10,7 @@ public class SecurityUtil {
     private SecurityUtil() {
     }
 
-    public static Object autnentication() {
+    public static Authentication autnentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
