@@ -1,5 +1,6 @@
 package me.devld.tour.controller.api;
 
+import me.devld.tour.controller.ApiController;
 import me.devld.tour.dto.ApiResult;
 import me.devld.tour.dto.auth.ApiLoginInput;
 import me.devld.tour.util.I18nUtil;
@@ -13,10 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/api/auth")
-@RestController
+@ApiController
+@RequestMapping("/auth")
 public class AuthController {
 
     private final TokenService tokenService;
