@@ -1,21 +1,20 @@
 package me.devld.tour.security;
 
+import me.devld.tour.service.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.token.Token;
 import org.springframework.security.core.token.TokenService;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 public class ApiTokenAuthenticationProvider implements AuthenticationProvider {
 
-    private final UserDetailsService userDetailsService;
+    private final UserService userService;
     private final TokenService tokenService;
 
-    public ApiTokenAuthenticationProvider(UserDetailsService userDetailsService, TokenService tokenService) {
-        this.userDetailsService = userDetailsService;
+    public ApiTokenAuthenticationProvider(UserService userService, TokenService tokenService) {
+        this.userService = userService;
         this.tokenService = tokenService;
     }
 
@@ -28,8 +27,7 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("bad api token");
         }
         String username = token.getExtendedInformation();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        tokenAuthentication.setDetails(userDetails);
+        tokenAuthentication.setUserDetails(new TourUserDetails(userService.findUserByUsername(username)));
         tokenAuthentication.setAuthenticated(true);
         return tokenAuthentication;
     }

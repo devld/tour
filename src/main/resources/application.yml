@@ -2,15 +2,29 @@ server:
   port: 8822
 
 spring:
+
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/tour?useUnicode=true&serverTimezone=UTC
     username: ld
     password: ld
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+
   http:
     encoding:
       charset: UTF-8
+
   mvc:
     static-path-pattern: /static/**
+
+
 app:
   api-token:
     secret: YA6BPEeaZqWSLfFWy8QnxlRCNmqaH0LCgM3UzyZESkoV00zty2ZJvS9a8ZhpNApp3tft8DAfqPIEEVsRq0NKVimsrGN0sC9ZEryPUSrlpnDW93ZaaC23AitiD49ncY2LN94p7Vi4THlGeRKGt2LajHIhO2

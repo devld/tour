@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head>
-    <meta charset="UTF-8">
-    <title th:text="#{app.name}"></title>
+  <meta charset="UTF-8">
+  <title th:text="#{app.name}"></title>
 </head>
 <body>
-<h1>What happened?</h1>
+<h1 th:text="#{ui.what_happened}"></h1>
 <span th:text="${status}"></span>
 <span th:text="${message}"></span>
 <span th:text="${exception}"></span>

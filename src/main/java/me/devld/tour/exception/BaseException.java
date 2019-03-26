@@ -5,7 +5,7 @@ public class BaseException extends RuntimeException {
     private final int code;
     private final Object[] data;
 
-    public BaseException(int code, String message, Object[] data) {
+    public BaseException(int code, String message, Object... data) {
         super(message);
         this.code = code;
         this.data = data;
@@ -23,7 +23,7 @@ public class BaseException extends RuntimeException {
         this.data = null;
     }
 
-    public BaseException(int code, String message, Object[] data, Throwable t) {
+    public BaseException(int code, String message, Throwable t, Object... data) {
         super(message, t);
         this.code = code;
         this.data = data;

@@ -1,0 +1,20 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.ehcache.org/v3"
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
+
+    <cache-template name="basic">
+        <expiry>
+            <none/>
+        </expiry>
+        <heap unit="MB">5</heap>
+    </cache-template>
+
+    <cache alias="tour_user" uses-template="basic">
+        <heap unit="MB">20</heap>
+    </cache>
+
+    <cache alias="district" uses-template="basic"/>
+
+    <cache alias="tour_user_info" uses-template="basic"/>
+
+</config>
