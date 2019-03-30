@@ -33,7 +33,7 @@ public class ApiTokenAuthenticationFilter extends OncePerRequestFilter {
         try {
             result = attemptAuthentication(request, response);
         } catch (AuthenticationException e) {
-            LOGGER.info("api token auth failed", e);
+            LOGGER.debug("api token auth failed", e);
         }
 
         if (result != null) {
@@ -54,7 +54,7 @@ public class ApiTokenAuthenticationFilter extends OncePerRequestFilter {
         return authenticationManager.authenticate(new ApiTokenAuthentication(token));
     }
 
-    protected String obtainTokenFromRequest(HttpServletRequest request) {
+    protected String obtainTokenFromRequest(HttpServletRequest request) throws IOException {
         String authentication = request.getHeader("Authorization");
         if (StringUtils.isEmpty(authentication)) {
             return null;

@@ -36,11 +36,13 @@ public class TourUserDetails extends TourUser implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return isEnabled();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
+
+
 }

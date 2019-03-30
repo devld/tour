@@ -4,6 +4,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 public class CookieApiTokenAuthenticationFilter extends ApiTokenAuthenticationFilter {
 
@@ -15,12 +18,12 @@ public class CookieApiTokenAuthenticationFilter extends ApiTokenAuthenticationFi
     }
 
     @Override
-    protected String obtainTokenFromRequest(HttpServletRequest request) {
+    protected String obtainTokenFromRequest(HttpServletRequest request) throws IOException {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookieName.equals(cookie.getName())) {
-                    return cookie.getValue();
+                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8.name());
                 }
             }
         }

@@ -132,4 +132,18 @@ public class TourUser extends BaseEntity {
         }
     }
 
+    @Override
+    public String toString() {
+        return "TourUser{" +
+                "username='" + username + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", selfIntro='" + selfIntro + '\'' +
+                ", gender=" + gender +
+                ", birth=" + birth +
+                ", regionId=" + regionId +
+                ", email='" + email + '\'' +
+                ", userType=" + userType +
+                ", enabled=" + enabled +
+                '}';
+    }
 }

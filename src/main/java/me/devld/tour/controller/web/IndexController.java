@@ -15,4 +15,9 @@ public class IndexController {
         return ResponseEntity.ok(SecurityUtil.userOrNull());
     }
 
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+
 }

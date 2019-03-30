@@ -26,7 +26,7 @@ public class ApiTokenService extends KeyBasedPersistenceTokenService {
         try {
             token = super.verifyToken(key);
         } catch (IllegalArgumentException e) {
-            LOGGER.warn("illegal token received.", e);
+            LOGGER.debug("illegal token received.", e);
             return null;
         }
         if (token != null) {

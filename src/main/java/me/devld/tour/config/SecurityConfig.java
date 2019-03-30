@@ -127,10 +127,14 @@ public class SecurityConfig {
             // 需要登录访问的，全部为 REST API 调用
 
             http
+                    .requestCache().disable()
+                    .rememberMe().disable()
                     .formLogin().disable()
                     .logout().disable()
                     .csrf().disable()
                     .httpBasic().disable();
+
+            http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
             http.addFilterBefore(
                     new CookieApiTokenAuthenticationFilter(authenticationManager(), "hello"),
