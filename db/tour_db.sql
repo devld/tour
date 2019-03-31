@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `tour_user`
   `id`         BIGINT       NOT NULL AUTO_INCREMENT,
   `username`   VARCHAR(32)  NOT NULL COMMENT '用户名，唯一',
   `nickname`   VARCHAR(128) NOT NULL COMMENT '昵称',
+  `avatar`     VARCHAR(64)  NULL COMMENT '头像',
   `self_intro` VARCHAR(512) NULL COMMENT '自我介绍',
   `gender`     TINYINT      NULL DEFAULT 0 COMMENT '性别',
   `birth`      DATE         NULL COMMENT '出生日期',

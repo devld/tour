@@ -3,6 +3,7 @@ package me.devld.tour.service.impl;
 import me.devld.tour.config.AppConfig;
 import me.devld.tour.dto.auth.*;
 import me.devld.tour.entity.TourUser;
+import me.devld.tour.exception.NotFoundException;
 import me.devld.tour.exception.UnauthorizedException;
 import me.devld.tour.service.AuthService;
 import me.devld.tour.service.UserService;
@@ -46,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
             throw new UnauthorizedException("msg.auth.invalid_login");
         }
         Token token = tokenService.allocateToken(user.getUsername());
-        return new LoginOut(token.getKey(), apiTokenConfig.getValidity(), userService.getUserInfo(user));
+        return new LoginOut(token.getKey(), apiTokenConfig.getValidity(), userService.fillUserInfo(user));
     }
 
     @Override
@@ -77,5 +78,17 @@ public class AuthServiceImpl implements AuthService {
             email = userService.emailExists(registerCheck.getEmail());
         }
         return new RegisterCheckOut(username, email);
+    }
+
+    @Override
+    public void changePassword(String username, String oldPassword, String newPassword) {
+        TourUser user = userService.findUserByUsername(username);
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new UnauthorizedException("msg.auth.invalid_password");
+        }
+        userService.updateUserPassword(username, passwordEncoder.encode(newPassword));
     }
 }

@@ -12,4 +12,6 @@ public interface AuthService {
 
     RegisterCheckOut checkRegister(RegisterCheckIn registerCheck);
 
+    void changePassword(String username, String oldPassword, String newPassword);
+
 }

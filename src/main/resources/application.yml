@@ -30,4 +30,8 @@ app:
     secret: YA6BPEeaZqWSLfFWy8QnxlRCNmqaH0LCgM3UzyZESkoV00zty2ZJvS9a8ZhpNApp3tft8DAfqPIEEVsRq0NKVimsrGN0sC9ZEryPUSrlpnDW93ZaaC23AitiD49ncY2LN94p7Vi4THlGeRKGt2LajHIhO2
     server-integer: 1024
     validity: 259200000
+    cookie-key: hello
+  file:
+    path: /tmp
+    image-dir: images
 

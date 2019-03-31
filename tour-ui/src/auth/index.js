@@ -26,10 +26,11 @@ function initView () {
 
 export default {
 
-  showAuthDialog () {
+  showAuthDialog (closable = true) {
     if (!maskView) {
       initView()
     }
+    $(maskView).toggleClass('pinned', !closable)
     $(maskView).show().css('opacity', 0).animate({
       opacity: 1
     }, () => {

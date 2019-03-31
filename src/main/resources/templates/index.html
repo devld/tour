@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org/">
+<!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
   <meta charset="UTF-8">
   <title th:text="#{app.name}"></title>
   <script th:src="@{/static/js/tour.js}"></script>
+  <link rel="stylesheet" th:href="@{/static/css/common.css}">
 </head>
 <body>
 <div sec:authorize="isAuthenticated()">
-  <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserInfo"*/-->
   <h2 th:text="#{ui.welcome(${user.nickname})}"></h2>
+  <a class="link" th:href="@{/user}" th:text="#{ui.my_profile}"></a>
   <button onclick="Tour.Auth.logout()">注销</button>
 </div>
 <div sec:authorize="!isAuthenticated()">

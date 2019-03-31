@@ -11,7 +11,6 @@ import me.devld.tour.util.JsonUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -29,6 +28,7 @@ import java.security.SecureRandom;
 import java.util.Collections;
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final UserService userService;
@@ -65,7 +65,6 @@ public class SecurityConfig {
 
     @Order(50)
     @Configuration
-    @EnableGlobalMethodSecurity(securedEnabled = true)
     public class SecurityApiConfig extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -91,13 +90,6 @@ public class SecurityConfig {
                     new ApiTokenAuthenticationFilter(authenticationManager()),
                     BasicAuthenticationFilter.class
             );
-
-            http.authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/api/auth/token").permitAll()
-                    .antMatchers(HttpMethod.POST, "/api/auth/check_register").permitAll()
-                    .antMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                    .anyRequest().authenticated();
-
         }
 
         @Bean
@@ -137,12 +129,9 @@ public class SecurityConfig {
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
             http.addFilterBefore(
-                    new CookieApiTokenAuthenticationFilter(authenticationManager(), "hello"),
+                    new CookieApiTokenAuthenticationFilter(authenticationManager(), apiTokenConfig.getCookieKey()),
                     BasicAuthenticationFilter.class
             );
-
-            http
-                    .authorizeRequests().anyRequest().permitAll();
         }
 
     }

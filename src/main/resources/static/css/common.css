@@ -1,0 +1,31 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f1f1f1;
+}
+
+.paper {
+    width: 80%;
+    background-color: #fff;
+    margin: 30px auto;
+    padding: 40px;
+    position: relative;
+}
+
+@media screen and (max-width: 640px) {
+    .paper {
+        width: 97%;
+    }
+}
+
+.button {
+}
+
+.link {
+    text-decoration: none;
+    color: #66ccff;
+}

@@ -11,6 +11,16 @@ public class AppConfig {
 
     private ApiTokenConfig apiToken;
 
+    private FileConfig file;
+
+    public FileConfig getFile() {
+        return file;
+    }
+
+    public void setFile(FileConfig file) {
+        this.file = file;
+    }
+
     public ApiTokenConfig getApiToken() {
         return apiToken;
     }
@@ -19,10 +29,41 @@ public class AppConfig {
         this.apiToken = apiToken;
     }
 
+    public static class FileConfig {
+        private String path;
+        private String imageDir;
+
+        public String getImageDir() {
+            return imageDir;
+        }
+
+        public void setImageDir(String imageDir) {
+            this.imageDir = imageDir;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+    }
+
     public static class ApiTokenConfig {
         private String secret;
         private int serverInteger;
         private long validity;
+
+        private String cookieKey;
+
+        public String getCookieKey() {
+            return cookieKey;
+        }
+
+        public void setCookieKey(String cookieKey) {
+            this.cookieKey = cookieKey;
+        }
 
         public String getSecret() {
             return secret;

@@ -17,6 +17,13 @@ export function logout () {
   })
 }
 
+export function changePassword (oldPassword, newPassword) {
+  return new axios.post('/auth/password', {
+    old: oldPassword,
+    password: newPassword
+  })
+}
+
 export function checkRegister ({ username, email }) {
   return axios.post('/auth/check_register', null, {
     params: {

@@ -22,6 +22,14 @@ public class SecurityUtil {
         return (TourUserDetails) authentication.getPrincipal();
     }
 
+    public static boolean authenticated() {
+        return autnentication().isAuthenticated();
+    }
+
+    public static String username() {
+        return user().getUsername();
+    }
+
     public static TourUserDetails userOrNull() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {

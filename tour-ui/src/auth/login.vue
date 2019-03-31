@@ -9,7 +9,7 @@
       :rules="loginFormRules"
     >
       <el-form-item label="用户名/邮箱" prop="user">
-        <el-input v-model="loginForm.user" maxlength="16" ref="user" @keyup.enter.native="doLogin"/>
+        <el-input v-model="loginForm.user" ref="user" @keyup.enter.native="doLogin"/>
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input
@@ -38,7 +38,7 @@ export default {
         password: ''
       },
       loginFormRules: {
-        user: [{ required: true, message: '用户名不能为空' }],
+        user: [{ required: true, message: '用户名/邮箱不能为空' }],
         password: [{ required: true, message: '密码为 6 ~ 16 位' }]
       },
       ing: false

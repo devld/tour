@@ -1,6 +1,5 @@
 package me.devld.tour.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import me.devld.tour.util.I18nUtil;
 
 public class ApiResult {
@@ -8,7 +7,6 @@ public class ApiResult {
     private final int code;
     private final String message;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final Object data;
 
     public ApiResult(int code, String message, Object data) {

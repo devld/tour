@@ -13,8 +13,5 @@
         <heap unit="MB">20</heap>
     </cache>
 
-    <cache alias="district" uses-template="basic"/>
-
-    <cache alias="tour_user_info" uses-template="basic"/>
 
 </config>

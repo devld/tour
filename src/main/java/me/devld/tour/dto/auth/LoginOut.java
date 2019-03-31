@@ -1,6 +1,6 @@
 package me.devld.tour.dto.auth;
 
-import me.devld.tour.dto.user.UserInfo;
+import me.devld.tour.dto.user.UserProfile;
 
 public class LoginOut {
 
@@ -8,9 +8,9 @@ public class LoginOut {
 
     private long expireIn;
 
-    private UserInfo user;
+    private UserProfile user;
 
-    public LoginOut(String token, long expireIn, UserInfo user) {
+    public LoginOut(String token, long expireIn, UserProfile user) {
         this.token = token;
         this.expireIn = expireIn;
         this.user = user;
@@ -32,11 +32,11 @@ public class LoginOut {
         this.expireIn = expireIn;
     }
 
-    public UserInfo getUser() {
+    public UserProfile getUser() {
         return user;
     }
 
-    public void setUser(UserInfo user) {
+    public void setUser(UserProfile user) {
         this.user = user;
     }
 }

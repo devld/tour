@@ -15,6 +15,8 @@ public class TourUser extends BaseEntity {
 
     private String nickname;
 
+    private String avatar;
+
     private String selfIntro;
 
     @Column(columnDefinition = "tinyint")
@@ -48,6 +50,14 @@ public class TourUser extends BaseEntity {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getSelfIntro() {

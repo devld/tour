@@ -5,11 +5,13 @@ import org.springframework.beans.BeanUtils;
 
 import java.sql.Date;
 
-public class UserInfo {
+public class UserProfile {
 
     private String username;
 
     private String nickname;
+
+    private String avatar;
 
     private String selfIntro;
 
@@ -17,13 +19,15 @@ public class UserInfo {
 
     private Date birth;
 
+    private Integer regionId;
+
     private String region;
 
     private String email;
 
     private TourUser.UserType userType;
 
-    public UserInfo(TourUser tourUser) {
+    public UserProfile(TourUser tourUser) {
         BeanUtils.copyProperties(tourUser, this);
     }
 
@@ -41,6 +45,14 @@ public class UserInfo {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getSelfIntro() {
@@ -65,6 +77,14 @@ public class UserInfo {
 
     public void setBirth(Date birth) {
         this.birth = birth;
+    }
+
+    public Integer getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(Integer regionId) {
+        this.regionId = regionId;
     }
 
     public String getRegion() {

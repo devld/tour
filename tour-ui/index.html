@@ -21,7 +21,13 @@
     <p style="text-align:center;">item 31 item</p>
     <p style="text-align:center;">item 41 item</p>
 
-    <button onclick="Tour.Auth.showAuthDialog()">Show Dialog</button>
+    <button onclick="Tour.Auth.showAuthDialog(false)">Show Dialog</button>
+
+    <div>
+
+      <div id="app"></div>
+
+    </div>
 
     <p style="text-align:center;">item 51 item</p>
     <p style="text-align:center;">item 61 item</p>
@@ -30,7 +36,11 @@
 
 </body>
 <script>
-
+  new Tour.Vue({
+    render(h) {
+      return h(Tour.Views.UpdateProfileView)
+    }
+  }).$mount('#app')
 </script>
 
 </html>

@@ -1,6 +1,6 @@
 package me.devld.tour.controller;
 
-import me.devld.tour.dto.user.UserInfo;
+import me.devld.tour.dto.user.UserProfile;
 import me.devld.tour.security.TourUserDetails;
 import me.devld.tour.service.UserService;
 import me.devld.tour.util.SecurityUtil;
@@ -23,8 +23,8 @@ public class WebVariableHandling {
     }
 
     @ModelAttribute("user")
-    public UserInfo currentUserInfo() {
-        return SecurityUtil.userOrNull() == null ? null : userService.getUserInfo(SecurityUtil.user());
+    public UserProfile currentUserInfo() {
+        return SecurityUtil.userOrNull() == null ? null : userService.fillUserInfo(SecurityUtil.user());
     }
 
 }

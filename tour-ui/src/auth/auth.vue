@@ -39,6 +39,14 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.pinned {
+  .root {
+    .close-button {
+      display: none;
+    }
+  }
+}
+
 .root {
   user-select: none;
   width: 430px;

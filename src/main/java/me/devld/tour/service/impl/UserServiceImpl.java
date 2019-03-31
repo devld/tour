@@ -1,11 +1,15 @@
 package me.devld.tour.service.impl;
 
-import me.devld.tour.dto.user.UserInfo;
+import me.devld.tour.dto.user.UserProfile;
+import me.devld.tour.dto.user.UserProfileIn;
 import me.devld.tour.entity.TourUser;
 import me.devld.tour.exception.ForbiddenException;
+import me.devld.tour.exception.NotFoundException;
 import me.devld.tour.repository.TourUserRepository;
 import me.devld.tour.service.DistrictService;
 import me.devld.tour.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -16,33 +20,44 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final String CACHE_USER = "tour_user";
+
     private final TourUserRepository tourUserRepository;
 
     private final DistrictService districtService;
+
+    private UserServiceImpl self;
 
     public UserServiceImpl(TourUserRepository tourUserRepository, DistrictService districtService) {
         this.tourUserRepository = tourUserRepository;
         this.districtService = districtService;
     }
 
-    @Cacheable("tour_user")
+    @Cacheable(CACHE_USER)
     @Override
     public TourUser findUserByUsername(String username) {
         Optional<TourUser> user = tourUserRepository.findByUsername(username);
         return user.orElse(null);
     }
 
-    @Cacheable("tour_user")
     @Override
     public TourUser findUserByEmail(String email) {
         Optional<TourUser> user = tourUserRepository.findByEmail(email);
         return user.orElse(null);
     }
 
-    @Cacheable(value = "tour_user_info", key = "#p0.id")
+
     @Override
-    public UserInfo getUserInfo(TourUser user) {
-        UserInfo info = new UserInfo(user);
+    public UserProfile getUserInfo(String username) {
+        return fillUserInfo(self.findUserByUsername(username));
+    }
+
+    @Override
+    public UserProfile fillUserInfo(TourUser user) {
+        if (user == null) {
+            return null;
+        }
+        UserProfile info = new UserProfile(user);
         if (user.getRegionId() != null) {
             info.setRegion(districtService.getFullName(user.getRegionId()));
         }
@@ -79,11 +94,69 @@ public class UserServiceImpl implements UserService {
             user.setNickname(user.getUsername());
         }
 
+        if (StringUtils.isEmpty(user.getAvatar())) {
+            user.setAvatar("avatar/default.png");
+        }
+
         user.setCreatedAt(System.currentTimeMillis());
         user.setUpdatedAt(System.currentTimeMillis());
         user.setEnabled(true);
         user.setGender(TourUser.Gender.NONE);
         tourUserRepository.save(user);
         return user;
+    }
+
+
+    @CacheEvict(value = CACHE_USER, key = "#p0")
+    @Override
+    public TourUser updateProfile(String username, UserProfileIn newUser) {
+        Optional<TourUser> userOptional = tourUserRepository.findByUsername(username);
+        if (!userOptional.isPresent()) {
+            throw new NotFoundException();
+        }
+        TourUser user = userOptional.get();
+        if (!StringUtils.isEmpty(newUser.getUsername())) {
+            // 修改用户名
+            if (userExists(newUser.getUsername())) {
+                throw new ForbiddenException("msg.username_exists", user.getUsername());
+            }
+            user.setUsername(newUser.getUsername());
+        }
+        if (newUser.getNickname() != null) {
+            user.setNickname(newUser.getNickname());
+        }
+        if (newUser.getAvatar() != null) {
+            user.setAvatar(newUser.getAvatar());
+        }
+        if (newUser.getSelfIntro() != null) {
+            user.setSelfIntro(newUser.getSelfIntro());
+        }
+        if (newUser.getGender() != null) {
+            user.setGender(newUser.getGender());
+        }
+        if (newUser.getBirth() != null) {
+            user.setBirth(newUser.getBirth());
+        }
+        if (newUser.getRegionId() != null) {
+            user.setRegionId(newUser.getRegionId());
+        }
+        return tourUserRepository.save(user);
+    }
+
+    @Override
+    @CacheEvict(key = "#p0")
+    public TourUser updateUserPassword(String username, String newPassword) {
+        Optional<TourUser> userOptional = tourUserRepository.findByUsername(username);
+        if (!userOptional.isPresent()) {
+            throw new NotFoundException();
+        }
+        TourUser user = userOptional.get();
+        user.setPassword(newPassword);
+        return tourUserRepository.save(user);
+    }
+
+    @Autowired
+    public void setSelf(UserServiceImpl self) {
+        this.self = self;
     }
 }
