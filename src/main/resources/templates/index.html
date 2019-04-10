@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:md="https://github.com/devld/tour/misc/thymeleaf-md.xsd"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org/">
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
   <meta charset="UTF-8">
@@ -17,6 +19,7 @@
   <button onclick="Tour.Auth.showAuthDialog()" th:text="#{ui.login}"></button>
 </div>
 
+<div class="markdown" md:text="${markdown}"></div>
 
 </body>
 </html>

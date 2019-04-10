@@ -1,7 +1,5 @@
 package me.devld.tour.entity;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -125,21 +123,11 @@ public class TourUser extends BaseEntity {
     }
 
     public enum UserType {
-        USER, ADMIN;
-
-        @JsonValue
-        public int value() {
-            return ordinal();
-        }
+        USER, ADMIN
     }
 
     public enum Gender {
-        NONE, MALE, FEMALE;
-
-        @JsonValue
-        public int value() {
-            return ordinal();
-        }
+        NONE, MALE, FEMALE
     }
 
     @Override

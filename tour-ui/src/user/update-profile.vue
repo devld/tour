@@ -69,7 +69,7 @@ export default {
         selfIntro: '',
         gender: 0,
         birth: null,
-        regionId: 3020
+        regionId: 0
       },
       avatarUploading: false,
       profileLoading: false

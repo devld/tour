@@ -10,20 +10,24 @@ public class SecurityUtil {
     private SecurityUtil() {
     }
 
-    public static Authentication autnentication() {
+    public static Authentication authentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
     public static TourUserDetails user() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        Authentication authentication = authentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
             throw new UnauthorizedException();
         }
         return (TourUserDetails) authentication.getPrincipal();
     }
 
+    public static String token() {
+        return (String) authentication().getCredentials();
+    }
+
     public static boolean authenticated() {
-        return autnentication().isAuthenticated();
+        return authentication().isAuthenticated();
     }
 
     public static String username() {

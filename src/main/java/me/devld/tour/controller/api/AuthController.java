@@ -31,6 +31,13 @@ public class AuthController {
         return ApiResult.ok(authService.login(apiLogin));
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/logout")
+    public ApiResult logout() {
+        authService.logout(SecurityUtil.token());
+        return ApiResult.ok();
+    }
+
     @PostMapping("/check_register")
     public ApiResult checkUsername(
             @RequestParam(value = "username", required = false) String username,

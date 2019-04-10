@@ -38,9 +38,9 @@
       <span class="label" th:text="#{ui.self_intro}"></span>
       <div class="value" th:text="${user.selfIntro}"></div>
     </div>
-    <div class="item" th:if="${user.gender.value() != 0}">
+    <div class="item" th:if="${user.gender.ordinal() != 0}">
       <span class="label" th:text="#{ui.gender}"></span>
-      <div class="value" th:text="${user.gender.value()} == 1 ? #{ui.gender_male} : #{ui.gender_female}"></div>
+      <div class="value" th:text="${user.gender.ordinal()} == 1 ? #{ui.gender_male} : #{ui.gender_female}"></div>
     </div>
     <div class="item">
       <span class="label" th:text="#{ui.region}"></span>

@@ -13,6 +13,7 @@ export function login (user, password) {
 export function logout () {
   return new Promise((resolve, reject) => {
     TokenStore.setToken(null)
+    axios.post('/auth/logout')
     resolve()
   })
 }

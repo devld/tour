@@ -32,6 +32,7 @@ public class AppConfig {
     public static class FileConfig {
         private String path;
         private String imageDir;
+        private String imageBasePath = "/image";
 
         public String getImageDir() {
             return imageDir;
@@ -47,6 +48,14 @@ public class AppConfig {
 
         public void setPath(String path) {
             this.path = path;
+        }
+
+        public String getImageBasePath() {
+            return imageBasePath;
+        }
+
+        public void setImageBasePath(String imageBasePath) {
+            this.imageBasePath = imageBasePath;
         }
     }
 
