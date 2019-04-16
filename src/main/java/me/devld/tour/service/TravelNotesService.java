@@ -1,10 +1,10 @@
 package me.devld.tour.service;
 
+import me.devld.tour.dto.PageParam;
 import me.devld.tour.dto.travel.TravelNotesDetailsOut;
 import me.devld.tour.dto.travel.TravelNotesIn;
 import me.devld.tour.entity.TravelNotes;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface TravelNotesService {
 
@@ -28,10 +28,11 @@ public interface TravelNotesService {
     /**
      * 根据景点获取游记
      *
-     * @param spotId 景点 id
+     * @param spotId    景点 id
+     * @param pageParam page
      * @return travelNotes
      */
-    Page<TravelNotes> getTravelNotesBySpot(long spotId, Pageable pageable);
+    Page<TravelNotes> getTravelNotesBySpot(long spotId, PageParam pageParam);
 
     /**
      * 用户分享 travelNotes
@@ -42,19 +43,21 @@ public interface TravelNotesService {
     void shareTravelNotes(long travelNotesId, long userId);
 
     /**
-     * 用户点赞 travelNotes
+     * 用户切换点赞 travelNotes
      *
      * @param travelNotesId travelNotesId
      * @param userId        userId
+     * @param state         点赞/取消
      */
-    void likeTravelNotes(long travelNotesId, long userId);
+    void likeTravelNotes(long travelNotesId, long userId, boolean state);
 
     /**
      * 用户收藏 travelNotes
      *
      * @param travelNotesId travelNotesId
      * @param userId        userId
+     * @param state         收藏/取消
      */
-    void collectTravelNotes(long travelNotesId, long userId);
+    void collectTravelNotes(long travelNotesId, long userId, boolean state);
 
 }

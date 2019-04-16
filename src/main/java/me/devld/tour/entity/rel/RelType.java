@@ -9,10 +9,6 @@ public enum RelType {
     /**
      * 收藏
      */
-    COLLECT,
-    /**
-     * 去过(景点)
-     */
-    WENT
+    COLLECT
 
 }

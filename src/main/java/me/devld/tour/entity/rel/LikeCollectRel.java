@@ -20,6 +20,16 @@ public class LikeCollectRel extends BaseEntity {
     @Column(columnDefinition = "tinyint")
     private RelType relType;
 
+    public LikeCollectRel() {
+    }
+
+    public LikeCollectRel(Long userId, Long objId, RelObjectType objType, RelType relType) {
+        this.userId = userId;
+        this.objId = objId;
+        this.objType = objType;
+        this.relType = relType;
+    }
+
     public Long getUserId() {
         return userId;
     }

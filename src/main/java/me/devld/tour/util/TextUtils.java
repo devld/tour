@@ -37,4 +37,13 @@ public class TextUtils {
         return formatPath(dirPath + "/");
     }
 
+    public static Long parseLong(String s) {
+        Long r = null;
+        try {
+            r = Long.parseLong(s);
+        } catch (NumberFormatException ignored) {
+        }
+        return r;
+    }
+
 }

@@ -19,9 +19,9 @@ public class SpotFood extends BaseEntity {
 
     private String phone;
 
-    private Integer likeCount;
+    private Integer likeCount = 0;
 
-    private Integer collectCount;
+    private Integer collectCount = 0;
 
     @ManyToMany
     @JoinTable(

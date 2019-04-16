@@ -29,11 +29,20 @@ public class Spot extends BaseEntity {
 
     private String openTime;
 
-    private Integer wentCount;
+    private Integer wentCount = 0;
 
-    private Integer collectCount;
+    private Integer collectCount = 0;
 
-    private Integer photoCount;
+    private Integer photoCount = 0;
+
+    private Integer commentCount = 0;
+
+    public Spot() {
+    }
+
+    public Spot(long id) {
+        setId(id);
+    }
 
     public String getName() {
         return name;
@@ -129,5 +138,32 @@ public class Spot extends BaseEntity {
 
     public void setPhotoCount(Integer photoCount) {
         this.photoCount = photoCount;
+    }
+
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Spot{" +
+                "name='" + name + '\'' +
+                ", intro='" + intro + '\'' +
+                ", coverUrl='" + coverUrl + '\'' +
+                ", location=" + location +
+                ", phone='" + phone + '\'' +
+                ", website='" + website + '\'' +
+                ", timeUsage='" + timeUsage + '\'' +
+                ", transport='" + transport + '\'' +
+                ", openTime='" + openTime + '\'' +
+                ", wentCount=" + wentCount +
+                ", collectCount=" + collectCount +
+                ", photoCount=" + photoCount +
+                ", commentCount=" + commentCount +
+                '}';
     }
 }

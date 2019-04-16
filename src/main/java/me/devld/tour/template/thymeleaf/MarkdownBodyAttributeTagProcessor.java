@@ -1,6 +1,7 @@
 package me.devld.tour.template.thymeleaf;
 
 import me.devld.tour.config.AppConfig;
+import me.devld.tour.util.HtmlUtils;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
@@ -55,6 +56,7 @@ public class MarkdownBodyAttributeTagProcessor extends AbstractStandardExpressio
             rootNode.accept(new MarkdownHtmlTagVisitor(context, fileConfig.getImageBasePath()));
             htmlText = htmlRenderer.render(rootNode);
         }
+        htmlText = HtmlUtils.sanitizer(htmlText);
         structureHandler.setBody(htmlText, false);
     }
 }

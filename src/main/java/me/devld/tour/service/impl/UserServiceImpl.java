@@ -11,6 +11,7 @@ import me.devld.tour.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -33,6 +34,12 @@ public class UserServiceImpl implements UserService {
         this.districtService = districtService;
     }
 
+    @Cacheable(value = CACHE_USER, key = "'$' + #p0")
+    @Override
+    public TourUser findUserById(long id) {
+        return null;
+    }
+
     @Cacheable(CACHE_USER)
     @Override
     public TourUser findUserByUsername(String username) {
@@ -46,10 +53,14 @@ public class UserServiceImpl implements UserService {
         return user.orElse(null);
     }
 
-
     @Override
     public UserProfile getUserInfo(String username) {
         return fillUserInfo(self.findUserByUsername(username));
+    }
+
+    @Override
+    public UserProfile getUserInfo(long userId) {
+        return self.fillUserInfo(self.findUserById(userId));
     }
 
     @Override
@@ -99,7 +110,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setCreatedAt(System.currentTimeMillis());
-        user.setUpdatedAt(System.currentTimeMillis());
+        user.setUpdatedAt(user.getCreatedAt());
         user.setEnabled(true);
         user.setGender(TourUser.Gender.NONE);
         tourUserRepository.save(user);
@@ -107,7 +118,12 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @CacheEvict(value = CACHE_USER, key = "#p0")
+    @Caching(
+            evict = {
+                    @CacheEvict(value = CACHE_USER, key = "#p0"),
+                    @CacheEvict(value = CACHE_USER, key = "'$' + #result.id")
+            }
+    )
     @Override
     public TourUser updateProfile(String username, UserProfileIn newUser) {
         Optional<TourUser> userOptional = tourUserRepository.findByUsername(username);
@@ -140,11 +156,17 @@ public class UserServiceImpl implements UserService {
         if (newUser.getRegionId() != null) {
             user.setRegionId(newUser.getRegionId());
         }
+        user.setUpdatedAt(System.currentTimeMillis());
         return tourUserRepository.save(user);
     }
 
+    @Caching(
+            evict = {
+                    @CacheEvict(value = CACHE_USER, key = "#p0"),
+                    @CacheEvict(value = CACHE_USER, key = "'$' + #result.id")
+            }
+    )
     @Override
-    @CacheEvict(key = "#p0")
     public TourUser updateUserPassword(String username, String newPassword) {
         Optional<TourUser> userOptional = tourUserRepository.findByUsername(username);
         if (!userOptional.isPresent()) {

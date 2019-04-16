@@ -1,7 +1,7 @@
 package me.devld.tour.controller.api;
 
 import me.devld.tour.controller.ApiController;
-import me.devld.tour.dto.ApiResult;
+import me.devld.tour.dto.user.UserProfile;
 import me.devld.tour.dto.user.UserProfileIn;
 import me.devld.tour.service.UserService;
 import me.devld.tour.util.SecurityUtil;
@@ -19,21 +19,21 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public ApiResult getUserProfile(@PathVariable("username") String username) {
-        return ApiResult.ok(userService.getUserInfo(username));
+    public UserProfile getUserProfile(@PathVariable("username") String username) {
+        return userService.getUserInfo(username);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("")
-    public ApiResult getMineProfile() {
-        return ApiResult.ok(userService.fillUserInfo(SecurityUtil.user()));
+    public UserProfile getMineProfile() {
+        return userService.fillUserInfo(SecurityUtil.user());
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/profile")
-    public ApiResult updateProfile(@RequestBody UserProfileIn userProfile) {
+    public UserProfile updateProfile(@RequestBody UserProfileIn userProfile) {
         userService.updateProfile(SecurityUtil.username(), userProfile);
-        return ApiResult.ok(userService.getUserInfo(SecurityUtil.username()));
+        return userService.getUserInfo(SecurityUtil.username());
     }
 
 }

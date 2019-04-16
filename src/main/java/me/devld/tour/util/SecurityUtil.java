@@ -34,6 +34,10 @@ public class SecurityUtil {
         return user().getUsername();
     }
 
+    public static long userId() {
+        return user().getId();
+    }
+
     public static TourUserDetails userOrNull() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {

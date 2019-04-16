@@ -21,7 +21,19 @@ public class SpotPhoto extends BaseEntity {
 
     private Long authorId;
 
-    private Integer likeCount;
+    private Integer likeCount = 0;
+
+    public SpotPhoto() {
+    }
+
+    public SpotPhoto(String imgUrl, String description, Long spotId, Long fromId, PhotoFrom photoFrom, Long authorId) {
+        this.imgUrl = imgUrl;
+        this.description = description;
+        this.spotId = spotId;
+        this.fromId = fromId;
+        this.photoFrom = photoFrom;
+        this.authorId = authorId;
+    }
 
     public String getImgUrl() {
         return imgUrl;
@@ -80,7 +92,7 @@ public class SpotPhoto extends BaseEntity {
     }
 
     public enum PhotoFrom {
-        COMMENT, TRAVEL_NOTES
+        TRAVEL_NOTES
     }
 
 }

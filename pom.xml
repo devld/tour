@@ -48,6 +48,11 @@
             <artifactId>commonmark-ext-heading-anchor</artifactId>
             <version>0.12.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+            <artifactId>owasp-java-html-sanitizer</artifactId>
+            <version>20180219.1</version>
+        </dependency>
         <!-- markdown rendering -->
 
         <dependency>

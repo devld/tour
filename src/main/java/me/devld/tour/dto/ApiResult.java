@@ -1,6 +1,7 @@
 package me.devld.tour.dto;
 
 import me.devld.tour.util.I18nUtil;
+import org.springframework.data.domain.Page;
 
 public class ApiResult {
 
@@ -13,6 +14,10 @@ public class ApiResult {
         this.code = code;
         this.message = message;
         this.data = data;
+    }
+
+    public static ApiResult ok(Page<?> pageData) {
+        return ok(pageData.getContent());
     }
 
     public static ApiResult ok(Object data) {

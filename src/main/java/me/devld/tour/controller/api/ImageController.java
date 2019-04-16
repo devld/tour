@@ -1,8 +1,8 @@
 package me.devld.tour.controller.api;
 
 import me.devld.tour.controller.ApiController;
-import me.devld.tour.dto.ApiResult;
 import me.devld.tour.dto.ImageFileType;
+import me.devld.tour.dto.image.ImageFileOut;
 import me.devld.tour.service.ImageFileService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +20,8 @@ public class ImageController {
     }
 
     @PostMapping("/upload")
-    public ApiResult uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("type") ImageFileType type) {
-        return ApiResult.ok(imageFileService.saveFile(file, type));
+    public ImageFileOut uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("type") ImageFileType type) {
+        return imageFileService.saveFile(file, type);
     }
 
 }

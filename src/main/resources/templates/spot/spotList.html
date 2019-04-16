@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width" name="viewport">
+  <title th:text="#{ui.spot_list}"></title>
+  <script th:src="@{/static/js/tour.js}"></script>
+  <link rel="stylesheet" th:href="@{/static/css/common.css}">
+</head>
+<body>
+<div class="spots">
+  <div class="spot" th:each="spot : ${spots}" th:text="${spot}">
+
+  </div>
+</div>
+</body>
+</html>

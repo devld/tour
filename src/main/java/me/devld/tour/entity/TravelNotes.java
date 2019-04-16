@@ -1,5 +1,7 @@
 package me.devld.tour.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,11 +16,11 @@ public class TravelNotes extends BaseEntity {
 
     private Long authorId;
 
-    private Integer likeCount;
+    private Integer likeCount = 0;
 
-    private Integer collectCount;
+    private Integer collectCount = 0;
 
-    private Integer shareCount;
+    private Integer shareCount = 0;
 
     private Long startTime;
 
@@ -26,6 +28,7 @@ public class TravelNotes extends BaseEntity {
 
     private Integer costAverage;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "tour_travel_notes_spot_rel",

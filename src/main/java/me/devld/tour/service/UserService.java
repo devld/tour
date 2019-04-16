@@ -6,6 +6,8 @@ import me.devld.tour.entity.TourUser;
 
 public interface UserService {
 
+    TourUser findUserById(long id);
+
     TourUser findUserByUsername(String username);
 
     TourUser findUserByEmail(String email);
@@ -13,6 +15,8 @@ public interface UserService {
     UserProfile fillUserInfo(TourUser user);
 
     UserProfile getUserInfo(String username);
+
+    UserProfile getUserInfo(long userId);
 
     boolean userExists(String username);
 

@@ -12,15 +12,15 @@ import java.util.stream.Collectors;
 @Service
 public class DistrictServiceImpl implements DistrictService {
 
-    private Map<Integer, DistrictDetail> districtMap;
+    private final Map<Integer, DistrictDetail> districtMap;
 
     public DistrictServiceImpl(DistrictRepository districtRepository) {
-        buildTree(districtRepository.findAll());
+        districtMap = buildTree(districtRepository.findAll());
     }
 
-    private void buildTree(List<District> all) {
+    private static Map<Integer, DistrictDetail> buildTree(List<District> all) {
         List<DistrictDetail> districtDetails = all.stream().map(DistrictDetail::new).collect(Collectors.toList());
-        districtMap = districtDetails.stream().collect(Collectors.toMap(e -> e.getDistrict().getId(), e -> e));
+        Map<Integer, DistrictDetail> districtMap = districtDetails.stream().collect(Collectors.toMap(e -> e.getDistrict().getId(), e -> e));
         DistrictDetail root = new DistrictDetail(new District());
         districtMap.put(0, root);
         for (DistrictDetail district : districtDetails) {
@@ -31,6 +31,7 @@ public class DistrictServiceImpl implements DistrictService {
         for (DistrictDetail district : districtDetails) {
             district.getChildren().sort(Comparator.comparingInt(a -> a.getDistrict().getOrder()));
         }
+        return districtMap;
     }
 
     @Override
@@ -66,6 +67,28 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public DistrictDetail getTree() {
         return districtMap.get(0);
+    }
+
+    @Override
+    public List<District> getFlattingChildren(int id) {
+        District district = getById(id);
+        if (district == null) {
+            return Collections.emptyList();
+        }
+        List<District> children = Collections.singletonList(district);
+        List<District> result = new LinkedList<>(children);
+        List<District> nextLevel;
+        do {
+            nextLevel = children.stream().map(e -> getChildren(e.getId())).flatMap(Collection::stream).collect(Collectors.toList());
+            result.addAll(nextLevel);
+            children = nextLevel;
+        } while (!nextLevel.isEmpty());
+        return result;
+    }
+
+    @Override
+    public District getById(int id) {
+        return districtMap.containsKey(id) ? districtMap.get(id).getDistrict() : null;
     }
 
     private List<DistrictDetail> resolveDistrict(int id) {

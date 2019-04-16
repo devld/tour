@@ -1,11 +1,13 @@
 package me.devld.tour.controller.api;
 
 import me.devld.tour.controller.ApiController;
-import me.devld.tour.dto.ApiResult;
+import me.devld.tour.entity.District;
 import me.devld.tour.service.DistrictService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @ApiController
 @RequestMapping("/district")
@@ -18,13 +20,13 @@ public class DistrictController {
     }
 
     @GetMapping("/{id}")
-    public ApiResult resolveDistrict(@PathVariable("id") int id) {
-        return ApiResult.ok(districtService.getFullDistrict(id));
+    public List<District> resolveDistrict(@PathVariable("id") int id) {
+        return districtService.getFullDistrict(id);
     }
 
     @GetMapping("/{id}/children")
-    public ApiResult getChildren(@PathVariable("id") int id) {
-        return ApiResult.ok(districtService.getChildren(id));
+    public List<District> getChildren(@PathVariable("id") int id) {
+        return districtService.getChildren(id);
     }
 
 }

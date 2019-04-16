@@ -13,7 +13,7 @@ public class SpotComment extends BaseEntity {
 
     private String content;
 
-    private Integer likeCount;
+    private Integer likeCount = 0;
 
     public Long getSpotId() {
         return spotId;

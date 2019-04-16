@@ -28,7 +28,7 @@ import java.security.SecureRandom;
 import java.util.Collections;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig {
 
     private final UserService userService;

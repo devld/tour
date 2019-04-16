@@ -15,4 +15,8 @@ public interface DistrictService {
 
     DistrictDetail getTree();
 
+    List<District> getFlattingChildren(int id);
+
+    District getById(int id);
+
 }
