@@ -19,6 +19,7 @@ import me.devld.tour.service.LikeCollectService;
 import me.devld.tour.service.SpotService;
 import me.devld.tour.service.UserService;
 import me.devld.tour.util.BeanUtil;
+import me.devld.tour.util.HtmlUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -58,6 +59,7 @@ public class SpotServiceImpl implements SpotService {
     public Spot createSpot(SpotIn spotIn) {
         Spot spot = new Spot();
         BeanUtils.copyProperties(spotIn, spot);
+        spot.setIntro(HtmlUtils.sanitizer(spot.getIntro()));
         spot.setCreatedAt(System.currentTimeMillis());
         spot.setUpdatedAt(spot.getCreatedAt());
         return spotRepository.save(spot);

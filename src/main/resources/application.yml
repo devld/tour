@@ -4,7 +4,7 @@ server:
 spring:
 
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/tour?useUnicode=true&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/tour?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: ld
     password: ld
 
@@ -31,7 +31,4 @@ app:
     server-integer: 1024
     validity: 259200000
     cookie-key: hello
-  file:
-    path: /tmp
-    image-dir: images
 

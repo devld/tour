@@ -1,20 +1,25 @@
 package me.devld.tour.security;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
 
 public class ApiTokenAuthentication extends AbstractAuthenticationToken {
 
     private final String token;
 
-    private TourUserDetails principal;
+    private Object principal;
 
     public ApiTokenAuthentication(String token) {
         super(null);
         this.token = token;
     }
 
-    public void setUserDetails(TourUserDetails details) {
-        this.principal = details;
+    public ApiTokenAuthentication(String token, Object principal, Collection<? extends GrantedAuthority> authorities) {
+        super(authorities);
+        this.token = token;
+        this.principal = principal;
     }
 
     @Override

@@ -27,9 +27,14 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("bad api token");
         }
         String username = token.getExtendedInformation();
-        tokenAuthentication.setUserDetails(new TourUserDetails(userService.findUserByUsername(username)));
-        tokenAuthentication.setAuthenticated(true);
-        return tokenAuthentication;
+        return createAuthentication(tokenAuthentication, username);
+    }
+
+    private Authentication createAuthentication(ApiTokenAuthentication apiTokenAuthentication, String username) {
+        TourUserDetails principal = new TourUserDetails(userService.findUserByUsername(username));
+        ApiTokenAuthentication authentication = new ApiTokenAuthentication((String) apiTokenAuthentication.getCredentials(), principal, principal.getAuthorities());
+        authentication.setAuthenticated(true);
+        return authentication;
     }
 
     @Override

@@ -9,7 +9,7 @@
     >
       <el-form-item label="头像">
         <div class="avatar" v-loading="avatarUploading">
-          <img v-img="profile.avatar">
+          <img :src="profile.avatar">
           <el-upload
             action="fake"
             :http-request="uploadAvatar"
@@ -50,12 +50,12 @@
   </div>
 </template>
 <script>
-import { getDistricts } from '../api/district'
-import DistrictSelectorView from '../views/district-selector'
-import { getUserProfile, updateProfile } from '../api/user'
-import { uploadImage } from '../api/image'
+import { getDistricts } from '../../api/district'
+import DistrictSelectorView from '../../views/district-selector'
+import { getUserProfile, updateProfile } from '../../api/user'
+import { uploadFile, FileType } from '../../api/file'
 
-import { API_PATH_PREFIX } from '../config'
+import { API_PATH_PREFIX } from '../../config'
 
 export default {
   name: 'UpdateProfileView',
@@ -107,10 +107,10 @@ export default {
     },
     uploadAvatar (upload) {
       this.avatarUploading = true
-      uploadImage('AVATAR', upload.file).then(res => {
-        this.profile.avatar = res.id
+      uploadFile(upload.file, FileType.IMAGE).then(res => {
+        this.profile.avatar = res.url
       }, e => {
-        this.$message.error('上传图片失败: ' + e.message)
+        this.$message.error('上传失败: ' + e.message)
       }).then(() => {
         this.avatarUploading = false
       })

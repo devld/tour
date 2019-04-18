@@ -15,6 +15,7 @@ public class UserProfileIn {
     @Size(min = 1, max = 32)
     private String nickname;
 
+    @Size(max = 128)
     private String avatar;
 
     @Size(max = 128)

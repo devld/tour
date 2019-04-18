@@ -2,11 +2,15 @@
   "name": "tour-ui",
   "version": "1.0.0",
   "description": "",
-  "scripts": {},
+  "scripts": {
+    "serve": "webpack-dev-server",
+    "build": "webpack -p"
+  },
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.7.0",
     "jquery": "^3.3.1",
+    "qiniu-js": "^2.5.4",
     "vue": "^2.6.10"
   },
   "devDependencies": {

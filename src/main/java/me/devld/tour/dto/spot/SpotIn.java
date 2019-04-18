@@ -13,7 +13,7 @@ public class SpotIn {
 
     private String intro;
 
-    @Size(max = 256)
+    @Size(max = 128)
     private String coverUrl;
 
     private Location location;

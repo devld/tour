@@ -10,7 +10,7 @@ import java.util.*;
 
 public class TourUserDetails extends TourUser implements UserDetails {
 
-    private static final Map<UserType, Collection<? extends GrantedAuthority>> USER_TYPE_COLLECTION_MAP = new HashMap<>();
+    private static final Map<UserType, Collection<GrantedAuthority>> USER_TYPE_COLLECTION_MAP = new HashMap<>();
 
     static {
         final SimpleGrantedAuthority roleUser = new SimpleGrantedAuthority("ROLE_USER");
@@ -23,7 +23,7 @@ public class TourUserDetails extends TourUser implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<GrantedAuthority> getAuthorities() {
         return USER_TYPE_COLLECTION_MAP.get(this.getUserType());
     }
 

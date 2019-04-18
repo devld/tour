@@ -11,6 +11,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @ApiController
 @RequestMapping("/spot")
 public class SpotController {
@@ -35,7 +37,7 @@ public class SpotController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{spotId}/comment")
-    public SpotComment commentSpot(@PathVariable("spotId") long spotId, @RequestBody SpotCommentIn spotCommentIn) {
+    public SpotComment commentSpot(@PathVariable("spotId") long spotId, @RequestBody @Valid SpotCommentIn spotCommentIn) {
         return spotService.commentSpot(spotCommentIn, spotId, SecurityUtil.userId());
     }
 
@@ -52,7 +54,7 @@ public class SpotController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/spot/comment/{commentId}/like")
+    @PostMapping("/comment/{commentId}/like")
     public void toggleCommentLike(@PathVariable("commentId") long commendId, @RequestParam("s") boolean state) {
         spotService.likeSpotComment(commendId, SecurityUtil.userId(), state);
     }

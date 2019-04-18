@@ -34,8 +34,8 @@
   </div>
 </template>
 <script>
-import { isEmail } from '../util'
-import { checkRegister, register } from '../api/auth'
+import { isEmail } from '../../util'
+import { checkRegister, register } from '../../api/auth'
 
 export default {
   name: 'RegisterView',

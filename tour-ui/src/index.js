@@ -9,9 +9,10 @@ for (const k in Directives) {
   Vue.directive(k, Directives[k])
 }
 
-import Auth from './auth'
+import Auth from './views/auth'
 
-import UpdateProfileView from './user/update-profile'
+import UpdateProfileView from './views/user/update-profile'
+import SpotEditView from './views/spot/spot-edit'
 
 window.$ = $
 
@@ -20,6 +21,7 @@ export default {
   Message: ElementUI.Message,
   Vue,
   Views: {
-    UpdateProfileView
+    UpdateProfileView,
+    SpotEditView
   }
 }

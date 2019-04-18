@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import AuthPanel from './auth'
 
-import { logout } from '../api/auth'
+import { logout } from '../../api/auth'
 
 let maskView
 let rootView

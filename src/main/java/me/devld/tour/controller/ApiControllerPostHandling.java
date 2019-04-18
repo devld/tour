@@ -22,16 +22,14 @@ public class ApiControllerPostHandling implements ResponseBodyAdvice<Object> {
         return ApiResult.fail(e.getCode(), I18nUtil.getMessage(e.getMessage(), e.getData()));
     }
 
-    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
-    @ResponseBody
-    public ApiResult handle(org.springframework.web.bind.MethodArgumentNotValidException e) {
-        return ApiResult.fail(400, I18nUtil.getMessage("ex.bad_request"));
-    }
-
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({
+            org.springframework.web.bind.MethodArgumentNotValidException.class,
+            org.springframework.web.bind.MissingServletRequestParameterException.class,
+            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class
+    })
     @ResponseBody
     public ApiResult handle(Exception e) {
-        return ApiResult.fail(500, I18nUtil.getMessage("ex.server_error"));
+        return ApiResult.fail(400, I18nUtil.getMessage("ex.bad_request"));
     }
 
     @Override

@@ -11,15 +11,7 @@ public class AppConfig {
 
     private ApiTokenConfig apiToken;
 
-    private FileConfig file;
-
-    public FileConfig getFile() {
-        return file;
-    }
-
-    public void setFile(FileConfig file) {
-        this.file = file;
-    }
+    private QiNiuFileConfig qiNiuFileConfig;
 
     public ApiTokenConfig getApiToken() {
         return apiToken;
@@ -29,33 +21,59 @@ public class AppConfig {
         this.apiToken = apiToken;
     }
 
-    public static class FileConfig {
-        private String path;
-        private String imageDir;
-        private String imageBasePath = "/image";
+    public QiNiuFileConfig getQiNiuFileConfig() {
+        return qiNiuFileConfig;
+    }
 
-        public String getImageDir() {
-            return imageDir;
+    public void setQiNiuFileConfig(QiNiuFileConfig qiNiuFileConfig) {
+        this.qiNiuFileConfig = qiNiuFileConfig;
+    }
+
+    public static class QiNiuFileConfig {
+        private String accessKey;
+        private String secretKey;
+        private String bucketName;
+        private String filePrefix = "";
+        private long maxFileSize = -1;
+
+        public String getAccessKey() {
+            return accessKey;
         }
 
-        public void setImageDir(String imageDir) {
-            this.imageDir = imageDir;
+        public void setAccessKey(String accessKey) {
+            this.accessKey = accessKey;
         }
 
-        public String getPath() {
-            return path;
+        public String getSecretKey() {
+            return secretKey;
         }
 
-        public void setPath(String path) {
-            this.path = path;
+        public void setSecretKey(String secretKey) {
+            this.secretKey = secretKey;
         }
 
-        public String getImageBasePath() {
-            return imageBasePath;
+        public String getBucketName() {
+            return bucketName;
         }
 
-        public void setImageBasePath(String imageBasePath) {
-            this.imageBasePath = imageBasePath;
+        public void setBucketName(String bucketName) {
+            this.bucketName = bucketName;
+        }
+
+        public String getFilePrefix() {
+            return filePrefix;
+        }
+
+        public void setFilePrefix(String filePrefix) {
+            this.filePrefix = filePrefix;
+        }
+
+        public long getMaxFileSize() {
+            return maxFileSize;
+        }
+
+        public void setMaxFileSize(long maxFileSize) {
+            this.maxFileSize = maxFileSize;
         }
     }
 
@@ -63,7 +81,6 @@ public class AppConfig {
         private String secret;
         private int serverInteger;
         private long validity;
-
         private String cookieKey;
 
         public String getCookieKey() {
