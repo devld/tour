@@ -25,7 +25,8 @@ public class ApiControllerPostHandling implements ResponseBodyAdvice<Object> {
     @ExceptionHandler({
             org.springframework.web.bind.MethodArgumentNotValidException.class,
             org.springframework.web.bind.MissingServletRequestParameterException.class,
-            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class
+            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class,
+            org.springframework.http.converter.HttpMessageNotReadableException.class
     })
     @ResponseBody
     public ApiResult handle(Exception e) {

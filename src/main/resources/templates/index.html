@@ -6,6 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <title th:text="#{app.name}"></title>
+  <link rel="icon" th:href="@{/static/favicon.ico}">
   <script th:src="@{/static/js/tour.js}"></script>
   <link rel="stylesheet" th:href="@{/static/css/common.css}">
 </head>
@@ -18,6 +19,19 @@
 <div sec:authorize="!isAuthenticated()">
   <button onclick="Tour.Auth.showAuthDialog()" th:text="#{ui.login}"></button>
 </div>
+
+<div class="spot-edit">
+  <div id="spot">
+    <spot-edit-view/>
+  </div>
+</div>
+
+<script>
+  new Tour.Vue({
+    el: '#spot',
+    components: {SpotEditView: Tour.Views.SpotEditView}
+  })
+</script>
 
 </body>
 </html>

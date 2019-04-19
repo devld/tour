@@ -1,9 +1,9 @@
 package me.devld.tour.service;
 
-import me.devld.tour.dto.file.FileType;
+import me.devld.tour.dto.file.FileUploadIn;
 
 public interface FileService {
 
-    Object prepareUpload(FileType fileType, String filename, long fileSize);
+    Object prepareUpload(FileUploadIn fileUpload, long userId);
 
 }

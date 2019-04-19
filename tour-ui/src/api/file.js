@@ -4,8 +4,8 @@ import * as qiniu from 'qiniu-js'
 
 import { FILE_PATH_PREFIX } from '../config'
 
-function uploadPrepare (file, type) {
-  return axios.post('/file/upload/prepare', null, {
+function uploadPrepare (file, type, options) {
+  return axios.post('/file/upload/prepare', options || {}, {
     params: {
       type,
       name: file.name,
@@ -18,8 +18,21 @@ export const FileType = {
   IMAGE: 'IMAGE'
 }
 
-export function uploadFile (file, type, onprogress) {
-  return uploadPrepare(file, type).then(({ token, key }) => {
+/**
+ * @typedef UploadResult
+ * @property {string} url 图片链接
+ */
+
+/**
+ * 上传文件
+ * @param {File} file 
+ * @param {string} type 
+ * @param {Function} onprogress 
+ * @param {Object} options
+ * @returns {Promise<UploadResult>}
+ */
+export function uploadFile (file, type, options, onprogress) {
+  return uploadPrepare(file, type, options).then(({ token, key }) => {
     return new Promise((resolve, reject) => {
       qiniu.upload(file, key, token, {}, {}).subscribe({
         complete: ({ key }) => {

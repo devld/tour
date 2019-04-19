@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Cacheable(value = CACHE_USER, key = "'$' + #p0")
     @Override
     public TourUser findUserById(long id) {
-        return null;
+        return tourUserRepository.findById(id).orElse(null);
     }
 
     @Cacheable(CACHE_USER)

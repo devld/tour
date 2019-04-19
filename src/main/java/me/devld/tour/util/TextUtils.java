@@ -2,6 +2,10 @@ package me.devld.tour.util;
 
 import org.springframework.util.StringUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +48,22 @@ public class TextUtils {
         } catch (NumberFormatException ignored) {
         }
         return r;
+    }
+
+    public static String urlEncode(String s) {
+        try {
+            return URLEncoder.encode(s, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static String base64Encode(byte[] b) {
+        return Base64.getEncoder().encodeToString(b);
+    }
+
+    public static String base64Encode(String s) {
+        return base64Encode(s.getBytes(StandardCharsets.UTF_8));
     }
 
 }
