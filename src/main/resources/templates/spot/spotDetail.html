@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width" name="viewport">
+  <title th:text="${spot.spot.name} + ' - ' + #{app.name}"></title>
+  <link rel="icon" th:href="@{/static/favicon.ico}">
+  <script th:src="@{/static/js/tour.js}"></script>
+  <link rel="stylesheet" th:href="@{/static/css/common.css}">
+  <style>
+    .spot-detail {
+      background-color: #fff;
+      padding: 20px 40px;
+    }
+
+    .title {
+    }
+
+    .photos {
+
+    }
+
+    .intro {
+      text-indent: 2em;
+      margin: 20px 0;
+    }
+
+    .info {
+      display: flex;
+      border-top: solid 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .info > div {
+      display: flex;
+      flex-direction: column;
+      width: 33.33%;
+      padding: 0 20px;
+      margin: 10px 0;
+      border-right: solid 1px rgba(0, 0, 0, 0.1);
+    }
+
+    @media screen and (max-width: 640px) {
+      .info {
+        flex-direction: column;
+      }
+
+      .info > div {
+        width: 100%;
+        border-right: none;
+        padding: 0;
+      }
+    }
+
+    .info > div:last-child {
+      border-right: none;
+    }
+
+    .info > div > .info-title {
+      color: #999;
+    }
+
+    .info > div > span {
+      margin: 6px 0;
+    }
+
+    .transport, .tickets, .open-time {
+      margin: 10px 0;
+    }
+
+    .transport .info-title, .tickets .info-title, .open-time .info-title {
+      display: block;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="spot-detail">
+  <div class="title">
+    <h1 class="name" th:text="${spot.spot.name}">景点名称</h1>
+
+  </div>
+  <div class="photos">
+
+  </div>
+
+  <div class="intro rich-text" th:utext="${spot.spot.intro}">景点介绍 - rich text</div>
+
+  <div class="info">
+    <div class="phone">
+      <span class="info-title" th:text="#{ui.phone}">电话</span>
+      <span th:text="${spot.spot.phone}"></span>
+    </div>
+    <div class="website">
+      <span class="info-title" th:text="#{ui.website}">网址</span>
+      <span th:text="${spot.spot.website}"></span>
+    </div>
+    <div class="time-usage">
+      <span class="info-title" th:text="#{ui.spot_time_usage}">用时参考</span>
+      <span th:text="${spot.spot.timeUsage}"></span>
+    </div>
+  </div>
+
+  <div class="transport">
+    <span class="info-title" th:text="#{ui.spot_transport}">交通</span>
+    <div th:text="${spot.spot.transport}"></div>
+  </div>
+
+  <div class="tickets">
+    <span class="info-title" th:text="#{ui.spot_ticket}">门票</span>
+    <div th:if="${spot.tickets.size() > 0}">
+      <span th:each="t : ${spot.tickets}" th:text="${t.name}"></span>
+    </div>
+    <div th:if="${spot.tickets.size() == 0}" th:text="#{ui.spot_no_ticket_info}"></div>
+  </div>
+
+  <div class="open-time">
+    <span class="info-title" th:text="#{ui.spot_open_time}">开放时间</span>
+    <div th:text="${spot.spot.openTime}"></div>
+  </div>
+
+  <div class="spot-map">
+    <span class="map-title" th:text="#{ui.spot_location_title}"></span>
+    <div>map</div>
+  </div>
+
+  <div class="spot-comments">
+    <span class="comment-title" th:text="#{ui.spot_comment_title}"></span>
+    <div class="comments"></div>
+  </div>
+
+</div>
+</body>
+</html>

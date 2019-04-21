@@ -63,20 +63,20 @@ CREATE TABLE IF NOT EXISTS `tour_like_collect_rel`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `tour_spot`
 (
-    `id`          BIGINT(20)                                                        NOT NULL AUTO_INCREMENT,
-    `name`        VARCHAR(256) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '景点名称_zh',
-    `intro`       TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'         NULL DEFAULT NULL COMMENT '景点介绍',
-    `cover_url`   VARCHAR(512) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '景点封面 url',
-    `location`    VARCHAR(512) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '景点位置',
-    `location_id` SMALLINT(5)                                                       NULL COMMENT '所在地 district id',
-    `longitude`   DOUBLE(10, 6)                                                     NULL DEFAULT NULL COMMENT '经度',
-    `latitude`    DOUBLE(10, 6)                                                     NULL DEFAULT NULL COMMENT '纬度',
-    `phone`       VARCHAR(256) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '景点电话',
-    `website`     VARCHAR(256) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '景点网站',
-    `time_usage`  VARCHAR(64) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL DEFAULT NULL COMMENT '游玩用时参考',
-    `transport`   VARCHAR(512) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '交通',
-    `open_time`   VARCHAR(512) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '开放时间',
-    `went_count`  INT(11)                                                           NULL DEFAULT '0' COMMENT '去过的人数',
+    `id`            BIGINT(20)                                                        NOT NULL AUTO_INCREMENT,
+    `name`          VARCHAR(256) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '景点名称_zh',
+    `intro`         TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'         NULL DEFAULT NULL COMMENT '景点介绍',
+    `cover_url`     VARCHAR(512) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '景点封面 url',
+    `location`      VARCHAR(512) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '景点位置',
+    `location_id`   SMALLINT(5)                                                       NULL COMMENT '所在地 district id',
+    `longitude`     DOUBLE(10, 6)                                                     NULL DEFAULT NULL COMMENT '经度',
+    `latitude`      DOUBLE(10, 6)                                                     NULL DEFAULT NULL COMMENT '纬度',
+    `phone`         VARCHAR(256) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '景点电话',
+    `website`       VARCHAR(256) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '景点网站',
+    `time_usage`    VARCHAR(64) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL DEFAULT NULL COMMENT '游玩用时参考',
+    `transport`     VARCHAR(512) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '交通',
+    `open_time`     VARCHAR(512) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL DEFAULT NULL COMMENT '开放时间',
+    `went_count`    INT(11)                                                           NULL DEFAULT '0' COMMENT '去过的人数',
     `collect_count` INT(11)                                                           NULL DEFAULT '0' COMMENT '收藏数量',
     `photo_count`   INT(11)                                                           NULL DEFAULT '0' COMMENT '照片数量',
     `comment_count` INT                                                               NULL COMMENT '评论数量',
@@ -271,6 +271,10 @@ CREATE TABLE IF NOT EXISTS `tour_travel_notes_spot_rel`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_unicode_ci;
+
+
+ALTER TABLE `tour`.`tour_travel_notes`
+    CHANGE COLUMN `days_used` `days_used` FLOAT NULL DEFAULT NULL COMMENT '用时(天)';
 
 
 SET SQL_MODE = @OLD_SQL_MODE;

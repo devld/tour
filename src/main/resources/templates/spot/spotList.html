@@ -1,18 +1,124 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:p="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org/">
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width" name="viewport">
-  <title th:text="#{ui.spot_list}"></title>
+  <title th:if="${district == null}" th:text="#{ui.spot_list}"></title>
+  <title th:if="${district != null}" th:text="#{ui.spot_location(${district})}"></title>
   <link rel="icon" th:href="@{/static/favicon.ico}">
   <script th:src="@{/static/js/tour.js}"></script>
   <link rel="stylesheet" th:href="@{/static/css/common.css}">
+  <style>
+
+    .container {
+      margin-top: 50px;
+    }
+
+    .spots {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 auto;
+    }
+
+    @media screen and (min-width: 340px) {
+      .spots {
+        width: 340px;
+      }
+    }
+
+    @media screen and (min-width: 680px) {
+      .spots {
+        width: 680px;
+      }
+    }
+
+    @media screen and (min-width: 1020px) {
+      .spots {
+        width: 1020px;
+      }
+    }
+
+    @media screen and (min-width: 1360px) {
+      .spots {
+        width: 1360px;
+      }
+    }
+
+    .spots .spot {
+      width: 300px;
+      height: 200px;
+      position: relative;
+      margin: 20px;
+      user-select: none;
+      transition: transform 0.3s;
+    }
+
+    .spots .spot:hover {
+      transform: scale(1.1);
+    }
+
+    .spots .spot .cover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .spots .spot .cover > img {
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      border-radius: 4px;
+    }
+
+    .spots .spot .name {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      letter-spacing: 2px;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 5;
+      text-decoration: none;
+    }
+
+    .spots .spot .info {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 2;
+      font-size: 12px;
+      color: #fff;
+      text-shadow: 0 0 2px #000;
+      padding: 6px;
+    }
+
+    .page {
+      width: 100%;
+      margin-right: 20px;
+      text-align: right;
+    }
+
+  </style>
 </head>
 <body>
-<div class="spots">
-  <div class="spot" th:each="spot : ${spots}" th:text="${spot}">
-
+<div class="container">
+  <div class="spots">
+    <div class="spot card" th:each="spot : ${spots}">
+      <div class="cover"><img th:alt="${spot.name}" th:src="@{${spot.coverUrl}}"></div>
+      <a class="name" th:href="@{'/spot/' + ${spot.id}}" th:text="${spot.name}"></a>
+      <div class="info">
+        <span class="went-count" th:text="#{ui.spot_went_count(${spot.wentCount})}"></span><br>
+        <span class="comment-count" th:text="#{ui.spot_comment_count(${spot.commentCount})}"></span>
+      </div>
+    </div>
+    <div class="page"><span class="pagination" p:pagination="${spots}"></span></div>
   </div>
 </div>
 </body>

@@ -33,6 +33,7 @@ public class AppConfig {
         private String accessKey;
         private String secretKey;
         private String bucketName;
+        private String baseUrl;
         private String filePrefix = "";
         private long maxFileSize = -1;
 
@@ -58,6 +59,14 @@ public class AppConfig {
 
         public void setBucketName(String bucketName) {
             this.bucketName = bucketName;
+        }
+
+        public String getBaseUrl() {
+            return baseUrl;
+        }
+
+        public void setBaseUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
         }
 
         public String getFilePrefix() {

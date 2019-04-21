@@ -14,7 +14,7 @@ public class TravelNotesIn {
 
     private Long startTime;
 
-    private Integer daysUsage;
+    private Float daysUsage;
 
     private Integer costAverage;
 
@@ -46,11 +46,11 @@ public class TravelNotesIn {
         this.startTime = startTime;
     }
 
-    public Integer getDaysUsage() {
+    public Float getDaysUsage() {
         return daysUsage;
     }
 
-    public void setDaysUsage(Integer daysUsage) {
+    public void setDaysUsage(Float daysUsage) {
         this.daysUsage = daysUsage;
     }
 

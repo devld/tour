@@ -1,31 +1,92 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #f1f1f1;
+  margin: 0;
+  padding: 0;
+  background-color: #f1f1f1;
 }
 
 .paper {
-    width: 80%;
-    background-color: #fff;
-    margin: 30px auto;
-    padding: 40px;
-    position: relative;
+  width: 80%;
+  background-color: #fff;
+  margin: 30px auto;
+  padding: 40px;
+  position: relative;
 }
 
 @media screen and (max-width: 640px) {
-    .paper {
-        width: 97%;
-    }
+  .paper {
+    width: 97%;
+  }
 }
 
 .button {
 }
 
 .link {
-    text-decoration: none;
-    color: #66ccff;
+  text-decoration: none;
+  color: #66ccff;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.pagination {
+  padding: 4px 10px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.pagination > a {
+  display: inline-block;
+  text-decoration: none;
+  color: #000;
+  padding: 4px 6px;
+}
+
+.pagination > span {
+  display: inline-block;
+  text-decoration: none;
+  color: #000;
+  padding: 4px 6px;
+}
+
+.pagination .disabled {
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.pagination a:hover {
+  color: #66ccff;
+}
+
+.pagination > * {
+  margin: 0 4px;
+}
+
+.pagination .jump-page {
+  display: inline-block;
+}
+
+.pagination .jump-page > input {
+  text-align: center;
+  border: none;
+  width: 50px;
+  outline: none;
+}
+
+.rich-text {
+  line-height: 1.5;
+}
+
+.rich-text a {
+  text-decoration: none;
+  color: #66ccff;
 }

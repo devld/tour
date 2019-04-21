@@ -37,6 +37,22 @@ public interface SpotService {
     SpotDetailsOut getSpotDetails(long id);
 
     /**
+     * 搜索景点
+     *
+     * @param keywords 搜索词
+     * @return 景点
+     */
+    Page<Spot> searchSpot(String keywords, PageParam pageParam);
+
+    /**
+     * 获取景点
+     *
+     * @param id spotId
+     * @return spot
+     */
+    Spot getSpotById(long id);
+
+    /**
      * 获取景点的评论
      *
      * @param id        景点 id

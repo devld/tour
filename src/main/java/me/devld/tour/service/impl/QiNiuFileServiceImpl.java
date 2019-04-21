@@ -54,7 +54,7 @@ public class QiNiuFileServiceImpl implements FileService {
         if (!StringUtils.isEmpty(persistentOps)) {
             policy.put("persistentOps", persistentOps);
         }
-        return new FileUploadKey(auth.uploadToken(config.getBucketName(), fileKey, 3600L, policy), fileKey);
+        return new FileUploadKey(auth.uploadToken(config.getBucketName(), fileKey, 3600L, policy), fileKey, config.getBaseUrl());
     }
 
     private String getPersistentOps(String fileKey, FileUploadIn fileUpload, long userId) {

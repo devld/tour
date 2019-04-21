@@ -12,6 +12,7 @@ import me.devld.tour.entity.rel.RelType;
 import me.devld.tour.exception.ForbiddenException;
 import me.devld.tour.exception.NotFoundException;
 import me.devld.tour.repository.SpotCommentRepository;
+import me.devld.tour.repository.SpotPhotoRepository;
 import me.devld.tour.repository.SpotRepository;
 import me.devld.tour.repository.SpotTicketRepository;
 import me.devld.tour.service.DistrictService;
@@ -36,6 +37,7 @@ public class SpotServiceImpl implements SpotService {
     private final SpotRepository spotRepository;
     private final SpotTicketRepository spotTicketRepository;
     private final SpotCommentRepository spotCommentRepository;
+    private final SpotPhotoRepository spotPhotoRepository;
 
     private final UserService userService;
     private final DistrictService districtService;
@@ -44,27 +46,37 @@ public class SpotServiceImpl implements SpotService {
     public SpotServiceImpl(SpotRepository spotRepository,
                            SpotTicketRepository spotTicketRepository,
                            SpotCommentRepository spotCommentRepository,
+                           SpotPhotoRepository spotPhotoRepository,
                            UserService userService,
                            DistrictService districtService,
                            LikeCollectService likeCollectService) {
         this.spotRepository = spotRepository;
         this.spotTicketRepository = spotTicketRepository;
         this.spotCommentRepository = spotCommentRepository;
+        this.spotPhotoRepository = spotPhotoRepository;
         this.userService = userService;
         this.districtService = districtService;
         this.likeCollectService = likeCollectService;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Spot createSpot(SpotIn spotIn) {
         Spot spot = new Spot();
         BeanUtils.copyProperties(spotIn, spot);
         spot.setIntro(HtmlUtils.sanitizer(spot.getIntro()));
-        spot.setCreatedAt(System.currentTimeMillis());
-        spot.setUpdatedAt(spot.getCreatedAt());
-        return spotRepository.save(spot);
+        spotRepository.save(spot);
+
+        List<SpotTicket> tickets = spotIn.getTickets();
+        if (tickets != null && tickets.size() > 0) {
+            tickets.forEach(e -> e.setSpotId(spot.getId()));
+            spotTicketRepository.saveAll(tickets);
+        }
+
+        return spot;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Spot updateSpot(long spotId, SpotIn spotIn) {
         Optional<Spot> spot = spotRepository.findById(spotId);
@@ -78,7 +90,16 @@ public class SpotServiceImpl implements SpotService {
         spotIn.setLocation(null);
         BeanUtil.copyPropertiesButNull(spotIn, spot.get());
         spot.get().setUpdatedAt(System.currentTimeMillis());
-        return spotRepository.save(spot.get());
+        spotRepository.save(spot.get());
+
+        spotTicketRepository.findAllBySpotId(spotId);
+        List<SpotTicket> tickets = spotIn.getTickets();
+        if (tickets != null && tickets.size() > 0) {
+            tickets.forEach(e -> e.setSpotId(spotId));
+            spotTicketRepository.saveAll(tickets);
+        }
+
+        return spot.get();
     }
 
     @Override
@@ -88,14 +109,26 @@ public class SpotServiceImpl implements SpotService {
             throw new NotFoundException();
         }
         List<SpotTicket> tickets = spotTicketRepository.findAllBySpotId(id);
-        return new SpotDetailsOut(spot.get(), tickets);
+        List<SpotPhoto> photos = spotPhotoRepository.findTop3BySpotIdOrderByLikeCountDesc(id);
+        return new SpotDetailsOut(spot.get(), tickets, photos);
+    }
+
+    @Override
+    public Page<Spot> searchSpot(String keywords, PageParam pageParam) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "wentCount");
+        return spotRepository.findAllByNameLike(keywords, pageParam.toPageable(sort));
+    }
+
+    @Override
+    public Spot getSpotById(long id) {
+        return spotRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     @Override
     public Page<SpotCommentOut> getSpotComments(long spotId, PageParam pageParam) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "updated_at", "like_count");
-        if ("like_count".equals(pageParam.getSort())) {
-            sort = Sort.by(Sort.Direction.DESC, "like_count", "updated_at");
+        Sort sort = Sort.by(Sort.Direction.DESC, "updatedAt", "likeCount");
+        if ("like".equals(pageParam.getSort())) {
+            sort = Sort.by(Sort.Direction.DESC, "likeCount", "updatedAt");
         }
         return spotCommentRepository.findAllBySpotId(spotId, pageParam.toPageable(sort)).map(e -> new SpotCommentOut(e, userService.getUserInfo(e.getAuthorId())));
     }
@@ -110,14 +143,12 @@ public class SpotServiceImpl implements SpotService {
         spotComment.setContent(comment.getContent());
         spotComment.setAuthorId(authorId);
         spotComment.setSpotId(spotId);
-        spotComment.setCreatedAt(System.currentTimeMillis());
-        spotComment.setUpdatedAt(spotComment.getCreatedAt());
         return spotCommentRepository.save(spotComment);
     }
 
     @Override
     public Page<Spot> getSpotsByLocationId(int id, PageParam pageParam) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "collect_count".equals(pageParam.getSort()) ? "collect_count" : "went_count");
+        Sort sort = Sort.by(Sort.Direction.DESC, "collect".equals(pageParam.getSort()) ? "collectCount" : "wentCount");
         return spotRepository.findAllByLocationLocationIdIn(
                 districtService.getFlattingChildren(id).stream().map(District::getId).collect(Collectors.toList()),
                 pageParam.toPageable(sort)
@@ -126,9 +157,9 @@ public class SpotServiceImpl implements SpotService {
 
     @Override
     public Page<Spot> getSpotList(PageParam pageParam) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "went_count");
-        if ("collect_count".equals(pageParam.getSort())) {
-            sort = Sort.by(Sort.Direction.DESC, "collect_count");
+        Sort sort = Sort.by(Sort.Direction.DESC, "wentCount");
+        if ("collect".equals(pageParam.getSort())) {
+            sort = Sort.by(Sort.Direction.DESC, "collectCount");
         }
         return spotRepository.findAll(pageParam.toPageable(sort));
     }

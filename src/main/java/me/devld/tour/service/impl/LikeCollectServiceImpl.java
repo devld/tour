@@ -30,8 +30,6 @@ public class LikeCollectServiceImpl implements LikeCollectService {
         }
         if (state) {
             rel.setId(null);
-            rel.setCreatedAt(System.currentTimeMillis());
-            rel.setUpdatedAt(rel.getCreatedAt());
             likeCollectRelRepository.save(rel);
         } else {
             likeCollectRelRepository.deleteById(collected.getId());

@@ -46,6 +46,7 @@ public class PageParam {
         if (pageSize == null || pageSize <= 0 || pageSize > MAX_PAGE_SIZE) {
             pageSize = DEFAULT_PAGE_SIZE;
         }
+        --page;
         if (sort == null) {
             return PageRequest.of(page, pageSize);
         }

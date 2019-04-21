@@ -2,8 +2,6 @@ import axios from './http/axios'
 
 import * as qiniu from 'qiniu-js'
 
-import { FILE_PATH_PREFIX } from '../config'
-
 function uploadPrepare (file, type, options) {
   return axios.post('/file/upload/prepare', options || {}, {
     params: {
@@ -32,12 +30,12 @@ export const FileType = {
  * @returns {Promise<UploadResult>}
  */
 export function uploadFile (file, type, options, onprogress) {
-  return uploadPrepare(file, type, options).then(({ token, key }) => {
+  return uploadPrepare(file, type, options).then(({ token, key, baseUrl }) => {
     return new Promise((resolve, reject) => {
       qiniu.upload(file, key, token, {}, {}).subscribe({
         complete: ({ key }) => {
           resolve({
-            url: FILE_PATH_PREFIX + key
+            url: baseUrl + key
           })
         },
         error: reject,

@@ -12,9 +12,9 @@ public abstract class BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long createdAt;
+    private Long createdAt = System.currentTimeMillis();
 
-    private Long updatedAt;
+    private Long updatedAt = System.currentTimeMillis();
 
     public Long getId() {
         return id;

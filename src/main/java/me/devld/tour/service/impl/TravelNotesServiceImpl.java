@@ -92,9 +92,9 @@ public class TravelNotesServiceImpl implements TravelNotesService {
 
     @Override
     public Page<TravelNotes> getTravelNotesBySpot(long spotId, PageParam pageParam) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "updated_at", "like_count");
-        if ("like_count".equals(pageParam.getSort())) {
-            sort = Sort.by(Sort.Direction.DESC, "like_count", "updated_at");
+        Sort sort = Sort.by(Sort.Direction.DESC, "updatedAt", "likeCount");
+        if ("like".equals(pageParam.getSort())) {
+            sort = Sort.by(Sort.Direction.DESC, "likeCount", "updatedAt");
         }
         return travelNotesRepository.findAllBySpots(new Spot(spotId), pageParam.toPageable(sort));
     }

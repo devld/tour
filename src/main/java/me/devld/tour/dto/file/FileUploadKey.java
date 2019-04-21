@@ -6,9 +6,12 @@ public class FileUploadKey {
 
     private String key;
 
-    public FileUploadKey(String token, String key) {
+    private String baseUrl;
+
+    public FileUploadKey(String token, String key, String baseUrl) {
         this.token = token;
         this.key = key;
+        this.baseUrl = baseUrl;
     }
 
     public String getToken() {
@@ -25,5 +28,13 @@ public class FileUploadKey {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }

@@ -124,4 +124,9 @@ public class District {
     public void setOrder(Integer order) {
         this.order = order;
     }
+
+    @Override
+    public String toString() {
+        return name + extra + suffix;
+    }
 }

@@ -6,6 +6,7 @@
       size="medium"
       label-width="100px"
       label-position="left"
+      :rules="profileRules"
     >
       <el-form-item label="头像">
         <div class="avatar" v-loading="avatarUploading">
@@ -23,7 +24,7 @@
       <el-form-item label="用户名">
         <el-input v-model.trim="profile.username" disabled maxlength="16"/>
       </el-form-item>
-      <el-form-item label="昵称">
+      <el-form-item label="昵称" prop="nickname">
         <el-input v-model="profile.nickname" maxlength="32"/>
       </el-form-item>
       <el-form-item label="自我介绍">
@@ -51,7 +52,7 @@
 </template>
 <script>
 import { getDistricts } from '../../api/district'
-import DistrictSelectorView from '../../views/district-selector'
+import DistrictSelectorView from '../part/district-selector'
 import { getUserProfile, updateProfile } from '../../api/user'
 import { uploadFile, FileType } from '../../api/file'
 
@@ -71,6 +72,11 @@ export default {
         birth: null,
         regionId: 0
       },
+
+      profileRules: {
+        nickname: [{ required: true, message: '昵称不能为空' }]
+      },
+
       avatarUploading: false,
       profileLoading: false
     }
@@ -87,20 +93,22 @@ export default {
   },
   methods: {
     saveProfile () {
-      this.profileLoading = true
-      updateProfile({
-        nickname: this.profile.nickname,
-        avatar: this.profile.avatar,
-        selfIntro: this.profile.selfIntro,
-        gender: this.profile.gender,
-        birth: this.profile.birth,
-        regionId: this.profile.regionId
+      this.$refs.profileForm.validate().then(v => {
+        this.profileLoading = true
+        return updateProfile({
+          nickname: this.profile.nickname,
+          avatar: this.profile.avatar,
+          selfIntro: this.profile.selfIntro,
+          gender: this.profile.gender,
+          birth: this.profile.birth,
+          regionId: this.profile.regionId
+        })
       }).then((res) => {
         this.setProfileValues(res)
         this.$message.success('更新成功')
         this.$emit('save', res)
-      }, e => {
-        this.$message.error(`保存失败: ${e.message}`)
+      }).catch(e => {
+        e && e.message && this.$message.error(e.message)
       }).then(() => {
         this.profileLoading = false
       })

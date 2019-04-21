@@ -1,9 +1,11 @@
 package me.devld.tour.dto.spot;
 
 import me.devld.tour.entity.Location;
+import me.devld.tour.entity.SpotTicket;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 public class SpotIn {
 
@@ -32,6 +34,8 @@ public class SpotIn {
 
     @Size(max = 128)
     private String openTime;
+
+    private List<SpotTicket> tickets;
 
     public String getName() {
         return name;
@@ -103,5 +107,13 @@ public class SpotIn {
 
     public void setOpenTime(String openTime) {
         this.openTime = openTime;
+    }
+
+    public List<SpotTicket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<SpotTicket> tickets) {
+        this.tickets = tickets;
     }
 }

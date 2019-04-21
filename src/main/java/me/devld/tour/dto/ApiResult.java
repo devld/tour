@@ -24,10 +24,6 @@ public class ApiResult {
         return new ApiResult(0, I18nUtil.getMessage("msg.success"), data);
     }
 
-    public static ApiResult ok() {
-        return ok(null);
-    }
-
     public static ApiResult fail(int code, String message, Object data) {
         return new ApiResult(code, message, data);
     }

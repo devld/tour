@@ -28,6 +28,9 @@
           </el-upload>
         </div>
       </el-form-item>
+      <el-form-item label="景点位置">
+        <location-selector-view v-model="spot.location"/>
+      </el-form-item>
       <el-form-item label="景点电话">
         <el-input v-model="spot.phone"/>
       </el-form-item>
@@ -50,14 +53,26 @@
   </div>
 </template>
 <script>
-import RichTextEditor from '../rich-text/rich-text-editor'
+import LocationSelectorView from '../part/location-selector'
+import RichTextEditor from '../part/rich-text-editor'
 import { uploadFile, FileType } from '../../api/file'
 
-import { createSpot } from '../../api/spot'
+import { createSpot, getSpot, updateSpot } from '../../api/spot'
 
 export default {
   name: 'SpotEditView',
-  components: { RichTextEditor },
+  components: { RichTextEditor, LocationSelectorView },
+  props: {
+    spotId: String
+  },
+  watch: {
+    spotId: {
+      immediate: true,
+      handler () {
+        this.loadSpot()
+      }
+    }
+  },
   data () {
     return {
       spot: {
@@ -67,8 +82,8 @@ export default {
         location: {
           location: '',
           locationId: 0,
-          longitude: 108.9,
-          latitude: 34.27
+          longitude: 0,
+          latitude: 0
         },
         phone: '',
         website: '',
@@ -91,12 +106,31 @@ export default {
     saveSpot () {
       this.$refs.spotForm.validate().then(v => {
         this.spotLoading = true
-        return createSpot(this.spot)
+        if (this.spotId) {
+          return updateSpot(this.spotId, this.spot)
+        } else {
+          return createSpot(this.spot)
+        }
       }).then(res => {
-        this.$message.success('创建成功')
-        this.$refs.spotForm.resetFields()
+        this.$message.success(`${this.spotId ? '编辑' : '创建'}成功`)
+        if (!this.spotId) {
+          this.$refs.spotForm.resetFields()
+        }
       }).catch(e => {
         e && e.message && this.$message.error(e.message)
+      }).then(() => {
+        this.spotLoading = false
+      })
+    },
+    loadSpot () {
+      if (!this.spotId) {
+        return
+      }
+      this.spotLoading = true
+      getSpot(this.spotId).then(spot => {
+        this.spot = spot
+      }, e => {
+        this.$message.error(e.message)
       }).then(() => {
         this.spotLoading = false
       })

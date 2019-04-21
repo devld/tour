@@ -21,4 +21,7 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
 
     int countByIdIn(List<Long> ids);
 
+    @Query("SELECT s FROM Spot s WHERE s.name LIKE %?1%")
+    Page<Spot> findAllByNameLike(String nameLike, Pageable pageable);
+
 }

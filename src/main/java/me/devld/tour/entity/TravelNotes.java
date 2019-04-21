@@ -24,7 +24,7 @@ public class TravelNotes extends BaseEntity {
 
     private Long startTime;
 
-    private Integer daysUsed;
+    private Float daysUsed;
 
     private Integer costAverage;
 
@@ -93,11 +93,11 @@ public class TravelNotes extends BaseEntity {
         this.startTime = startTime;
     }
 
-    public Integer getDaysUsed() {
+    public Float getDaysUsed() {
         return daysUsed;
     }
 
-    public void setDaysUsed(Integer daysUsed) {
+    public void setDaysUsed(Float daysUsed) {
         this.daysUsed = daysUsed;
     }
 

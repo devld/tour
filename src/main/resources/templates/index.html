@@ -5,10 +5,26 @@
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
   <meta charset="UTF-8">
+  <meta content="width=device-width" name="viewport">
   <title th:text="#{app.name}"></title>
   <link rel="icon" th:href="@{/static/favicon.ico}">
   <script th:src="@{/static/js/tour.js}"></script>
   <link rel="stylesheet" th:href="@{/static/css/common.css}">
+  <style>
+    .app-container {
+      width: 80%;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 40px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .app-container {
+        width: 98%;
+        padding: 6px;
+      }
+    }
+  </style>
 </head>
 <body>
 <div sec:authorize="isAuthenticated()">
@@ -20,16 +36,24 @@
   <button onclick="Tour.Auth.showAuthDialog()" th:text="#{ui.login}"></button>
 </div>
 
-<div class="spot-edit">
+<div class="app-container">
   <div id="spot">
-    <spot-edit-view/>
+    <el-input v-model="spotId"></el-input>
+    <spot-edit-view></spot-edit-view>
+    <div style="width: 100%; height: 50px;"></div>
+    <travel-notes-edit-view></travel-notes-edit-view>
   </div>
 </div>
 
 <script>
   new Tour.Vue({
     el: '#spot',
-    components: {SpotEditView: Tour.Views.SpotEditView}
+    components: {SpotEditView: Tour.Views.SpotEditView, TravelNotesEditView: Tour.Views.TravelNotesEditView},
+    data() {
+      return {
+        spotId: ''
+      }
+    }
   })
 </script>
 

@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap-grid.min.css">
   <title>tour-ui</title>
   <style>
     body {
@@ -25,7 +26,25 @@
 
     <div>
 
-      <div id="app"></div>
+      <div id="app">
+        <div>
+
+        
+
+          <hr>
+
+          <el-input v-model="spotId"></el-input>
+          <span>{{ spotId }}</span>
+
+          <spot-edit-view :spot-id="spotId"></spot-edit-view>
+
+
+          <br><br><br>
+
+          <travel-notes-edit-view></travel-notes-edit-view>
+
+        </div>
+      </div>
 
     </div>
 
@@ -37,10 +56,14 @@
 </body>
 <script>
   new Tour.Vue({
-    render(h) {
-      return h(Tour.Views.SpotEditView)
-    }
-  }).$mount('#app')
+    el: '#app',
+    data() {
+      return {
+        spotId: ''
+      }
+    },
+    components: { SpotEditView: Tour.Views.SpotEditView, TravelNotesEditView: Tour.Views.TravelNotesEditView }
+  })
 </script>
 
 </html>

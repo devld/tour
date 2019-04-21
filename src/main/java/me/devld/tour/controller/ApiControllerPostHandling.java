@@ -4,6 +4,7 @@ import me.devld.tour.dto.ApiResult;
 import me.devld.tour.exception.BaseException;
 import me.devld.tour.util.I18nUtil;
 import org.springframework.core.MethodParameter;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
@@ -40,6 +41,9 @@ public class ApiControllerPostHandling implements ResponseBodyAdvice<Object> {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+        if (body instanceof Page) {
+            return ApiResult.ok((Page<?>) body);
+        }
         return ApiResult.ok(body);
     }
 }

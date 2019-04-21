@@ -37,4 +37,5 @@ app:
     bucket-name: bucket_name
     max-file-size: 10485760
     file-prefix:
+    base-url:
 

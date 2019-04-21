@@ -24,7 +24,7 @@
     <div class="item">
       <span class="label" th:text="#{ui.avatar}"></span>
       <div class="value">
-        <img class="avatar" th:alt="${user.nickname}" th:src="@{'/image/' + ${user.avatar}}">
+        <img class="avatar" th:alt="${user.nickname}" th:src="@{${user.avatar}}">
       </div>
     </div>
     <div class="item">

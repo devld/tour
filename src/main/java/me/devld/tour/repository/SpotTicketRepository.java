@@ -11,4 +11,6 @@ public interface SpotTicketRepository extends JpaRepository<SpotTicket, Long> {
 
     List<SpotTicket> findAllBySpotId(long spotId);
 
+    int deleteAllBySpotId(long spotId);
+
 }

@@ -106,11 +106,9 @@ public class UserServiceImpl implements UserService {
         }
 
         if (StringUtils.isEmpty(user.getAvatar())) {
-            user.setAvatar("avatar/default.png");
+            user.setAvatar("/static/image/avatar.jpg");
         }
 
-        user.setCreatedAt(System.currentTimeMillis());
-        user.setUpdatedAt(user.getCreatedAt());
         user.setEnabled(true);
         user.setGender(TourUser.Gender.NONE);
         tourUserRepository.save(user);

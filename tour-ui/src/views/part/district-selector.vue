@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import { getDistricts, resolveDistrict } from '../api/district'
+import { getDistricts, resolveDistrict } from '../../api/district'
 
 export default {
   name: 'DistrictSelectorView',

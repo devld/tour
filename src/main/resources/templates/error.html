@@ -7,8 +7,14 @@
 </head>
 <body>
 <h1 th:text="#{ui.what_happened}"></h1>
+<span th:if="${status == 404}" th:text="#{ui.err_404_tip}"></span>
 <span th:text="${status}"></span>
 <span th:text="${message}"></span>
 <span th:text="${exception}"></span>
+<script th:if="${status == 404}">
+  setTimeout(() => {
+    window.location = "[[@{'/'}]]"
+  }, 3000)
+</script>
 </body>
 </html>
