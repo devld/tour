@@ -9,6 +9,17 @@ import WangEditor from 'wangeditor'
 
 import { uploadFile, FileType } from '../../api/file'
 
+const editorMenus = [
+  'head',  // 标题
+  'bold',  // 粗体
+  'list',  // 列表
+  'image',  // 插入图片
+  'table',  // 表格
+  'video',  // 插入视频
+  'undo',  // 撤销
+  'redo'  // 重复
+]
+
 export default {
   name: 'rich-text-editor',
   props: {
@@ -32,6 +43,7 @@ export default {
     this.editor.customConfig.onchange = this.contentChanged
     this.editor.customConfig.customUploadImg = this.uploadImage
     this.editor.customConfig.uploadImgMaxLength = 1
+    this.editor.customConfig.menus = editorMenus
 
     this.editor.create()
 
@@ -68,7 +80,6 @@ export default {
   width: 100%;
   height: 100%;
   .toolbar {
-    overflow: auto;
     border-bottom: solid 1px rgba(0, 0, 0, 0.1);
   }
   .editor {

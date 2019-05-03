@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns:p="http://www.w3.org/1999/xhtml">
+<!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{ui.travel_of_spot(${spot.name})}"></title>
+  <link rel="icon" th:href="@{/static/favicon.ico}">
+  <script th:src="@{/static/js/tour.js}"></script>
+  <link rel="stylesheet" th:href="@{/static/css/common.css}">
+  <link rel="stylesheet" th:href="@{/static/css/iconfont/iconfont.css}">
+  <style>
+    .travel-notes {
+      width: 800px;
+      margin: 0 auto;
+    }
+
+    .travel {
+      margin: 30px 0;
+      display: flex;
+    }
+
+    .travel > div {
+      display: inline-block;
+    }
+
+    .travel .cover {
+      width: 30%;
+    }
+
+    .travel .main {
+      width: 70%;
+      padding: 0 20px 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .travel .cover img {
+      width: 100%;
+      height: 100%;
+      border-radius: 4px 0 0 4px;
+    }
+
+    .travel .main .title {
+      margin: 8px 0;
+      font-size: 20px;
+    }
+
+    .travel .main .title a {
+      text-decoration: none;
+      color: #66ccff;
+    }
+
+    .travel .summary {
+      flex-grow: 1;
+    }
+
+    .travel .info {
+      display: flex;
+      user-select: none;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .travel .info .mark > span {
+      margin: 0 6px;
+    }
+
+
+    .travel .info .author a {
+      text-decoration: none;
+      color: #000;
+      display: flex;
+      align-items: center;
+    }
+
+    .travel .info .author .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+  </style>
+</head>
+<body>
+<div class="travel-notes">
+  <div class="travel card" th:each="note : ${notes}">
+    <div class="cover"><img th:src="@{${note.coverUrl != null} ? ${note.coverUrl} : '/static/image/travel-notes.jpg'}"
+                            th:alt="${note.travelNotes.title}"></div>
+    <div class="main">
+      <h2 class="title"><a th:href="@{${'/travel/' + note.travelNotes.id}}" th:text="${note.travelNotes.title}"></a>
+      </h2>
+      <div class="summary" th:text="${note.shortContent}"></div>
+      <div class="info">
+        <div class="author">
+          <a target="_blank" th:href="@{${'/user/' + note.author.username}}">
+            <img class="avatar" th:src="@{${note.author.avatar}}" th:alt="${note.author.username}">
+            <span class="nickname" th:text="${note.author.nickname}"></span>
+          </a>
+        </div>
+        <div class="mark">
+        <span class="like" th:title="#{ui.like_icon(${note.travelNotes.likeCount})}"><i
+          class="iconfont">&#xe8c4;</i><span class="count"
+                                             th:text="${note.travelNotes.likeCount}"></span></span>
+          <span class="collect" th:title="#{ui.collect_icon(${note.travelNotes.collectCount})}"><i class="iconfont">&#xe600;</i><span
+            class="count"
+            th:text="${note.travelNotes.collectCount}"></span></span>
+          <span class="share" th:title="#{ui.share_icon(${note.travelNotes.shareCount})}"><i
+            class="iconfont">&#xe60f;</i><span class="count"
+                                               th:text="${note.travelNotes.shareCount}"></span></span>
+        </div>
+        <div class="time">
+          <time
+            th:datetime="${#dates.formatISO(new java.util.Date(note.travelNotes.createdAt))}"
+            th:text="${#dates.format(new java.util.Date(note.travelNotes.createdAt), 'yyyy-MM-dd HH:mm:ss')}"></time>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page"><span class="pagination" p:pagination="${notes}"></span></div>
+</div>
+</body>
+</html>

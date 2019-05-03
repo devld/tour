@@ -1,11 +1,19 @@
 const webpack = require('webpack');
 const path = require('path');
 
+const fs = require('fs')
+
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 const vueLoaderConfig = {
+}
+
+let localConfig = {}
+
+if (fs.existsSync(path.join(__dirname, 'webpack.local.js'))) {
+  localConfig = require('./webpack.local.js')
 }
 
 module.exports = {
@@ -14,7 +22,8 @@ module.exports = {
     proxy: {
       '/tour': {
         target: 'http://localhost:8822/'
-      }
+      },
+      ...(localConfig.devServer || {})
     }
   },
 

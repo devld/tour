@@ -20,12 +20,12 @@ public interface LikeCollectService {
     /**
      * 获取用户点赞收藏状态
      *
-     * @param userId  用户 id
-     * @param objType 对象类型
-     * @param relType 关系类型
-     * @param objIds  对象 ids
+     * @param userId   用户 id
+     * @param objType  对象类型
+     * @param relTypes 关系类型
+     * @param objIds   对象 ids
      * @return 点赞关系
      */
-    List<LikeCollectRel> getRelBy(long userId, RelObjectType objType, RelType relType, List<Long> objIds);
+    List<LikeCollectRel> getRelBy(long userId, RelObjectType objType, List<RelType> relTypes, List<Long> objIds);
 
 }

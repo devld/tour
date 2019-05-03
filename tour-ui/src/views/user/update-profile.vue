@@ -10,7 +10,7 @@
     >
       <el-form-item label="头像">
         <div class="avatar" v-loading="avatarUploading">
-          <img :src="profile.avatar">
+          <img v-img="profile.avatar">
           <el-upload
             action="fake"
             :http-request="uploadAvatar"

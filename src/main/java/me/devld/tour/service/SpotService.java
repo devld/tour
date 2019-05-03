@@ -1,13 +1,12 @@
 package me.devld.tour.service;
 
 import me.devld.tour.dto.PageParam;
-import me.devld.tour.dto.spot.SpotCommentIn;
-import me.devld.tour.dto.spot.SpotCommentOut;
-import me.devld.tour.dto.spot.SpotDetailsOut;
-import me.devld.tour.dto.spot.SpotIn;
+import me.devld.tour.dto.spot.*;
 import me.devld.tour.entity.Spot;
 import me.devld.tour.entity.SpotComment;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface SpotService {
 
@@ -31,10 +30,11 @@ public interface SpotService {
     /**
      * 获取景点的详情
      *
-     * @param id 景点的 id
+     * @param id     景点的 id
+     * @param userId 当前用户 id
      * @return 景点详细信息
      */
-    SpotDetailsOut getSpotDetails(long id);
+    SpotDetailsOut getSpotDetails(long id, Long userId);
 
     /**
      * 搜索景点
@@ -57,9 +57,10 @@ public interface SpotService {
      *
      * @param id        景点 id
      * @param pageParam page
+     * @param userId    当前用户 id
      * @return 评论列表
      */
-    Page<SpotCommentOut> getSpotComments(long id, PageParam pageParam);
+    Page<SpotCommentOut> getSpotComments(long id, PageParam pageParam, Long userId);
 
     /**
      * 评论景点
@@ -114,5 +115,12 @@ public interface SpotService {
      * @param state     点赞/取消
      */
     void likeSpotComment(long commentId, long userId, boolean state);
+
+    /**
+     * 获取含有景点的地区列表
+     *
+     * @return 目的地列表
+     */
+    List<SpotDestination> getSpotDestinations();
 
 }

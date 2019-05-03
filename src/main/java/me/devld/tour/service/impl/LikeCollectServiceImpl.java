@@ -38,10 +38,10 @@ public class LikeCollectServiceImpl implements LikeCollectService {
     }
 
     @Override
-    public List<LikeCollectRel> getRelBy(long userId, RelObjectType objType, RelType relType, List<Long> objIds) {
+    public List<LikeCollectRel> getRelBy(long userId, RelObjectType objType, List<RelType> relTypes, List<Long> objIds) {
         if (objIds.isEmpty()) {
             return Collections.emptyList();
         }
-        return likeCollectRelRepository.findAllByUserIdAndObjIdInAndObjTypeAndRelType(userId, objIds, objType, relType);
+        return likeCollectRelRepository.findAllByUserIdAndObjIdInAndObjTypeAndRelTypeIn(userId, objIds, objType, relTypes);
     }
 }

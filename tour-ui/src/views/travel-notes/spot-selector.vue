@@ -9,6 +9,7 @@
       :remote-method="querySpots"
       :loading="searching"
       @change="$emit('select', $event); $emit('input', $event)"
+      value-key="id"
     >
       <el-option v-for="item in searchResult" :key="item.id" :label="item.name" :value="item"/>
     </el-select>
@@ -51,8 +52,11 @@ export default {
         return
       }
       this.searching = true
-      searchSpot(s, 1, 50).then(spots => {
-        this.searchResult = spots
+      searchSpot(s, {
+        page: 1,
+        pageSize: 50
+      }).then(pageData => {
+        this.searchResult = pageData.data
       }, e => {
         this.$message.error(e.message)
         this.searchResult = []

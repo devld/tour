@@ -54,7 +54,7 @@ public class PaginationTagProcessor extends AbstractStandardExpressionAttributeT
                 .append("</form>");
 
         // 下一页
-        appendPageLink(res, "&gt;", "next-page", currentPage + 1 + PAGE_START, currentPage >= totalPage, queries);
+        appendPageLink(res, "&gt;", "next-page", currentPage + 1 + PAGE_START, currentPage >= totalPage - 1, queries);
         //尾页
         appendPageLink(res, "&raquo;", "last-page", totalPage - 1 + PAGE_START, currentPage == totalPage - 1, queries);
 

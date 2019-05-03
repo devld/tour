@@ -4,6 +4,7 @@ import me.devld.tour.dto.DistrictDetail;
 import me.devld.tour.entity.District;
 import me.devld.tour.repository.DistrictRepository;
 import me.devld.tour.service.DistrictService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -14,7 +15,10 @@ public class DistrictServiceImpl implements DistrictService {
 
     private final Map<Integer, DistrictDetail> districtMap;
 
+    private final DistrictRepository districtRepository;
+
     public DistrictServiceImpl(DistrictRepository districtRepository) {
+        this.districtRepository = districtRepository;
         districtMap = buildTree(districtRepository.findAll());
     }
 
@@ -92,7 +96,7 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     private List<DistrictDetail> resolveDistrict(int id) {
-        DistrictDetail district = null;
+        DistrictDetail district;
         List<DistrictDetail> districtDetails = new ArrayList<>(3);
         while (id > 0 && (district = districtMap.get(id)) != null) {
             districtDetails.add(district);
@@ -100,5 +104,11 @@ public class DistrictServiceImpl implements DistrictService {
         }
         Collections.reverse(districtDetails);
         return districtDetails;
+    }
+
+    @Cacheable("tour_district")
+    @Override
+    public District getByCode(String code) {
+        return districtRepository.findFirstByCode(code);
     }
 }

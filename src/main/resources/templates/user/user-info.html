@@ -3,7 +3,6 @@
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
   <meta charset="UTF-8">
-  <meta content="width=device-width" name="viewport">
   <title th:if="${mine}" th:text="#{ui.my_profile}"></title>
   <title th:if="${!mine}"
          th:text="${user == null} ? #{ui.user_not_found} : #{ui.who_s_profile(${user.nickname})}"></title>
@@ -14,7 +13,7 @@
 </head>
 <body>
 <script th:if="${mine && user == null}">
-  Tour.Auth.showAuthDialog(false)
+  Tour.Auth.showAuthDialog(null, false)
 </script>
 <div class="paper" th:if="${!mine && user == null}">
   <h1 th:text="#{ui.user_not_found}"></h1>

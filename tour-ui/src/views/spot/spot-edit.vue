@@ -46,6 +46,19 @@
       <el-form-item label="开放时间">
         <el-input v-model="spot.openTime" type="textarea"/>
       </el-form-item>
+      <el-form-item label="门票">
+        <div class="ticket" v-for="(t, i) in spot.tickets" :key="t.id">
+          <el-input class="name" v-model="t.name" placeholder="门票描述" :maxlength="128"/>
+          <el-input-number class="price" v-model="t.price" :min="0"/>
+          <span>元</span>
+          <i
+            class="ticket-delete el-icon-delete"
+            title="删除"
+            @click.stop="spot.tickets.splice(i, 1)"
+          />
+        </div>
+        <el-button icon="el-icon-plus" @click="addTicket"/>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="saveSpot">保存</el-button>
       </el-form-item>
@@ -58,6 +71,8 @@ import RichTextEditor from '../part/rich-text-editor'
 import { uploadFile, FileType } from '../../api/file'
 
 import { createSpot, getSpot, updateSpot } from '../../api/spot'
+
+let id = 1
 
 export default {
   name: 'SpotEditView',
@@ -89,7 +104,8 @@ export default {
         website: '',
         timeUsage: '',
         transport: '',
-        openTime: ''
+        openTime: '',
+        tickets: []
       },
 
       spotRules: {
@@ -145,6 +161,13 @@ export default {
       }).then(() => {
         this.photoUploading = false
       })
+    },
+    addTicket () {
+      this.spot.tickets.push({
+        id: id++,
+        name: '',
+        price: 0
+      })
     }
   }
 }
@@ -166,6 +189,32 @@ export default {
     img {
       margin-right: 10px;
       max-height: 200px;
+    }
+  }
+
+  .ticket {
+    display: flex;
+    position: relative;
+    padding: 10px 0;
+    align-items: center;
+
+    .ticket-delete {
+      position: absolute;
+      cursor: pointer;
+      top: 6px;
+      right: 6px;
+      font-size: 14px;
+    }
+
+    & > * {
+      margin-right: 10px;
+    }
+
+    .name {
+      width: 68%;
+    }
+    .price {
+      width: 140px;
     }
   }
 }

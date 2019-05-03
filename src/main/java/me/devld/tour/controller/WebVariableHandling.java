@@ -19,12 +19,12 @@ public class WebVariableHandling {
 
     @ModelAttribute("userDetail")
     public TourUserDetails currentUser() {
-        return SecurityUtil.userOrNull();
+        return SecurityUtil.userOrNull().orElse(null);
     }
 
     @ModelAttribute("user")
     public UserProfile currentUserInfo() {
-        return SecurityUtil.userOrNull() == null ? null : userService.fillUserInfo(SecurityUtil.user());
+        return userService.fillUserInfo(SecurityUtil.userOrNull().orElse(null));
     }
 
 }

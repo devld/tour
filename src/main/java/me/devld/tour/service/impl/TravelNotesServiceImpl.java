@@ -17,6 +17,8 @@ import me.devld.tour.repository.TravelNotesRepository;
 import me.devld.tour.service.LikeCollectService;
 import me.devld.tour.service.TravelNotesService;
 import me.devld.tour.service.UserService;
+import me.devld.tour.util.HtmlUtils;
+import me.devld.tour.util.ImageProp;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -25,8 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.ListUtils;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,29 +78,62 @@ public class TravelNotesServiceImpl implements TravelNotesService {
                                     travelNotes.getId(), SpotPhoto.PhotoFrom.TRAVEL_NOTES, authorId))
                             .collect(Collectors.toList())
             );
+            Map<Long, List<TravelNotesIn.TravelNotesPhoto>> photoList = photos.stream().filter(e -> e.getSpotId() != null).collect(Collectors.groupingBy(TravelNotesIn.TravelNotesPhoto::getSpotId));
+            for (Long spotId : photoList.keySet()) {
+                int c = photoList.get(spotId).size();
+                if (c > 0) {
+                    spotRepository.incrementPhotoCount(spotId, c);
+                }
+            }
         }
         return travelNotes;
     }
 
     @Override
-    public TravelNotesDetailsOut getTravelNotesDetails(long id) {
+    public TravelNotesDetailsOut getTravelNotesDetails(long id, Long userId) {
         Optional<TravelNotes> travelNotes = travelNotesRepository.findById(id);
         if (!travelNotes.isPresent()) {
             throw new NotFoundException();
         }
-        return new TravelNotesDetailsOut(travelNotes.get(), userService.getUserInfo(travelNotes.get().getAuthorId()), travelNotes.get().getSpots());
+
+        TravelNotesDetailsOut out = new TravelNotesDetailsOut(travelNotes.get(), userService.getUserInfo(travelNotes.get().getAuthorId()), travelNotes.get().getSpots());
+        if (userId != null) {
+            Map<RelType, LikeCollectRel> rel = likeCollectService.getRelBy(userId, RelObjectType.TRAVEL_NOTES, Arrays.asList(RelType.LIKE, RelType.COLLECT), Collections.singletonList(userId))
+                    .stream().collect(Collectors.toMap(LikeCollectRel::getRelType, e -> e));
+            out.setLiked(rel.containsKey(RelType.LIKE));
+            out.setCollected(rel.containsKey(RelType.COLLECT));
+        }
+        return out;
     }
 
     @Override
-    public Page<TravelNotes> getTravelNotesBySpot(long spotId, PageParam pageParam) {
+    public Page<TravelNotesDetailsOut> getTravelNotesBySpot(long spotId, PageParam pageParam) {
         Sort sort = Sort.by(Sort.Direction.DESC, "updatedAt", "likeCount");
         if ("like".equals(pageParam.getSort())) {
             sort = Sort.by(Sort.Direction.DESC, "likeCount", "updatedAt");
         }
-        return travelNotesRepository.findAllBySpots(new Spot(spotId), pageParam.toPageable(sort));
+        return processTravelNotes(travelNotesRepository.findAllBySpots(new Spot(spotId), pageParam.toPageable(sort)));
+    }
+
+    private Page<TravelNotesDetailsOut> processTravelNotes(Page<TravelNotes> travelNotes) {
+        return travelNotes.map(e -> {
+            TravelNotesDetailsOut out = new TravelNotesDetailsOut(e, userService.getUserInfo(e.getAuthorId()), null);
+            String content = e.getContent();
+            List<ImageProp> images = HtmlUtils.extractImagesFromHtml(content);
+            if (!images.isEmpty()) {
+                out.setCoverUrl(images.get(0).getSrc());
+            }
+            String shortContent = HtmlUtils.htmlToText(content);
+            if (shortContent.length() > 100) {
+                shortContent = shortContent.substring(0, 100) + "...";
+            }
+            out.setShortContent(shortContent);
+            return out;
+        });
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void shareTravelNotes(long travelNotesId, long userId) {
         if (travelNotesRepository.incrementCountById(travelNotesId, 0, 0, 1) != 1) {
             throw new NotFoundException();

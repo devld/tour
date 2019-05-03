@@ -27,10 +27,10 @@ public class LikeCollectController {
     @GetMapping("")
     public List<LikeCollectRel> getRel(
             @RequestParam("type") RelObjectType objType,
-            @RequestParam("rel") RelType relType,
+            @RequestParam("rel") List<RelType> relTypes,
             @RequestParam("ids") List<Long> ids
     ) {
-        return likeCollectService.getRelBy(SecurityUtil.userId(), objType, relType, ids);
+        return likeCollectService.getRelBy(SecurityUtil.userId(), objType, relTypes, ids);
     }
 
 }

@@ -140,8 +140,6 @@ public class HtmlUtils {
         return s -> a.matcher(s).matches() || b.matcher(s).matches();
     }
 
-    ;
-
     private static final Pattern HTML_IMG_PATTERN = Pattern.compile("<img[^<]*/?>", Pattern.CASE_INSENSITIVE);
     private static final Pattern HTML_ATTR_PATTERN = Pattern.compile("([A-z0-9\\-_]+)=(?:[\"'](.*?)[\"'])?");
     private static final Pattern MARKDOWN_IMG_PATTERN = Pattern.compile("(?:!\\[(.*?)]\\((.*?)\\))");
@@ -201,38 +199,11 @@ public class HtmlUtils {
         return result;
     }
 
-    public static class ImageProp {
-        private String src;
-        private String alt;
-
-        ImageProp(String src, String alt) {
-            this.src = src;
-            this.alt = alt;
+    public static String htmlToText(String html) {
+        if (StringUtils.isEmpty(html)) {
+            return "";
         }
-
-        public String getSrc() {
-            return src;
-        }
-
-        public void setSrc(String src) {
-            this.src = src;
-        }
-
-        public String getAlt() {
-            return alt;
-        }
-
-        public void setAlt(String alt) {
-            this.alt = alt;
-        }
-
-        @Override
-        public String toString() {
-            return "ImageProp{" +
-                    "src='" + src + '\'' +
-                    ", alt='" + alt + '\'' +
-                    '}';
-        }
+        return html.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", "");
     }
 
 }

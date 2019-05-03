@@ -20,10 +20,11 @@ public interface TravelNotesService {
     /**
      * 获取游记详情
      *
-     * @param id 游记 id
+     * @param id     游记 id
+     * @param userId 当前用户 id
      * @return 游记详情
      */
-    TravelNotesDetailsOut getTravelNotesDetails(long id);
+    TravelNotesDetailsOut getTravelNotesDetails(long id, Long userId);
 
     /**
      * 根据景点获取游记
@@ -32,7 +33,7 @@ public interface TravelNotesService {
      * @param pageParam page
      * @return travelNotes
      */
-    Page<TravelNotes> getTravelNotesBySpot(long spotId, PageParam pageParam);
+    Page<TravelNotesDetailsOut> getTravelNotesBySpot(long spotId, PageParam pageParam);
 
     /**
      * 用户分享 travelNotes

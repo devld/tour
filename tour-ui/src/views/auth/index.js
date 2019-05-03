@@ -8,6 +8,8 @@ let rootView
 
 import './auth.scss'
 
+let loginCallback
+
 function initView () {
   maskView = document.createElement('div')
   maskView.classList.add('auth-panel-mask')
@@ -15,7 +17,18 @@ function initView () {
   document.body.appendChild(maskView)
 
   const auth = new Vue({
-    render: h => h(AuthPanel)
+    render: h => h(AuthPanel, {
+      on: {
+        login (user) {
+          Tour.Auth.hideAuthDialog()
+          if (loginCallback) {
+            loginCallback(user)
+          } else {
+            window.location.reload()
+          }
+        }
+      }
+    })
   })
 
   rootView = document.createElement('div')
@@ -26,7 +39,8 @@ function initView () {
 
 export default {
 
-  showAuthDialog (closable = true) {
+  showAuthDialog (callback, closable = true) {
+    loginCallback = callback
     if (!maskView) {
       initView()
     }
@@ -39,6 +53,7 @@ export default {
   },
 
   hideAuthDialog () {
+    loginCallback = null
     $(maskView).animate({
       opacity: 0
     }, () => {

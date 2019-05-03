@@ -19,4 +19,6 @@ public interface DistrictService {
 
     District getById(int id);
 
+    District getByCode(String code);
+
 }

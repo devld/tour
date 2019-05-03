@@ -1,9 +1,12 @@
 package me.devld.tour.util;
 
+import me.devld.tour.entity.BaseEntity;
 import me.devld.tour.exception.UnauthorizedException;
 import me.devld.tour.security.TourUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Optional;
 
 public class SecurityUtil {
 
@@ -38,15 +41,19 @@ public class SecurityUtil {
         return user().getId();
     }
 
-    public static TourUserDetails userOrNull() {
+    public static Long userIdOrNull() {
+        return userOrNull().map(BaseEntity::getId).orElse(null);
+    }
+
+    public static Optional<TourUserDetails> userOrNull() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             Object principal = authentication.getPrincipal();
             if (principal instanceof TourUserDetails) {
-                return (TourUserDetails) principal;
+                return Optional.of((TourUserDetails) principal);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
 }

@@ -11,6 +11,6 @@ public interface LikeCollectRelRepository extends JpaRepository<LikeCollectRel, 
 
     LikeCollectRel findFirstByUserIdAndObjIdAndObjTypeAndRelType(long userId, long objId, RelObjectType objType, RelType relType);
 
-    List<LikeCollectRel> findAllByUserIdAndObjIdInAndObjTypeAndRelType(long userId, List<Long> objIds, RelObjectType objType, RelType relType);
+    List<LikeCollectRel> findAllByUserIdAndObjIdInAndObjTypeAndRelTypeIn(long userId, List<Long> objIds, RelObjectType objType, List<RelType> relType);
 
 }

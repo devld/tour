@@ -100,12 +100,14 @@ public class TextUtils {
         String[] queries = query.split("&");
         for (String q : queries) {
             String[] t = q.split("=");
-            String key = t[0];
-            String value = "";
-            if (t.length > 1) {
-                value = t[1];
+            if (t.length > 0) {
+                String key = t[0];
+                String value = "";
+                if (t.length > 1) {
+                    value = t[1];
+                }
+                res.put(key, urlDecode(value));
             }
-            res.put(key, urlDecode(value));
         }
         return res;
     }

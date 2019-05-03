@@ -3,7 +3,6 @@
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
   <meta charset="UTF-8">
-  <meta content="width=device-width" name="viewport">
   <title th:if="${district == null}" th:text="#{ui.spot_list}"></title>
   <title th:if="${district != null}" th:text="#{ui.spot_location(${district})}"></title>
   <link rel="icon" th:href="@{/static/favicon.ico}">

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${note.travelNotes.title} + ' - ' + #{app.name}"></title>
+  <link rel="stylesheet" th:href="@{/static/css/iconfont/iconfont.css}">
+  <link rel="icon" th:href="@{/static/favicon.ico}">
+  <script th:src="@{/static/js/tour.js}"></script>
+  <link rel="stylesheet" th:href="@{/static/css/common.css}">
+  <style>
+    .travel-note {
+      width: 800px;
+      margin: 40px auto;
+      background-color: #fff;
+      padding: 20px 30px;
+    }
+
+    .travel-note .info {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .travel-note .info .author {
+      margin-right: 20px;
+    }
+
+    .travel-note .info .author a {
+      text-decoration: none;
+      color: #000;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .travel-note .info .author .avatar {
+      width: 40px;
+      height: 40px;
+      margin-right: 8px;
+      border-radius: 50%;
+    }
+
+    .travel-note .info .time {
+      margin-right: 30px;
+    }
+
+    .travel-note .content img {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <article class="travel-note">
+    <h1 th:text="${note.travelNotes.title}"></h1>
+    <div class="info">
+      <div class="author">
+        <a target="_blank" th:href="@{${'/user/' + note.author.username}}">
+          <img class="avatar" th:src="@{${note.author.avatar}}" th:alt="${note.author.username}">
+          <span class="nickname" th:text="${note.author.nickname}"></span>
+        </a>
+      </div>
+      <div class="time">
+        <span th:text="#{ui.publish_at}"></span>
+        <time
+          th:datetime="${#dates.formatISO(new java.util.Date(note.travelNotes.createdAt))}"
+          th:text="${#dates.format(new java.util.Date(note.travelNotes.createdAt), 'yyyy-MM-dd HH:mm:ss')}"></time>
+      </div>
+      <div class="user-mark">
+        <travel-notes-mark-view :notes-id="notesId" v-model="marks"></travel-notes-mark-view>
+      </div>
+    </div>
+    <div class="content" th:utext="${note.travelNotes.content}"></div>
+  </article>
+</div>
+</body>
+<script>
+  new Tour.Vue({
+    el: '.wrapper',
+    components: {TravelNotesMarkView: Tour.Views.TravelNotesMarkView},
+    data() {
+      return {
+        notesId: +'[[${note.travelNotes.id}]]',
+        marks: {
+          like: {
+            state: '[[${note.liked}]]' === 'true',
+            count: +'[[${note.travelNotes.likeCount}]]'
+          },
+          collect: {
+            state: '[[${note.collected}]]' === 'true',
+            count: +'[[${note.travelNotes.collectCount}]]'
+          }
+        }
+      }
+    }
+  })
+</script>
+</html>

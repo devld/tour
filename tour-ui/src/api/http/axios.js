@@ -23,6 +23,10 @@ axios.interceptors.response.use(resp => {
     if (data.code === 0) {
       return data.data
     }
+    if (data.code === 401) {
+      // 未登录展示登录弹窗
+      Tour.Auth.showAuthDialog()
+    }
     return Promise.reject(data)
   }
   return Promise.reject({ code: -1, message: 'Unknown Error' })

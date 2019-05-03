@@ -17,14 +17,6 @@ public enum RelObjectType {
     /**
      * 景点照片
      */
-    SPOT_PHOTO,
-    /**
-     * 景点附近的住宿
-     */
-    SPOT_HOTEL,
-    /**
-     * 景点附近的吃的
-     */
-    SPOT_FOOD
+    SPOT_PHOTO
 
 }

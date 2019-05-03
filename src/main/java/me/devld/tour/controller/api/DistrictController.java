@@ -29,4 +29,9 @@ public class DistrictController {
         return districtService.getChildren(id);
     }
 
+    @GetMapping("/code/{code}")
+    public District getByCode(@PathVariable("code") String code) {
+        return districtService.getByCode(code);
+    }
+
 }

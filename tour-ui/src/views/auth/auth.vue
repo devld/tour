@@ -7,7 +7,12 @@
     </div>
     <div class="auth-panel">
       <keep-alive>
-        <component :is="page + '-view'" ref="view" @registered="registered"/>
+        <component
+          :is="page + '-view'"
+          ref="view"
+          @registered="registered"
+          @login="$emit('login', $event)"
+        />
       </keep-alive>
     </div>
     <div class="close-button" @click="hideDialog">×</div>

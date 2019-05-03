@@ -13,5 +13,12 @@
         <heap unit="MB">20</heap>
     </cache>
 
+    <cache alias="tour_district" uses-template="basic"/>
+
+    <cache alias="spot_destination" uses-template="basic">
+        <expiry>
+            <ttl unit="hours">1</ttl>
+        </expiry>
+    </cache>
 
 </config>

@@ -1,61 +1,102 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:th="http://www.thymeleaf.org/">
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
   <meta charset="UTF-8">
-  <meta content="width=device-width" name="viewport">
   <title th:text="#{app.name}"></title>
   <link rel="icon" th:href="@{/static/favicon.ico}">
   <script th:src="@{/static/js/tour.js}"></script>
   <link rel="stylesheet" th:href="@{/static/css/common.css}">
   <style>
-    .app-container {
+    .container {
       width: 80%;
-      margin: 0 auto;
+      margin: 40px auto;
       background-color: #fff;
       padding: 40px;
     }
 
     @media screen and (max-width: 768px) {
-      .app-container {
+      .container {
         width: 98%;
         padding: 6px;
       }
     }
+
+    .block {
+      margin-bottom: 40px;
+    }
+
+    .block .title {
+      font-size: 24px;
+      display: block;
+      border-bottom: solid 1px rgba(0, 0, 0, 0.1);
+      padding-bottom: 10px;
+    }
+
+    .block .content {
+      padding-top: 10px;
+    }
+
+    .destinations .dest {
+      margin: 10px 0;
+    }
+
+    .destinations .dest a {
+      text-decoration: none;
+      color: #66ccff;
+    }
+
+    .destinations .dest > * {
+      display: inline-block;
+    }
+
+    .destinations .dest dt a {
+      text-decoration: underline;
+      color: #787878;
+    }
+
+    .destinations .dest dd a {
+      margin-right: 8px;
+    }
   </style>
 </head>
 <body>
-<div sec:authorize="isAuthenticated()">
-  <h2 th:text="#{ui.welcome(${user.nickname})}"></h2>
-  <a class="link" th:href="@{/user}" th:text="#{ui.my_profile}"></a>
-  <button onclick="Tour.Auth.logout()">注销</button>
-</div>
-<div sec:authorize="!isAuthenticated()">
-  <button onclick="Tour.Auth.showAuthDialog()" th:text="#{ui.login}"></button>
-</div>
+<!--<div sec:authorize="isAuthenticated()">-->
+<!--  <h2 th:text="#{ui.welcome(${user.nickname})}"></h2>-->
+<!--  <a class="link" th:href="@{/user}" th:text="#{ui.my_profile}"></a>-->
+<!--  <button onclick="Tour.Auth.logout()">注销</button>-->
+<!--</div>-->
+<!--<div sec:authorize="!isAuthenticated()">-->
+<!--  <button onclick="Tour.Auth.showAuthDialog()" th:text="#{ui.login}"></button>-->
+<!--</div>-->
 
-<div class="app-container">
-  <div id="spot">
-    <el-input v-model="spotId"></el-input>
-    <spot-edit-view></spot-edit-view>
-    <div style="width: 100%; height: 50px;"></div>
-    <travel-notes-edit-view></travel-notes-edit-view>
+<div class="container">
+  <div class="block">
+    <span class="title" th:text="#{ui.spot_destination}"></span>
+    <div class="content">
+      <div class="destinations">
+        <dl class="dest" th:each="d : ${dest}">
+          <dt><a th:text="${d.district.name}" th:href="@{/spot(lid=${d.district.id})}"></a></dt>
+          <dd>
+            <a th:each="a : ${d.children}" th:text="${a.name}" th:href="@{/spot(lid=${a.id})}"></a>
+          </dd>
+        </dl>
+      </div>
+    </div>
   </div>
+
+  <div class="block">
+    <span class="title"></span>
+  </div>
+
+
+  <div class="block">
+    <span class="title" th:text="#{ui.hot_travel_notes}"></span>
+    <div class="content"></div>
+  </div>
+
+
 </div>
-
-<script>
-  new Tour.Vue({
-    el: '#spot',
-    components: {SpotEditView: Tour.Views.SpotEditView, TravelNotesEditView: Tour.Views.TravelNotesEditView},
-    data() {
-      return {
-        spotId: ''
-      }
-    }
-  })
-</script>
-
 </body>
 </html>

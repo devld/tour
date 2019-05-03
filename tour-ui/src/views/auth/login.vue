@@ -55,10 +55,7 @@ export default {
       }).then(res => {
         this.$message.success('登录成功: ' + res.nickname)
         this.$refs.loginForm.resetFields()
-        Tour.Auth.hideAuthDialog()
-        setTimeout(() => {
-          window.location.reload()
-        }, 1000)
+        this.$emit('login', res.user)
       }).catch(e => {
         e && e.message && this.$message.error(e.message)
       }).then(() => { this.ing = false })

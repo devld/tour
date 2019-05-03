@@ -1,6 +1,7 @@
 package me.devld.tour.dto;
 
 import me.devld.tour.util.I18nUtil;
+import me.devld.tour.util.MapUtil;
 import org.springframework.data.domain.Page;
 
 public class ApiResult {
@@ -17,7 +18,12 @@ public class ApiResult {
     }
 
     public static ApiResult ok(Page<?> pageData) {
-        return ok(pageData.getContent());
+        return ok(MapUtil.map(
+                "page", pageData.getPageable().getPageNumber() + 1,
+                "pageSize", pageData.getPageable().getPageSize(),
+                "total", pageData.getTotalElements(),
+                "data", pageData.getContent()
+        ));
     }
 
     public static ApiResult ok(Object data) {

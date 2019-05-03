@@ -3,6 +3,7 @@ package me.devld.tour.controller.api;
 import me.devld.tour.controller.ApiController;
 import me.devld.tour.dto.PageParam;
 import me.devld.tour.dto.spot.SpotCommentIn;
+import me.devld.tour.dto.spot.SpotCommentOut;
 import me.devld.tour.dto.spot.SpotIn;
 import me.devld.tour.entity.Spot;
 import me.devld.tour.entity.SpotComment;
@@ -55,6 +56,11 @@ public class SpotController {
         return spotService.commentSpot(spotCommentIn, spotId, SecurityUtil.userId());
     }
 
+    @GetMapping("/{spotId}/comment")
+    public Page<SpotCommentOut> getSpotComments(@PathVariable("spotId") long spotId, PageParam pageParam) {
+        return spotService.getSpotComments(spotId, pageParam, SecurityUtil.userIdOrNull());
+    }
+
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{spotId}/went")
     public void toggleWent(@PathVariable("spotId") long spotId, @RequestParam("s") boolean state) {
@@ -72,5 +78,4 @@ public class SpotController {
     public void toggleCommentLike(@PathVariable("commentId") long commendId, @RequestParam("s") boolean state) {
         spotService.likeSpotComment(commendId, SecurityUtil.userId(), state);
     }
-
 }

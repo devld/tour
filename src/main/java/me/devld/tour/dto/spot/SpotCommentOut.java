@@ -11,6 +11,8 @@ public class SpotCommentOut {
 
     private UserProfile author;
 
+    private Boolean liked;
+
     public SpotCommentOut() {
     }
 
@@ -33,5 +35,13 @@ public class SpotCommentOut {
 
     public void setAuthor(UserProfile author) {
         this.author = author;
+    }
+
+    public Boolean getLiked() {
+        return liked;
+    }
+
+    public void setLiked(Boolean liked) {
+        this.liked = liked;
     }
 }

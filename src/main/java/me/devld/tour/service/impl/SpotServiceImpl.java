@@ -1,10 +1,7 @@
 package me.devld.tour.service.impl;
 
 import me.devld.tour.dto.PageParam;
-import me.devld.tour.dto.spot.SpotCommentIn;
-import me.devld.tour.dto.spot.SpotCommentOut;
-import me.devld.tour.dto.spot.SpotDetailsOut;
-import me.devld.tour.dto.spot.SpotIn;
+import me.devld.tour.dto.spot.*;
 import me.devld.tour.entity.*;
 import me.devld.tour.entity.rel.LikeCollectRel;
 import me.devld.tour.entity.rel.RelObjectType;
@@ -22,13 +19,13 @@ import me.devld.tour.service.UserService;
 import me.devld.tour.util.BeanUtil;
 import me.devld.tour.util.HtmlUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -103,14 +100,24 @@ public class SpotServiceImpl implements SpotService {
     }
 
     @Override
-    public SpotDetailsOut getSpotDetails(long id) {
+    public SpotDetailsOut getSpotDetails(long id, Long userId) {
         Optional<Spot> spot = spotRepository.findById(id);
         if (!spot.isPresent()) {
             throw new NotFoundException();
         }
         List<SpotTicket> tickets = spotTicketRepository.findAllBySpotId(id);
         List<SpotPhoto> photos = spotPhotoRepository.findTop3BySpotIdOrderByLikeCountDesc(id);
-        return new SpotDetailsOut(spot.get(), tickets, photos);
+        SpotDetailsOut out = new SpotDetailsOut(spot.get(), tickets, photos);
+        if (userId != null) {
+            Map<RelType, LikeCollectRel> rel = likeCollectService.getRelBy(
+                    userId,
+                    RelObjectType.SPOT,
+                    Arrays.asList(RelType.LIKE, RelType.COLLECT),
+                    Collections.singletonList(id)).stream().collect(Collectors.toMap(LikeCollectRel::getRelType, e -> e));
+            out.setWent(rel.containsKey(RelType.LIKE));
+            out.setCollected(rel.containsKey(RelType.COLLECT));
+        }
+        return out;
     }
 
     @Override
@@ -125,12 +132,24 @@ public class SpotServiceImpl implements SpotService {
     }
 
     @Override
-    public Page<SpotCommentOut> getSpotComments(long spotId, PageParam pageParam) {
+    public Page<SpotCommentOut> getSpotComments(long spotId, PageParam pageParam, Long userId) {
         Sort sort = Sort.by(Sort.Direction.DESC, "updatedAt", "likeCount");
         if ("like".equals(pageParam.getSort())) {
             sort = Sort.by(Sort.Direction.DESC, "likeCount", "updatedAt");
         }
-        return spotCommentRepository.findAllBySpotId(spotId, pageParam.toPageable(sort)).map(e -> new SpotCommentOut(e, userService.getUserInfo(e.getAuthorId())));
+        Page<SpotCommentOut> comments = spotCommentRepository.findAllBySpotId(spotId, pageParam.toPageable(sort))
+                .map(e -> new SpotCommentOut(e, userService.getUserInfo(e.getAuthorId())));
+
+        if (userId != null) {
+            Map<Long, LikeCollectRel> likeRel = likeCollectService.getRelBy(
+                    userId, RelObjectType.SPOT_COMMENT, Collections.singletonList(RelType.LIKE),
+                    comments.map(e -> e.getComment().getId()).getContent()).stream().collect(Collectors.toMap(LikeCollectRel::getObjId, e -> e));
+            for (SpotCommentOut o : comments) {
+                o.setLiked(likeRel.containsKey(o.getComment().getId()));
+            }
+        }
+
+        return comments;
     }
 
     @Override
@@ -195,5 +214,25 @@ public class SpotServiceImpl implements SpotService {
         if (!likeCollectService.markRelation(state, new LikeCollectRel(userId, commentId, RelObjectType.SPOT_COMMENT, RelType.LIKE))) {
             throw new ForbiddenException(state ? "msg.already_liked" : "msg.not_liked");
         }
+    }
+
+    @Cacheable("spot_destination")
+    @Override
+    public List<SpotDestination> getSpotDestinations() {
+        List<Short> locationIds = spotRepository.getDistinctLocationIds();
+        Map<Integer, SpotDestination> destinationMap = new HashMap<>();
+        for (Short l : locationIds) {
+            List<District> fullDistrict = districtService.getFullDistrict(l);
+            if (fullDistrict != null && fullDistrict.size() > 0) {
+                District root = fullDistrict.get(0);
+                SpotDestination destination = destinationMap.get(root.getId());
+                if (destination == null) {
+                    destinationMap.put(root.getId(), destination = new SpotDestination(root, new LinkedList<>()));
+                }
+                District self = fullDistrict.get(fullDistrict.size() - 1);
+                destination.getChildren().add(self);
+            }
+        }
+        return new LinkedList<>(destinationMap.values());
     }
 }

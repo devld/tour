@@ -3,22 +3,63 @@
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
   <meta charset="UTF-8">
-  <meta content="width=device-width" name="viewport">
   <title th:text="${spot.spot.name} + ' - ' + #{app.name}"></title>
   <link rel="icon" th:href="@{/static/favicon.ico}">
+  <link rel="stylesheet" th:href="@{/static/css/iconfont/iconfont.css}">
   <script th:src="@{/static/js/tour.js}"></script>
   <link rel="stylesheet" th:href="@{/static/css/common.css}">
   <style>
     .spot-detail {
       background-color: #fff;
       padding: 20px 40px;
+      width: 800px;
+      margin: 40px auto;
     }
 
     .title {
     }
 
-    .photos {
+    .user-mark {
+      margin-bottom: 10px;
+      text-align: right;
+    }
 
+    .photos {
+      display: flex;
+      position: relative;
+      user-select: none;
+    }
+
+    .photos .photo-count {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      padding: 0 6px;
+    }
+
+    .photos img {
+      width: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    .photos .left {
+      width: 66.66%;
+    }
+
+    .photos .left img {
+      height: 100%;
+    }
+
+    .photos .right img {
+      height: 50%;
+    }
+
+    .photos .right {
+      width: 33.33%;
     }
 
     .intro {
@@ -49,6 +90,7 @@
         width: 100%;
         border-right: none;
         padding: 0;
+        margin-bottom: 20px;
       }
     }
 
@@ -58,6 +100,10 @@
 
     .info > div > .info-title {
       color: #999;
+    }
+
+    .big-title {
+      font-size: 22px;
     }
 
     .info > div > span {
@@ -73,16 +119,33 @@
       font-weight: bold;
       margin: 10px 0;
     }
+
+    .spot-map .spot-map-view {
+      width: 100%;
+      height: 300px;
+    }
+
+    .spot-comments {
+      margin-top: 20px;
+    }
+
   </style>
 </head>
 <body>
 <div class="spot-detail">
   <div class="title">
     <h1 class="name" th:text="${spot.spot.name}">景点名称</h1>
-
+  </div>
+  <div class="user-mark">
+    <spot-mark-view :spot-id="spotId" v-model="marks"></spot-mark-view>
   </div>
   <div class="photos">
-
+    <div class="left"><img th:src="@{${photo1?.imgUrl}}" th:alt="${spot.spot.name}"></div>
+    <div class="right">
+      <img th:src="@{${photo2?.imgUrl}}" th:alt="${spot.spot.name}">
+      <img th:src="@{${photo3?.imgUrl}}" th:alt="${spot.spot.name}">
+    </div>
+    <div class="photo-count" th:text="#{ui.spot_photo_count(${spot.spot.photoCount})}"></div>
   </div>
 
   <div class="intro rich-text" th:utext="${spot.spot.intro}">景点介绍 - rich text</div>
@@ -121,15 +184,43 @@
   </div>
 
   <div class="spot-map">
-    <span class="map-title" th:text="#{ui.spot_location_title}"></span>
-    <div>map</div>
+    <span class="map-title big-title" th:text="#{ui.spot_location_title}"></span>
+    <location-map-view class="spot-map-view" :lng="lng" :lat="lat"></location-map-view>
   </div>
 
   <div class="spot-comments">
-    <span class="comment-title" th:text="#{ui.spot_comment_title}"></span>
-    <div class="comments"></div>
+    <span class="comment-title big-title" th:text="#{ui.spot_comment_title}"></span>
+    <spot-comment-view :spot-id="spotId" :login="loggedIn"/>
   </div>
 
 </div>
 </body>
+<script>
+  new Tour.Vue({
+    el: '.spot-detail',
+    components: {
+      LocationMapView: Tour.Views.LocationMapView,
+      SpotCommentView: Tour.Views.SpotCommentView,
+      SpotMarkView: Tour.Views.SpotMarkView
+    },
+    data() {
+      return {
+        lng: +'[[${spot.spot.location.longitude}]]',
+        lat: +'[[${spot.spot.location.latitude}]]',
+        spotId: +'[[${spot.spot.id}]]',
+        loggedIn: '[[${user != null}]]' === 'true',
+        marks: {
+          went: {
+            state: '[[${spot.went}]]' === 'true',
+            count: +'[[${spot.spot.wentCount}]]'
+          },
+          collect: {
+            state: '[[${spot.collected}]]' === 'true',
+            count: +'[[${spot.spot.collectCount}]]'
+          }
+        }
+      }
+    }
+  })
+</script>
 </html>

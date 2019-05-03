@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap-grid.min.css">
+  <link rel="stylesheet" href="./static/iconfont/iconfont.css">
   <title>tour-ui</title>
   <style>
     body {
@@ -22,26 +23,14 @@
     <p style="text-align:center;">item 31 item</p>
     <p style="text-align:center;">item 41 item</p>
 
-    <button onclick="Tour.Auth.showAuthDialog(false)">Show Dialog</button>
+    <button onclick="Tour.Auth.showAuthDialog()">Show Dialog</button>
 
     <div>
 
       <div id="app">
-        <div>
+        <div style="height: 300px; width: 600px;">
 
-        
-
-          <hr>
-
-          <el-input v-model="spotId"></el-input>
-          <span>{{ spotId }}</span>
-
-          <spot-edit-view :spot-id="spotId"></spot-edit-view>
-
-
-          <br><br><br>
-
-          <travel-notes-edit-view></travel-notes-edit-view>
+          <spot-mark-view :spot-id="2"></spot-mark-view>
 
         </div>
       </div>
@@ -59,10 +48,9 @@
     el: '#app',
     data() {
       return {
-        spotId: ''
       }
     },
-    components: { SpotEditView: Tour.Views.SpotEditView, TravelNotesEditView: Tour.Views.TravelNotesEditView }
+    components: { SpotMarkView: Tour.Views.SpotMarkView, SpotCommentView: Tour.Views.SpotCommentView }
   })
 </script>
 

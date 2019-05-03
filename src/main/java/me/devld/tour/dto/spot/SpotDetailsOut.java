@@ -16,6 +16,10 @@ public class SpotDetailsOut {
 
     private List<SpotPhoto> photos;
 
+    private Boolean went;
+
+    private Boolean collected;
+
     public SpotDetailsOut() {
     }
 
@@ -47,5 +51,21 @@ public class SpotDetailsOut {
 
     public void setPhotos(List<SpotPhoto> photos) {
         this.photos = photos;
+    }
+
+    public Boolean getWent() {
+        return went;
+    }
+
+    public void setWent(Boolean went) {
+        this.went = went;
+    }
+
+    public Boolean getCollected() {
+        return collected;
+    }
+
+    public void setCollected(Boolean collected) {
+        this.collected = collected;
     }
 }
