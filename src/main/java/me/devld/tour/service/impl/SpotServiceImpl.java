@@ -127,8 +127,10 @@ public class SpotServiceImpl implements SpotService {
     }
 
     @Override
-    public Spot getSpotById(long id) {
-        return spotRepository.findById(id).orElseThrow(NotFoundException::new);
+    public SpotDetailsOut getSpotById(long id) {
+        Spot spot = spotRepository.findById(id).orElseThrow(NotFoundException::new);
+        List<SpotTicket> tickets = spotTicketRepository.findAllBySpotId(id);
+        return new SpotDetailsOut(spot, tickets, null);
     }
 
     @Override
@@ -234,5 +236,18 @@ public class SpotServiceImpl implements SpotService {
             }
         }
         return new LinkedList<>(destinationMap.values());
+    }
+
+    @Override
+    public Page<Spot> getRecommendSpots(long userId, PageParam pageParam) {
+        // TODO implement it
+        return getSpotList(pageParam);
+    }
+
+    @Override
+    public Page<Spot> getHotSpots(PageParam pageParam) {
+        // TODO implement it
+        pageParam.setSort("went");
+        return getSpotList(pageParam);
     }
 }

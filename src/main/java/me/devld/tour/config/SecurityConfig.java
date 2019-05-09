@@ -8,6 +8,7 @@ import me.devld.tour.security.CookieApiTokenAuthenticationFilter;
 import me.devld.tour.service.UserService;
 import me.devld.tour.util.I18nUtil;
 import me.devld.tour.util.JsonUtil;
+import me.devld.tour.util.TextUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.token.TokenService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +26,10 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Collections;
 
@@ -128,10 +134,27 @@ public class SecurityConfig {
 
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+            // 未登录时跳转
+            http.exceptionHandling().authenticationEntryPoint(new WebAuthenticationEntryPoint());
+
             http.addFilterBefore(
                     new CookieApiTokenAuthenticationFilter(authenticationManager(), apiTokenConfig.getCookieKey()),
                     BasicAuthenticationFilter.class
             );
+        }
+
+        class WebAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+            @Override
+            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+
+                String uri = request.getRequestURL().toString();
+                String qs = request.getQueryString();
+
+                String redirectTo = uri + (qs != null ? ("?" + qs) : "");
+
+                response.sendRedirect(request.getContextPath() + "/login?url=" + TextUtils.urlEncode(redirectTo));
+            }
         }
 
     }

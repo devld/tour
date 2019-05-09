@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:p="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:p="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
-  <meta charset="UTF-8">
-  <title th:if="${district == null}" th:text="#{ui.spot_list}"></title>
-  <title th:if="${district != null}" th:text="#{ui.spot_location(${district})}"></title>
-  <link rel="icon" th:href="@{/static/favicon.ico}">
-  <script th:src="@{/static/js/tour.js}"></script>
-  <link rel="stylesheet" th:href="@{/static/css/common.css}">
+  <title th:text="${title} == 'all' ? #{ui.spot_list} : (
+                  ${title} == 'district' ? #{ui.spot_location(${district})} : (
+                  ${title} == 'recommend' ? #{ui.spot_list_recommend} : (
+                  ${title} == 'hot' ? #{ui.spot_list_hot} : '')))"></title>
   <style>
-
     .container {
       margin-top: 50px;
     }
@@ -107,7 +106,7 @@
   </style>
 </head>
 <body>
-<div class="container">
+<div class="container" layout:fragment="content">
   <div class="spots">
     <div class="spot card" th:each="spot : ${spots}">
       <div class="cover"><img th:alt="${spot.name}" th:src="@{${spot.coverUrl}}"></div>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
+<head>
+  <title th:text="${id == null} ? #{ui.write_travel_notes} : #{ui.edit_travel_notes}"></title>
+  <style>
+    .notes-edit-wrapper {
+      background-color: #fff;
+      width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content" class="notes-edit-wrapper">
+  <div id="app">
+    <travel-notes-edit-view :notes-id="notesId"></travel-notes-edit-view>
+  </div>
+  <script>
+    new Tour.Vue({
+      el: '#app',
+      components: {TravelNotesEditView: Tour.Views.TravelNotesEditView},
+      data() {
+        return {
+          notesId: +'[[${id}]]'
+        }
+      }
+    })
+  </script>
+</div>
+</body>
+</html>

@@ -21,6 +21,7 @@ import me.devld.tour.util.HtmlUtils;
 import me.devld.tour.util.ImageProp;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,7 +99,7 @@ public class TravelNotesServiceImpl implements TravelNotesService {
 
         TravelNotesDetailsOut out = new TravelNotesDetailsOut(travelNotes.get(), userService.getUserInfo(travelNotes.get().getAuthorId()), travelNotes.get().getSpots());
         if (userId != null) {
-            Map<RelType, LikeCollectRel> rel = likeCollectService.getRelBy(userId, RelObjectType.TRAVEL_NOTES, Arrays.asList(RelType.LIKE, RelType.COLLECT), Collections.singletonList(userId))
+            Map<RelType, LikeCollectRel> rel = likeCollectService.getRelBy(userId, RelObjectType.TRAVEL_NOTES, Arrays.asList(RelType.LIKE, RelType.COLLECT), Collections.singletonList(id))
                     .stream().collect(Collectors.toMap(LikeCollectRel::getRelType, e -> e));
             out.setLiked(rel.containsKey(RelType.LIKE));
             out.setCollected(rel.containsKey(RelType.COLLECT));
@@ -108,11 +109,21 @@ public class TravelNotesServiceImpl implements TravelNotesService {
 
     @Override
     public Page<TravelNotesDetailsOut> getTravelNotesBySpot(long spotId, PageParam pageParam) {
+        return processTravelNotes(travelNotesRepository.findAllBySpots(new Spot(spotId), parsePageParam(pageParam)));
+    }
+
+    private Pageable parsePageParam(PageParam pageParam) {
         Sort sort = Sort.by(Sort.Direction.DESC, "updatedAt", "likeCount");
         if ("like".equals(pageParam.getSort())) {
             sort = Sort.by(Sort.Direction.DESC, "likeCount", "updatedAt");
         }
-        return processTravelNotes(travelNotesRepository.findAllBySpots(new Spot(spotId), pageParam.toPageable(sort)));
+        if ("collect".equals(pageParam.getSort())) {
+            sort = Sort.by(Sort.Direction.DESC, "collectCount", "likeCount", "updatedAt");
+        }
+        if ("share".equals(pageParam.getSort())) {
+            sort = Sort.by(Sort.Direction.DESC, "shareCount", "collectCount", "likeCount", "updatedAt");
+        }
+        return pageParam.toPageable(sort);
     }
 
     private Page<TravelNotesDetailsOut> processTravelNotes(Page<TravelNotes> travelNotes) {
@@ -130,6 +141,12 @@ public class TravelNotesServiceImpl implements TravelNotesService {
             out.setShortContent(shortContent);
             return out;
         });
+    }
+
+    @Override
+    public Page<TravelNotesDetailsOut> getHotTravelNotes(PageParam pageParam) {
+        pageParam.setSort("share");
+        return processTravelNotes(travelNotesRepository.findAll(parsePageParam(pageParam)));
     }
 
     @Override

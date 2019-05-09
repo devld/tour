@@ -1,12 +1,16 @@
 import Vue from 'vue'
 
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+import * as ElementUI from './views/part/element-ui'
 Vue.use(ElementUI)
 
-import Directives from './directive'
+import Directives from './util/directive'
 for (const k in Directives) {
   Vue.directive(k, Directives[k])
+}
+
+import * as Filters from './util/filters'
+for (const k in Filters) {
+  Vue.filter(k, Filters[k])
 }
 
 // 高德地图初始化
@@ -41,8 +45,8 @@ import LocationMapView from './views/part/location-map'
 window.$ = $
 
 export default {
+  msg: ElementUI.msg,
   Auth,
-  Message: ElementUI.Message,
   Vue,
   Views: {
     UpdateProfileView,

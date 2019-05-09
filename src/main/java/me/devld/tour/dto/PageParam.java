@@ -39,6 +39,18 @@ public class PageParam {
         this.sort = sort;
     }
 
+    public static PageParam from(int page, int pageSize, String sort) {
+        PageParam pageParam = new PageParam();
+        pageParam.setPage(page);
+        pageParam.setPageSize(pageSize);
+        pageParam.setSort(sort);
+        return pageParam;
+    }
+
+    public static PageParam from(int page, int pageSize) {
+        return from(page, pageSize, null);
+    }
+
     public Pageable toPageable(Sort sort) {
         if (page == null || page <= 0) {
             page = 1;

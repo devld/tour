@@ -23,14 +23,14 @@
     <p style="text-align:center;">item 31 item</p>
     <p style="text-align:center;">item 41 item</p>
 
-    <button onclick="Tour.Auth.showAuthDialog()">Show Dialog</button>
+    <button onclick="Tour.Auth.showAuthDialog(() => { console.log('ok') })">Show Dialog</button>
 
     <div>
 
       <div id="app">
         <div style="height: 300px; width: 600px;">
 
-          <spot-mark-view :spot-id="2"></spot-mark-view>
+          <spot-comment-view :spot-id="2"></spot-comment-view>
 
         </div>
       </div>
@@ -50,7 +50,7 @@
       return {
       }
     },
-    components: { SpotMarkView: Tour.Views.SpotMarkView, SpotCommentView: Tour.Views.SpotCommentView }
+    components: { SpotCommentView: Tour.Views.SpotCommentView }
   })
 </script>
 

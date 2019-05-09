@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns:p="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns:p="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
-<head>
-  <meta charset="UTF-8">
-  <title th:text="#{ui.travel_of_spot(${spot.name})}"></title>
-  <link rel="icon" th:href="@{/static/favicon.ico}">
-  <script th:src="@{/static/js/tour.js}"></script>
-  <link rel="stylesheet" th:href="@{/static/css/common.css}">
-  <link rel="stylesheet" th:href="@{/static/css/iconfont/iconfont.css}">
+<head th:switch="${title}">
+  <title
+    th:text="${title} == 'hot' ? #{ui.travel_notes_hot_list} : ( ${title} == 'spot' ? #{ui.travel_of_spot(${spot.spot.name})} : '' )"></title>
   <style>
     .travel-notes {
       width: 800px;
@@ -83,7 +81,7 @@
   </style>
 </head>
 <body>
-<div class="travel-notes">
+<div class="travel-notes" layout:fragment="content">
   <div class="travel card" th:each="note : ${notes}">
     <div class="cover"><img th:src="@{${note.coverUrl != null} ? ${note.coverUrl} : '/static/image/travel-notes.jpg'}"
                             th:alt="${note.travelNotes.title}"></div>

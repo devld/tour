@@ -1,7 +1,12 @@
 <template>
   <div class="user-view">
     <img class="avatar" @click="gotoUserProfile" v-img="user.avatar">
-    <span class="nickname">{{ user.nickname }}</span>
+    <div class="user-info">
+      <span class="nickname">{{ user.nickname }}</span>
+      <div class="extra" v-if="$slots.default">
+        <slot/>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -24,12 +29,33 @@ export default {
 </script>
 <style lang="scss" scoped>
 .user-view {
+  $size: 42px;
+
   user-select: none;
+  display: inline-flex;
+  align-items: center;
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: $size;
+
+    .nickname {
+      font-size: 14px;
+    }
+
+    .extra {
+      font-size: 12px;
+    }
+
+  }
+
   .avatar {
-    $size: 48px;
     width: $size;
     height: $size;
     border-radius: $size;
+    margin-right: 10px;
     cursor: pointer;
   }
 }

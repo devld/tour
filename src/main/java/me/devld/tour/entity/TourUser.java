@@ -32,7 +32,7 @@ public class TourUser extends BaseEntity {
 
     private String password;
 
-    private boolean enabled;
+    private Boolean enabled;
 
     public String getUsername() {
         return username;
@@ -115,10 +115,10 @@ public class TourUser extends BaseEntity {
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return enabled != null && enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 

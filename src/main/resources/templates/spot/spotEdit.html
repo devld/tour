@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
+<head>
+  <title th:text="${id == null} ? #{ui.create_spot} : #{ui.edit_spot}"></title>
+  <style>
+    .spot-edit-wrapper {
+      background-color: #fff;
+      width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content" class="spot-edit-wrapper">
+  <div id="app">
+    <spot-edit-view :spot-id="spotId"></spot-edit-view>
+  </div>
+  <script>
+    new Tour.Vue({
+      el: '#app',
+      components: {SpotEditView: Tour.Views.SpotEditView},
+      data() {
+        return {
+          spotId: +'[[${id}]]'
+        }
+      }
+    })
+  </script>
+</div>
+</body>
+</html>

@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
-  <meta charset="UTF-8">
   <title th:text="${note.travelNotes.title} + ' - ' + #{app.name}"></title>
-  <link rel="stylesheet" th:href="@{/static/css/iconfont/iconfont.css}">
-  <link rel="icon" th:href="@{/static/favicon.ico}">
-  <script th:src="@{/static/js/tour.js}"></script>
-  <link rel="stylesheet" th:href="@{/static/css/common.css}">
   <style>
     .travel-note {
       width: 800px;
@@ -50,7 +47,7 @@
   </style>
 </head>
 <body>
-<div class="wrapper">
+<div class="wrapper" layout:fragment="content">
   <article class="travel-note">
     <h1 th:text="${note.travelNotes.title}"></h1>
     <div class="info">
@@ -72,27 +69,27 @@
     </div>
     <div class="content" th:utext="${note.travelNotes.content}"></div>
   </article>
-</div>
-</body>
-<script>
-  new Tour.Vue({
-    el: '.wrapper',
-    components: {TravelNotesMarkView: Tour.Views.TravelNotesMarkView},
-    data() {
-      return {
-        notesId: +'[[${note.travelNotes.id}]]',
-        marks: {
-          like: {
-            state: '[[${note.liked}]]' === 'true',
-            count: +'[[${note.travelNotes.likeCount}]]'
-          },
-          collect: {
-            state: '[[${note.collected}]]' === 'true',
-            count: +'[[${note.travelNotes.collectCount}]]'
+  <script>
+    new Tour.Vue({
+      el: '.wrapper',
+      components: {TravelNotesMarkView: Tour.Views.TravelNotesMarkView},
+      data() {
+        return {
+          notesId: +'[[${note.travelNotes.id}]]',
+          marks: {
+            like: {
+              state: '[[${note.liked}]]' === 'true',
+              count: +'[[${note.travelNotes.likeCount}]]'
+            },
+            collect: {
+              state: '[[${note.collected}]]' === 'true',
+              count: +'[[${note.travelNotes.collectCount}]]'
+            }
           }
         }
       }
-    }
-  })
-</script>
+    })
+  </script>
+</div>
+</body>
 </html>

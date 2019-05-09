@@ -50,7 +50,7 @@ public interface SpotService {
      * @param id spotId
      * @return spot
      */
-    Spot getSpotById(long id);
+    SpotDetailsOut getSpotById(long id);
 
     /**
      * 获取景点的评论
@@ -122,5 +122,22 @@ public interface SpotService {
      * @return 目的地列表
      */
     List<SpotDestination> getSpotDestinations();
+
+    /**
+     * 获取推荐景点
+     *
+     * @param userId    当前用户 id
+     * @param pageParam 分页
+     * @return 景点列表
+     */
+    Page<Spot> getRecommendSpots(long userId, PageParam pageParam);
+
+    /**
+     * 获取热门景点
+     *
+     * @param pageParam 分页
+     * @return 景点列表
+     */
+    Page<Spot> getHotSpots(PageParam pageParam);
 
 }

@@ -178,7 +178,7 @@ export default {
   padding: 10px;
 
   .intro-wrapper {
-    height: 240px;
+    height: 480px;
     border: solid 1px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
   }

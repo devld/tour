@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{ui.login}"></title>
+  <link rel="icon" th:href="@{/static/favicon.ico}">
+  <script th:src="@{/static/js/tour.js}"></script>
+  <link rel="stylesheet" th:href="@{/static/css/common.css}">
+</head>
+<body>
+<script>
+
+  function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
+  Tour.Auth.showAuthDialog(function () {
+    console.log('redirect to: ' + getParameterByName("url"))
+    window.location = getParameterByName("url")
+  }, false)
+</script>
+</body>
+</html>

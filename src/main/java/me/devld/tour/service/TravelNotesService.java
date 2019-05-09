@@ -36,6 +36,14 @@ public interface TravelNotesService {
     Page<TravelNotesDetailsOut> getTravelNotesBySpot(long spotId, PageParam pageParam);
 
     /**
+     * 获取热门游记列表
+     *
+     * @param pageParam 分页参数
+     * @return 游记列表
+     */
+    Page<TravelNotesDetailsOut> getHotTravelNotes(PageParam pageParam);
+
+    /**
      * 用户分享 travelNotes
      *
      * @param travelNotesId travelNotesId

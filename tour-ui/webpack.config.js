@@ -7,6 +7,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
+// 包大小分析
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
 const vueLoaderConfig = {
 }
 
@@ -121,7 +124,8 @@ module.exports = {
     new VueLoaderPlugin(),
     new webpack.ProvidePlugin({
       '$': 'jquery'
-    })
+    }),
+    new BundleAnalyzerPlugin()
   ],
 
   optimization: {

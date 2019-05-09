@@ -2,7 +2,9 @@
   <div v-loading="loading" class="spot-comment-view">
     <div class="comments">
       <div class="comment" v-for="c in comments" :key="c.id">
-        <user-view :user="c.author"/>
+        <user-view :user="c.author">
+          <span class="time">{{ c.createdAt | timeFormatter }}</span>
+        </user-view>
         <div class="content">{{ c.content }}</div>
         <div class="like">
           <i
@@ -84,7 +86,7 @@ export default {
 
       pageParam: {
         page: 1,
-        pageSize: 10,
+        pageSize: 5,
         sort: 'like'
       }
     }
@@ -93,7 +95,8 @@ export default {
     this.loadComments()
   },
   methods: {
-    loadComments () {
+    loadComments (page) {
+      this.pageParam.page = page || 1
       this.loading = true
       getSpotComments(this.spotId, this.pageParam).then(pageData => {
         this.pageParam.page = pageData.page
@@ -150,6 +153,14 @@ export default {
       background-color: #fff;
       margin: 10px 0;
       position: relative;
+
+      .content {
+        margin-top: 10px;
+      }
+
+      .time {
+        color: gray;
+      }
 
       .like {
         user-select: none;

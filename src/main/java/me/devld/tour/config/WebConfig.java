@@ -2,6 +2,7 @@ package me.devld.tour.config;
 
 import me.devld.tour.controller.ApiController;
 import me.devld.tour.template.thymeleaf.PaginationDialect;
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
@@ -13,6 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/login").setViewName("login");
     }
 
     @Override
@@ -21,8 +23,13 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public PaginationDialect springDataDialect() {
+    public PaginationDialect paginationDialect() {
         return new PaginationDialect();
+    }
+
+    @Bean
+    public LayoutDialect layoutDialect() {
+        return new LayoutDialect();
     }
 
 }

@@ -1,77 +1,75 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
-  <meta charset="UTF-8">
-  <title th:if="${mine}" th:text="#{ui.my_profile}"></title>
-  <title th:if="${!mine}"
-         th:text="${user == null} ? #{ui.user_not_found} : #{ui.who_s_profile(${user.nickname})}"></title>
-  <link rel="icon" th:href="@{/static/favicon.ico}">
-  <script th:src="@{/static/js/tour.js}"></script>
-  <link rel="stylesheet" th:href="@{/static/css/common.css}">
+  <title
+    th:text="${mine} ? #{ui.my_profile} : (
+             ${user_info == null} ? #{ui.user_not_found} : #{ui.who_s_profile(${user_info.nickname})}
+    )"></title>
   <link rel="stylesheet" th:href="@{/static/css/user/user-info.css}">
 </head>
 <body>
-<script th:if="${mine && user == null}">
-  Tour.Auth.showAuthDialog(null, false)
-</script>
-<div class="paper" th:if="${!mine && user == null}">
-  <h1 th:text="#{ui.user_not_found}"></h1>
-</div>
-<div class="paper" id="app" th:if="${user != null}">
-  <div class="user-profile" v-if="!editMode">
-    <div class="item">
-      <span class="label" th:text="#{ui.avatar}"></span>
-      <div class="value">
-        <img class="avatar" th:alt="${user.nickname}" th:src="@{${user.avatar}}">
+<div layout:fragment="content">
+  <div class="paper" th:if="${!mine && user_info == null}">
+    <h1 th:text="#{ui.user_not_found}"></h1>
+  </div>
+  <div class="paper" id="app" th:if="${user_info != null}">
+    <div class="user-profile" v-if="!editMode">
+      <div class="item">
+        <span class="label" th:text="#{ui.avatar}"></span>
+        <div class="value">
+          <img class="avatar" th:alt="${user_info.nickname}" th:src="@{${user_info.avatar}}">
+        </div>
+      </div>
+      <div class="item">
+        <span class="label" th:text="#{ui.username}"></span>
+        <div class="value" th:text="${user_info.username}"></div>
+      </div>
+      <div class="item">
+        <span class="label" th:text="#{ui.nickname}"></span>
+        <div class="value" th:text="${user_info.nickname}"></div>
+      </div>
+      <div class="item">
+        <span class="label" th:text="#{ui.self_intro}"></span>
+        <div class="value" th:text="${user_info.selfIntro}"></div>
+      </div>
+      <div class="item" th:if="${user_info.gender.ordinal() != 0}">
+        <span class="label" th:text="#{ui.gender}"></span>
+        <div class="value" th:text="${user_info.gender.ordinal()} == 1 ? #{ui.gender_male} : #{ui.gender_female}"></div>
+      </div>
+      <div class="item">
+        <span class="label" th:text="#{ui.region}"></span>
+        <div class="value" th:text="${user_info.region}"></div>
+      </div>
+      <div class="edit-button" th:if="${mine}">
+        <a @click="edit" class="link" href="#" th:text="#{ui.edit_profile}"></a>
       </div>
     </div>
-    <div class="item">
-      <span class="label" th:text="#{ui.username}"></span>
-      <div class="value" th:text="${user.username}"></div>
-    </div>
-    <div class="item">
-      <span class="label" th:text="#{ui.nickname}"></span>
-      <div class="value" th:text="${user.nickname}"></div>
-    </div>
-    <div class="item">
-      <span class="label" th:text="#{ui.self_intro}"></span>
-      <div class="value" th:text="${user.selfIntro}"></div>
-    </div>
-    <div class="item" th:if="${user.gender.ordinal() != 0}">
-      <span class="label" th:text="#{ui.gender}"></span>
-      <div class="value" th:text="${user.gender.ordinal()} == 1 ? #{ui.gender_male} : #{ui.gender_female}"></div>
-    </div>
-    <div class="item">
-      <span class="label" th:text="#{ui.region}"></span>
-      <div class="value" th:text="${user.region}"></div>
-    </div>
-    <div class="edit-button" th:if="${mine}">
-      <a @click="edit" class="link" href="#" th:text="#{ui.edit_profile}"></a>
-    </div>
+    <profile @cancel="editMode = false" @save="save" v-else/>
   </div>
-  <profile @cancel="editMode = false" @save="save" v-else/>
-</div>
-<script>
-  new Tour.Vue({
-    el: '#app',
-    components: {Profile: Tour.Views.UpdateProfileView},
-    data() {
-      return {
-        editMode: false
-      }
-    },
-    methods: {
-      edit() {
-        this.editMode = true
+  <script th:if="${mine}">
+    new Tour.Vue({
+      el: '#app',
+      components: {Profile: Tour.Views.UpdateProfileView},
+      data() {
+        return {
+          editMode: false
+        }
       },
-      save() {
-        setTimeout(() => {
-          window.location.reload()
-        }, 1000)
+      methods: {
+        edit() {
+          this.editMode = true
+        },
+        save() {
+          setTimeout(() => {
+            window.location.reload()
+          }, 1000)
+        }
       }
-    }
-  })
-</script>
+    })
+  </script>
+</div>
 </body>
 </html>

@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org/">
+      xmlns:th="http://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
-  <meta charset="UTF-8">
-  <title th:text="#{app.name}"></title>
-  <link rel="icon" th:href="@{/static/favicon.ico}">
-  <script th:src="@{/static/js/tour.js}"></script>
-  <link rel="stylesheet" th:href="@{/static/css/common.css}">
+  <title th:text="#{ui.home_page}"></title>
   <style>
     .container {
-      width: 80%;
+      width: 60%;
       margin: 40px auto;
       background-color: #fff;
       padding: 40px;
@@ -27,11 +25,16 @@
       margin-bottom: 40px;
     }
 
-    .block .title {
-      font-size: 24px;
-      display: block;
+    .block .header {
+      display: flex;
       border-bottom: solid 1px rgba(0, 0, 0, 0.1);
       padding-bottom: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .block .header .title {
+      font-size: 24px;
     }
 
     .block .content {
@@ -40,11 +43,6 @@
 
     .destinations .dest {
       margin: 10px 0;
-    }
-
-    .destinations .dest a {
-      text-decoration: none;
-      color: #66ccff;
     }
 
     .destinations .dest > * {
@@ -59,41 +57,111 @@
     .destinations .dest dd a {
       margin-right: 8px;
     }
+
+    .img-bg-v-w {
+      white-space: nowrap;
+      font-size: 0;
+      overflow-y: auto;
+    }
+
+    .img-bg-v-w::-webkit-scrollbar {
+      background-color: #fff;
+      height: 6px;
+    }
+
+    .img-bg-v-w::-webkit-scrollbar-track {
+      border-radius: 3px;
+    }
+
+    .img-bg-v-w::-webkit-scrollbar-thumb {
+      background-color: #e8dbd5;
+      border-radius: 3px;
+    }
+
+    .img-bg-v {
+      font-size: 16px;
+      width: 300px;
+      height: 169px;
+      position: relative;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .img-bg-v .cover {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .img-bg-v .img-bg-v-title {
+      color: #fff;
+      text-shadow: 0 0 2px #000;
+      text-decoration: none;
+      z-index: 2;
+    }
+
   </style>
 </head>
 <body>
-<!--<div sec:authorize="isAuthenticated()">-->
-<!--  <h2 th:text="#{ui.welcome(${user.nickname})}"></h2>-->
-<!--  <a class="link" th:href="@{/user}" th:text="#{ui.my_profile}"></a>-->
-<!--  <button onclick="Tour.Auth.logout()">注销</button>-->
-<!--</div>-->
-<!--<div sec:authorize="!isAuthenticated()">-->
-<!--  <button onclick="Tour.Auth.showAuthDialog()" th:text="#{ui.login}"></button>-->
-<!--</div>-->
-
-<div class="container">
+<div class="container" layout:fragment="content">
   <div class="block">
-    <span class="title" th:text="#{ui.spot_destination}"></span>
+    <div class="header"><span class="title" th:text="#{ui.spot_destination}"></span></div>
     <div class="content">
       <div class="destinations">
         <dl class="dest" th:each="d : ${dest}">
-          <dt><a th:text="${d.district.name}" th:href="@{/spot(lid=${d.district.id})}"></a></dt>
+          <dt><a th:text="${d.district.name}" th:title="${d.district}" th:href="@{/spot(lid=${d.district.id})}"></a>
+          </dt>
           <dd>
-            <a th:each="a : ${d.children}" th:text="${a.name}" th:href="@{/spot(lid=${a.id})}"></a>
+            <a class="link" th:each="a : ${d.children}" th:text="${a.name}" th:title="${a}"
+               th:href="@{/spot(lid=${a.id})}"></a>
           </dd>
         </dl>
       </div>
     </div>
   </div>
 
-  <div class="block">
-    <span class="title"></span>
+  <div class="block" sec:authorize="isAuthenticated()">
+    <div class="header"><span class="title" th:text="#{ui.recommend_spot}"></span><a class="link"
+                                                                                     th:href="@{/spot/recommend}"
+                                                                                     th:text="#{ui.index_more}"></a>
+    </div>
+    <div class="content spot-list img-bg-v-w">
+      <div class="spot img-bg-v" th:each="spot : ${recommendSpots}">
+        <img th:src="@{${spot.coverUrl}}" th:alt="${spot.name}" class="cover">
+        <a class="img-bg-v-title" th:href="@{/spot/} + ${spot.id}"><span class="spot-title" th:text="${spot.name}"></span></a>
+      </div>
+    </div>
   </div>
 
+  <div class="block">
+    <div class="header"><span class="title" th:text="#{ui.hot_spot}"></span><a class="link" th:href="@{/spot/hot}"
+                                                                               th:text="#{ui.index_more}"></a></div>
+    <div class="content spot-list img-bg-v-w">
+      <div class="spot img-bg-v" th:each="spot : ${hotSpots}">
+        <img th:src="@{${spot.coverUrl}}" th:alt="${spot.name}" class="cover">
+        <a class="img-bg-v-title" th:href="@{/spot/} + ${spot.id}"><span class="spot-title"
+                                                                         th:text="${spot.name}"></span></a>
+      </div>
+    </div>
+  </div>
 
   <div class="block">
-    <span class="title" th:text="#{ui.hot_travel_notes}"></span>
-    <div class="content"></div>
+    <div class="header"><span class="title" th:text="#{ui.hot_travel_notes}"></span><a class="link"
+                                                                                       th:href="@{/travel/hot}"
+                                                                                       th:text="#{ui.index_more}"></a>
+    </div>
+    <div class="content travel-notes-list img-bg-v-w">
+      <div class="travel-note img-bg-v" th:each="note : ${hotNotes}">
+        <img th:src="@{${note.coverUrl != null} ? ${note.coverUrl} : '/static/image/travel-notes.jpg'}"
+             th:alt="${note.travelNotes.title}" class="cover">
+        <a class="img-bg-v-title" th:href="@{/travel/} + ${note.travelNotes.id}"><span class="note-title"
+                                                                                       th:text="${note.travelNotes.title}"></span></a>
+      </div>
+    </div>
   </div>
 
 

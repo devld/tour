@@ -20,11 +20,14 @@ function initView () {
     render: h => h(AuthPanel, {
       on: {
         login (user) {
-          Tour.Auth.hideAuthDialog()
           if (loginCallback) {
             loginCallback(user)
+            Tour.Auth.hideAuthDialog()
           } else {
-            window.location.reload()
+            Tour.Auth.hideAuthDialog()
+            setTimeout(() => {
+              window.location.reload()
+            }, 1000)
           }
         }
       }

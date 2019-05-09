@@ -32,9 +32,9 @@
       </el-form-item>
       <el-form-item label="性别">
         <el-select v-model="profile.gender">
-          <el-option :value="0" label="不填写"/>
-          <el-option :value="1" label="男"/>
-          <el-option :value="2" label="女"/>
+          <el-option :value="'NONE'" label="不填写"/>
+          <el-option :value="'MALE'" label="男"/>
+          <el-option :value="'FEMALE'" label="女"/>
         </el-select>
       </el-form-item>
       <el-form-item label="出生日期">

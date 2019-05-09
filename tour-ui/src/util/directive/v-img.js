@@ -1,4 +1,4 @@
-import { APP_PATH } from '../config'
+import { APP_PATH } from '../../config'
 
 /**
  * 给 img 的 src 添加路径前缀

@@ -1,19 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/default}">
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
-  <meta charset="UTF-8">
-  <title th:text="${spot.spot.name} + ' - ' + #{app.name}"></title>
-  <link rel="icon" th:href="@{/static/favicon.ico}">
-  <link rel="stylesheet" th:href="@{/static/css/iconfont/iconfont.css}">
-  <script th:src="@{/static/js/tour.js}"></script>
-  <link rel="stylesheet" th:href="@{/static/css/common.css}">
+  <title th:text="${spot.spot.name}"></title>
   <style>
     .spot-detail {
+      position: relative;
       background-color: #fff;
       padding: 20px 40px;
       width: 800px;
       margin: 40px auto;
+    }
+
+    .spot-detail .spot-edit-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
     }
 
     .title {
@@ -132,7 +137,13 @@
   </style>
 </head>
 <body>
-<div class="spot-detail">
+
+<!--  浏览游记 header 菜单 -->
+<div class="menu-item" layout:fragment="menu1">
+  <a th:href="@{'/travel/spot/' + ${spot.spot.id}}" th:text="#{ui.view_travel_notes}"></a>
+</div>
+
+<div class="spot-detail" layout:fragment="content">
   <div class="title">
     <h1 class="name" th:text="${spot.spot.name}">景点名称</h1>
   </div>
@@ -193,34 +204,37 @@
     <spot-comment-view :spot-id="spotId" :login="loggedIn"/>
   </div>
 
-</div>
-</body>
-<script>
-  new Tour.Vue({
-    el: '.spot-detail',
-    components: {
-      LocationMapView: Tour.Views.LocationMapView,
-      SpotCommentView: Tour.Views.SpotCommentView,
-      SpotMarkView: Tour.Views.SpotMarkView
-    },
-    data() {
-      return {
-        lng: +'[[${spot.spot.location.longitude}]]',
-        lat: +'[[${spot.spot.location.latitude}]]',
-        spotId: +'[[${spot.spot.id}]]',
-        loggedIn: '[[${user != null}]]' === 'true',
-        marks: {
-          went: {
-            state: '[[${spot.went}]]' === 'true',
-            count: +'[[${spot.spot.wentCount}]]'
-          },
-          collect: {
-            state: '[[${spot.collected}]]' === 'true',
-            count: +'[[${spot.spot.collectCount}]]'
+  <a sec:authorize="hasRole('ADMIN')" th:href="@{/spot/edit(id=${spot.spot.id})}" class="link spot-edit-button"
+     th:text="#{ui.edit_spot}"></a>
+
+  <script>
+    new Tour.Vue({
+      el: '.spot-detail',
+      components: {
+        LocationMapView: Tour.Views.LocationMapView,
+        SpotCommentView: Tour.Views.SpotCommentView,
+        SpotMarkView: Tour.Views.SpotMarkView
+      },
+      data() {
+        return {
+          lng: +'[[${spot.spot.location.longitude}]]',
+          lat: +'[[${spot.spot.location.latitude}]]',
+          spotId: +'[[${spot.spot.id}]]',
+          loggedIn: '[[${user != null}]]' === 'true',
+          marks: {
+            went: {
+              state: '[[${spot.went}]]' === 'true',
+              count: +'[[${spot.spot.wentCount}]]'
+            },
+            collect: {
+              state: '[[${spot.collected}]]' === 'true',
+              count: +'[[${spot.spot.collectCount}]]'
+            }
           }
         }
       }
-    }
-  })
-</script>
+    })
+  </script>
+</div>
+</body>
 </html>

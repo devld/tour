@@ -8,6 +8,8 @@ import me.devld.tour.service.DistrictService;
 import me.devld.tour.service.SpotService;
 import me.devld.tour.util.SecurityUtil;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +45,7 @@ public class SpotController {
             model.addAttribute("district", districtService.getById(locationId));
             spots = spotService.getSpotsByLocationId(locationId, pageParam);
         }
+        model.addAttribute("title", locationId == null ? "all" : "district");
 
         model.addAttribute("spots", spots);
 
@@ -66,6 +69,28 @@ public class SpotController {
         }
 
         return "spot/spotDetail";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/recommend")
+    public String recommendSpots(PageParam pageParam, Model model) {
+        model.addAttribute("title", "recommend");
+        model.addAttribute("spots", spotService.getRecommendSpots(SecurityUtil.userId(), pageParam));
+        return "spot/spotList";
+    }
+
+    @GetMapping("/hot")
+    public String hotSpots(PageParam pageParam, Model model) {
+        model.addAttribute("title", "hot");
+        model.addAttribute("spots", spotService.getHotSpots(pageParam));
+        return "spot/spotList";
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/edit")
+    public String editSpot(@RequestParam(value = "id", required = false) Long spotId, Model model) {
+        model.addAttribute("id", spotId);
+        return "spot/spotEdit";
     }
 
 }

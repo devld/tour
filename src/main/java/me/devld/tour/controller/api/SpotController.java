@@ -4,6 +4,7 @@ import me.devld.tour.controller.ApiController;
 import me.devld.tour.dto.PageParam;
 import me.devld.tour.dto.spot.SpotCommentIn;
 import me.devld.tour.dto.spot.SpotCommentOut;
+import me.devld.tour.dto.spot.SpotDetailsOut;
 import me.devld.tour.dto.spot.SpotIn;
 import me.devld.tour.entity.Spot;
 import me.devld.tour.entity.SpotComment;
@@ -40,7 +41,7 @@ public class SpotController {
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/{spotId}")
-    public Spot getSpot(@PathVariable("spotId") long spotId) {
+    public SpotDetailsOut getSpot(@PathVariable("spotId") long spotId) {
         return spotService.getSpotById(spotId);
     }
 
