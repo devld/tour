@@ -3,11 +3,6 @@ server:
 
 spring:
 
-  datasource:
-    url:
-    username:
-    password:
-
   jpa:
     hibernate:
       ddl-auto: validate

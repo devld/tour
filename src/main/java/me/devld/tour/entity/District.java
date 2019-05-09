@@ -34,7 +34,7 @@ public class District {
 
     private String areaCode;
 
-    @Column(columnDefinition = "tinyint(1)")
+    @Column(name = "order_num", columnDefinition = "tinyint(1)")
     private Integer order;
 
     public Integer getId() {
