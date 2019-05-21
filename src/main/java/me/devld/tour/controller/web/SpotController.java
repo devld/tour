@@ -8,7 +8,6 @@ import me.devld.tour.service.DistrictService;
 import me.devld.tour.service.SpotService;
 import me.devld.tour.util.SecurityUtil;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -86,7 +85,7 @@ public class SpotController {
         return "spot/spotList";
     }
 
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/edit")
     public String editSpot(@RequestParam(value = "id", required = false) Long spotId, Model model) {
         model.addAttribute("id", spotId);

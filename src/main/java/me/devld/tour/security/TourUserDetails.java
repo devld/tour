@@ -34,7 +34,7 @@ public class TourUserDetails extends TourUser implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return isEnabled();
+        return getState() != TourUser.STATE_DELETED;
     }
 
     @Override
@@ -42,5 +42,9 @@ public class TourUserDetails extends TourUser implements UserDetails {
         return true;
     }
 
+    @Override
+    public boolean isEnabled() {
+        return getState() == TourUser.STATE_NORMAL;
+    }
 
 }

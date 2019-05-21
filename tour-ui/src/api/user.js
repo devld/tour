@@ -23,3 +23,15 @@ export function updateProfile ({
 export function getUserProfile (username) {
   return axios.get(username ? `/user/${username}` : '/user')
 }
+
+export function toggleUserEnabled (userId, enabled) {
+  return axios.put(`/user/${userId}`, null, {
+    params: {
+      enabled
+    }
+  })
+}
+
+export function deleteUserAccount (userId) {
+  return axios.delete(`/user/${userId}`)
+}

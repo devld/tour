@@ -69,4 +69,12 @@ public interface TravelNotesService {
      */
     void collectTravelNotes(long travelNotesId, long userId, boolean state);
 
+    /**
+     * 删除游记
+     *
+     * @param travelNotesId 游记 id
+     * @param userId        操作用户
+     */
+    void deleteTravelNotes(long travelNotesId, long userId);
+
 }

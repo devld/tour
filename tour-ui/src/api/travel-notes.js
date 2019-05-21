@@ -24,3 +24,6 @@ export function shareNotes (notesId) {
   return axios.post(`/travel/${notesId}/share`)
 }
 
+export function deleteNotes (notesId) {
+  return axios.delete(`/travel/${notesId}`)
+}

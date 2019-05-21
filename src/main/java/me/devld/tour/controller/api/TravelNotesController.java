@@ -27,6 +27,12 @@ public class TravelNotesController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{notesId}")
+    public void deleteTravelNotes(@PathVariable("notesId") long id) {
+        travelNotesService.deleteTravelNotes(id, SecurityUtil.userId());
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/{notesId}/share")
     public void shareTravelNotes(@PathVariable("notesId") long id) {
         travelNotesService.shareTravelNotes(id, SecurityUtil.userId());

@@ -9,6 +9,7 @@ import me.devld.tour.repository.TourUserRepository;
 import me.devld.tour.service.DistrictService;
 import me.devld.tour.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,9 +32,12 @@ public class UserServiceImpl implements UserService {
 
     private UserServiceImpl self;
 
-    public UserServiceImpl(TourUserRepository tourUserRepository, DistrictService districtService) {
+    private final CacheManager cacheManager;
+
+    public UserServiceImpl(TourUserRepository tourUserRepository, DistrictService districtService, CacheManager cacheManager) {
         this.tourUserRepository = tourUserRepository;
         this.districtService = districtService;
+        this.cacheManager = cacheManager;
     }
 
     @Cacheable(value = CACHE_USER, key = "'$' + #p0")
@@ -109,7 +115,6 @@ public class UserServiceImpl implements UserService {
             user.setAvatar("/static/image/avatar.jpg");
         }
 
-        user.setEnabled(true);
         user.setGender(TourUser.Gender.NONE);
         tourUserRepository.save(user);
         return user;
@@ -175,8 +180,57 @@ public class UserServiceImpl implements UserService {
         return tourUserRepository.save(user);
     }
 
+    @Caching(
+            evict = {
+                    @CacheEvict(value = CACHE_USER, key = "'$' + #p0"),
+                    @CacheEvict(value = CACHE_USER, key = "#result.username")
+            }
+    )
+    @Override
+    public TourUser toggleUserEnabled(long userId, boolean enabled) {
+        TourUser user = self.findUserById(userId);
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        if (user.getState() == TourUser.STATE_DELETED) {
+            throw new ForbiddenException();
+        }
+        user.setState(enabled ? TourUser.STATE_NORMAL : TourUser.STATE_DISABLED);
+        return tourUserRepository.save(user);
+    }
+
+    @Caching(
+            evict = {
+                    @CacheEvict(value = CACHE_USER, key = "'$' + #p0")
+            }
+    )
+    @Override
+    public void deleteUser(long userId) {
+        TourUser user = self.findUserById(userId);
+        if (user == null) {
+            throw new NotFoundException();
+        }
+
+        Objects.requireNonNull(cacheManager.getCache(CACHE_USER)).evict(user.getUsername());
+
+        user.setUsername(UUID.randomUUID().toString().replace("-", ""));
+        user.setNickname("");
+        user.setAvatar(null);
+        user.setSelfIntro(null);
+        user.setGender(null);
+        user.setBirth(null);
+        user.setRegionId(null);
+        user.setEmail(null);
+        user.setUserType(null);
+        user.setPassword(null);
+        user.setState(TourUser.STATE_DELETED);
+
+        tourUserRepository.save(user);
+    }
+
     @Autowired
     public void setSelf(UserServiceImpl self) {
         this.self = self;
     }
+
 }

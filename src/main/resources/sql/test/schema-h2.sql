@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `tour_user`
     `user_type`  TINYINT(4)   NULL DEFAULT '0',
     `password`   VARCHAR(64)  NULL DEFAULT NULL,
     `enabled`    TINYINT(1)   NULL DEFAULT '0',
+    `state`      TINYINT      NULL,
     `created_at` BIGINT(20)   NULL DEFAULT NULL,
     `updated_at` BIGINT(20)   NULL DEFAULT NULL,
     PRIMARY KEY (`id`)
@@ -63,6 +64,7 @@ CREATE TABLE IF NOT EXISTS `tour_spot`
     `collect_count` INT(11)       NULL DEFAULT '0',
     `photo_count`   INT(11)       NULL DEFAULT '0',
     `comment_count` INT           NULL,
+    `state`         TINYINT       NULL,
     `created_at`    BIGINT(20)    NULL DEFAULT NULL,
     `updated_at`    BIGINT(20)    NULL DEFAULT NULL,
     PRIMARY KEY (`id`)
@@ -79,6 +81,7 @@ CREATE TABLE IF NOT EXISTS `tour_spot_comment`
     `author_id`  BIGINT(20)    NOT NULL,
     `content`    VARCHAR(4000) NULL DEFAULT NULL,
     `like_count` INT(11)       NULL DEFAULT '0',
+    `state`      TINYINT       NULL,
     `created_at` BIGINT(20)    NULL DEFAULT NULL,
     `updated_at` BIGINT(20)    NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
@@ -159,6 +162,7 @@ CREATE TABLE IF NOT EXISTS `tour_travel_notes`
     `start_time`    BIGINT(20)   NULL DEFAULT NULL,
     `days_used`     FLOAT        NULL DEFAULT NULL,
     `cost_average`  INT(11)      NULL DEFAULT NULL,
+    `state`         TINYINT      NULL,
     `created_at`    BIGINT(20)   NULL DEFAULT NULL,
     `updated_at`    BIGINT(20)   NULL DEFAULT NULL,
     PRIMARY KEY (`id`),

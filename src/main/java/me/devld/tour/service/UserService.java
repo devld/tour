@@ -28,4 +28,8 @@ public interface UserService {
 
     TourUser updateUserPassword(String username, String newPassword);
 
+    TourUser toggleUserEnabled(long userId, boolean enabled);
+
+    void deleteUser(long userId);
+
 }

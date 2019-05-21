@@ -48,6 +48,8 @@ export default {
       initView()
     }
     $(maskView).toggleClass('pinned', !closable)
+    $(document.body).css('overflow', 'hidden')
+    $('.dialog-back').addClass('auth-background-blur')
     $(maskView).show().css('opacity', 0).animate({
       opacity: 1
     }, () => {
@@ -57,6 +59,8 @@ export default {
 
   hideAuthDialog () {
     loginCallback = null
+    $(document.body).css('overflow', '')
+    $('.dialog-back').removeClass('auth-background-blur')
     $(maskView).animate({
       opacity: 0
     }, () => {
@@ -64,9 +68,13 @@ export default {
     })
   },
 
-  logout () {
+  logout (cb) {
     logout().then(() => {
-      window.location.reload()
+      if (cb) {
+        cb()
+      } else {
+        window.location.reload()
+      }
     })
   }
 }

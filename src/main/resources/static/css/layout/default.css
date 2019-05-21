@@ -1,0 +1,136 @@
+@keyframes user-menus-showing {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.layout-header {
+  user-select: none;
+  width: 100%;
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 1000;
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+}
+
+.layout-header > div {
+  height: 40px;
+  line-height: 40px;
+}
+
+.layout-header .menu-item {
+  display: inline-block;
+  height: 100%;
+  padding: 0 30px;
+  border-left: solid 1px rgba(0, 0, 0, 0.1);
+}
+
+.layout-header .menu-placeholder {
+  display: none;
+}
+
+.layout-header .menu-item a {
+  text-decoration: none;
+  color: #000;
+}
+
+.layout-header .menu-item a:hover {
+  color: #66ccff;
+}
+
+.site-brand {
+  display: inline-block;
+  width: 180px;
+  text-align: center;
+}
+
+.site-brand .site-icon {
+  position: relative;
+  top: 6px;
+  width: 26px;
+  height: 26px;
+}
+
+.site-brand .site-title {
+  font-size: 20px;
+}
+
+.site-brand a {
+  text-decoration: none;
+  color: #000;
+}
+
+.layout-header .user-area {
+  position: absolute;
+  top: 10px;
+  right: 40px;
+}
+
+.current-user {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.current-user .user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.current-user .user-nickname {
+  margin-left: 10px;
+  white-space: nowrap;
+  max-width: 100px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.current-user .user-menus {
+  animation: user-menus-showing 0.3s;
+  display: none;
+  line-height: 1;
+  position: absolute;
+  white-space: nowrap;
+  top: 40px;
+  left: -40px;
+  z-index: 1002;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.current-user:hover .user-menus {
+  display: block;
+}
+
+.current-user .user-menus:hover {
+  display: block;
+}
+
+.current-user .user-menus .user-menus-item {
+  background-color: #fff;
+  padding: 10px;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.1);
+}
+
+.current-user .user-menus .user-menus-item:last-child {
+  border-bottom: none;
+}
+
+.current-user .user-menus .user-menus-item a {
+  text-decoration: none;
+  color: #000;
+}
+
+.content-container {
+  position: relative;
+  padding-top: 60px;
+}

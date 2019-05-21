@@ -16,10 +16,6 @@ public class TravelNotesDetailsOut {
 
     private List<Spot> spots;
 
-    private String coverUrl;
-
-    private String shortContent;
-
     private Boolean liked;
 
     private Boolean collected;
@@ -55,22 +51,6 @@ public class TravelNotesDetailsOut {
 
     public void setSpots(List<Spot> spots) {
         this.spots = spots;
-    }
-
-    public String getCoverUrl() {
-        return coverUrl;
-    }
-
-    public void setCoverUrl(String coverUrl) {
-        this.coverUrl = coverUrl;
-    }
-
-    public String getShortContent() {
-        return shortContent;
-    }
-
-    public void setShortContent(String shortContent) {
-        this.shortContent = shortContent;
     }
 
     public Boolean getLiked() {

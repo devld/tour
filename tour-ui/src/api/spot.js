@@ -61,3 +61,11 @@ export function toggleSpotCollect (spotId, collect) {
     }
   })
 }
+
+export function deleteSpot (spotId) {
+  return axios.delete(`/spot/${spotId}`)
+}
+
+export function deleteSpotComment (commentId) {
+  return axios.delete(`/spot/comment/${commentId}`)
+}

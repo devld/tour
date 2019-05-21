@@ -61,6 +61,7 @@ export default {
       deep: true,
       handler () {
         this.copyValue(this.value, this)
+        this.setMapCenter()
       }
     }
   },
@@ -152,6 +153,14 @@ export default {
     valueChanged () {
       this.$emit('input', this.copyValue(this))
     },
+    setMapCenter () {
+      if (this.longitude) {
+        this.map.center[0] = this.longitude
+      }
+      if (this.latitude) {
+        this.map.center[1] = this.latitude
+      }
+    },
     copyValue (src, dst) {
       if (!dst) {
         dst = {}
@@ -168,7 +177,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import './common.scss';
+@import "./common.scss";
 
 .location-selector {
   .map-wrapper {

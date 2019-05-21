@@ -1,21 +1,21 @@
 package me.devld.tour.service.impl;
 
 import me.devld.tour.dto.PageParam;
-import me.devld.tour.dto.spot.*;
+import me.devld.tour.dto.spot.SpotDestination;
+import me.devld.tour.dto.spot.SpotDetailsOut;
+import me.devld.tour.dto.spot.SpotIn;
 import me.devld.tour.entity.*;
 import me.devld.tour.entity.rel.LikeCollectRel;
 import me.devld.tour.entity.rel.RelObjectType;
 import me.devld.tour.entity.rel.RelType;
 import me.devld.tour.exception.ForbiddenException;
 import me.devld.tour.exception.NotFoundException;
-import me.devld.tour.repository.SpotCommentRepository;
 import me.devld.tour.repository.SpotPhotoRepository;
 import me.devld.tour.repository.SpotRepository;
 import me.devld.tour.repository.SpotTicketRepository;
 import me.devld.tour.service.DistrictService;
 import me.devld.tour.service.LikeCollectService;
 import me.devld.tour.service.SpotService;
-import me.devld.tour.service.UserService;
 import me.devld.tour.util.BeanUtil;
 import me.devld.tour.util.HtmlUtils;
 import org.springframework.beans.BeanUtils;
@@ -33,25 +33,19 @@ public class SpotServiceImpl implements SpotService {
 
     private final SpotRepository spotRepository;
     private final SpotTicketRepository spotTicketRepository;
-    private final SpotCommentRepository spotCommentRepository;
     private final SpotPhotoRepository spotPhotoRepository;
 
-    private final UserService userService;
     private final DistrictService districtService;
     private final LikeCollectService likeCollectService;
 
     public SpotServiceImpl(SpotRepository spotRepository,
                            SpotTicketRepository spotTicketRepository,
-                           SpotCommentRepository spotCommentRepository,
                            SpotPhotoRepository spotPhotoRepository,
-                           UserService userService,
                            DistrictService districtService,
                            LikeCollectService likeCollectService) {
         this.spotRepository = spotRepository;
         this.spotTicketRepository = spotTicketRepository;
-        this.spotCommentRepository = spotCommentRepository;
         this.spotPhotoRepository = spotPhotoRepository;
-        this.userService = userService;
         this.districtService = districtService;
         this.likeCollectService = likeCollectService;
     }
@@ -134,40 +128,6 @@ public class SpotServiceImpl implements SpotService {
     }
 
     @Override
-    public Page<SpotCommentOut> getSpotComments(long spotId, PageParam pageParam, Long userId) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "updatedAt", "likeCount");
-        if ("like".equals(pageParam.getSort())) {
-            sort = Sort.by(Sort.Direction.DESC, "likeCount", "updatedAt");
-        }
-        Page<SpotCommentOut> comments = spotCommentRepository.findAllBySpotId(spotId, pageParam.toPageable(sort))
-                .map(e -> new SpotCommentOut(e, userService.getUserInfo(e.getAuthorId())));
-
-        if (userId != null) {
-            Map<Long, LikeCollectRel> likeRel = likeCollectService.getRelBy(
-                    userId, RelObjectType.SPOT_COMMENT, Collections.singletonList(RelType.LIKE),
-                    comments.map(e -> e.getComment().getId()).getContent()).stream().collect(Collectors.toMap(LikeCollectRel::getObjId, e -> e));
-            for (SpotCommentOut o : comments) {
-                o.setLiked(likeRel.containsKey(o.getComment().getId()));
-            }
-        }
-
-        return comments;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public SpotComment commentSpot(SpotCommentIn comment, long spotId, long authorId) {
-        if (spotRepository.incrementCountById(spotId, 0, 0, 1) != 1) {
-            throw new NotFoundException();
-        }
-        SpotComment spotComment = new SpotComment();
-        spotComment.setContent(comment.getContent());
-        spotComment.setAuthorId(authorId);
-        spotComment.setSpotId(spotId);
-        return spotCommentRepository.save(spotComment);
-    }
-
-    @Override
     public Page<Spot> getSpotsByLocationId(int id, PageParam pageParam) {
         Sort sort = Sort.by(Sort.Direction.DESC, "collect".equals(pageParam.getSort()) ? "collectCount" : "wentCount");
         return spotRepository.findAllByLocationLocationIdIn(
@@ -207,17 +167,6 @@ public class SpotServiceImpl implements SpotService {
         }
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void likeSpotComment(long commentId, long userId, boolean state) {
-        if (spotCommentRepository.incrementCountById(commentId, state ? 1 : -1) != 1) {
-            throw new NotFoundException();
-        }
-        if (!likeCollectService.markRelation(state, new LikeCollectRel(userId, commentId, RelObjectType.SPOT_COMMENT, RelType.LIKE))) {
-            throw new ForbiddenException(state ? "msg.already_liked" : "msg.not_liked");
-        }
-    }
-
     @Cacheable("spot_destination")
     @Override
     public List<SpotDestination> getSpotDestinations() {
@@ -249,5 +198,13 @@ public class SpotServiceImpl implements SpotService {
         // TODO implement it
         pageParam.setSort("went");
         return getSpotList(pageParam);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteSpot(long spotId, long userId) {
+        if (spotRepository.softDeleteById(spotId) != 1) {
+            throw new NotFoundException();
+        }
     }
 }

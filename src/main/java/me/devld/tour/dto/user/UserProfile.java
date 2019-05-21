@@ -1,11 +1,15 @@
 package me.devld.tour.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import me.devld.tour.entity.TourUser;
 import org.springframework.beans.BeanUtils;
 
 import java.sql.Date;
 
 public class UserProfile {
+
+    @JsonIgnore
+    private Long id;
 
     private String username;
 
@@ -27,8 +31,19 @@ public class UserProfile {
 
     private TourUser.UserType userType;
 
+    @JsonIgnore
+    private Byte state;
+
     public UserProfile(TourUser tourUser) {
         BeanUtils.copyProperties(tourUser, this);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -109,5 +124,13 @@ public class UserProfile {
 
     public void setUserType(TourUser.UserType userType) {
         this.userType = userType;
+    }
+
+    public Byte getState() {
+        return state;
+    }
+
+    public void setState(Byte state) {
+        this.state = state;
     }
 }

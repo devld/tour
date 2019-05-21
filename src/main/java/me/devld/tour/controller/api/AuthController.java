@@ -27,10 +27,11 @@ public class AuthController {
         return authService.login(apiLogin);
     }
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping("/logout")
     public void logout() {
-        authService.logout(SecurityUtil.token());
+        if (SecurityUtil.authenticated()) {
+            authService.logout(SecurityUtil.token());
+        }
     }
 
     @PostMapping("/check_register")

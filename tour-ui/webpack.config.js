@@ -125,7 +125,9 @@ module.exports = {
     new webpack.ProvidePlugin({
       '$': 'jquery'
     }),
-    new BundleAnalyzerPlugin()
+    // new BundleAnalyzerPlugin(),
+    new UglifyJSPlugin({
+    })
   ],
 
   optimization: {

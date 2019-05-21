@@ -9,16 +9,22 @@ body {
 }
 
 .paper {
-  width: 80%;
+  width: 97%;
   background-color: #fff;
   margin: 30px auto;
   padding: 40px;
   position: relative;
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (min-width: 640px) {
   .paper {
-    width: 97%;
+    width: 80%;
+  }
+}
+
+@media screen and (min-width: 960px) {
+  .paper {
+    width: 800px;
   }
 }
 
@@ -28,6 +34,10 @@ body {
 .link {
   text-decoration: none;
   color: #66ccff;
+}
+
+.link-danger {
+  color: #ff5722;
 }
 
 .card {

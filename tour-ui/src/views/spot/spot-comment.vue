@@ -6,15 +6,25 @@
           <span class="time">{{ c.createdAt | timeFormatter }}</span>
         </user-view>
         <div class="content">{{ c.content }}</div>
-        <div class="like">
-          <i
-            class="iconfont yes"
-            title="取消点赞"
-            v-if="c.liked"
-            @click="toggleCommentLike(c, false)"
-          >&#xe606;</i>
-          <i class="iconfont no" v-else title="点赞" @click="toggleCommentLike(c, true)">&#xe8c4;</i>
-          <span class="count">{{ c.likeCount }}</span>
+        <div class="extra">
+          <div class="delete">
+            <i
+              class="el-icon-delete"
+              title="删除"
+              v-if="userId === c.authorId || isAdmin"
+              @click="deleteComment(c.id)"
+            />
+          </div>
+          <div class="like">
+            <i
+              class="iconfont yes"
+              title="取消点赞"
+              v-if="c.liked"
+              @click="toggleCommentLike(c, false)"
+            >&#xe606;</i>
+            <i class="iconfont no" v-else title="点赞" @click="toggleCommentLike(c, true)">&#xe8c4;</i>
+            <span class="count">{{ c.likeCount }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -58,7 +68,7 @@
   </div>
 </template>
 <script>
-import { getSpotComments, toggleSpotCommentLike, commentSpot } from '../../api/spot'
+import { getSpotComments, toggleSpotCommentLike, commentSpot, deleteSpotComment } from '../../api/spot'
 import UserView from '../user/user-view'
 
 export default {
@@ -69,9 +79,19 @@ export default {
       type: Number,
       required: true
     },
-    login: {
-      type: Boolean,
-      default: false
+    userId: {
+      type: Number
+    },
+    userType: {
+      type: Number
+    }
+  },
+  computed: {
+    login () {
+      return !!this.userId
+    },
+    isAdmin () {
+      return this.userType === 1
     }
   },
   data () {
@@ -139,6 +159,19 @@ export default {
         comment.loading = false
       })
     },
+    deleteComment (commentId) {
+      this.$confirm('确认删除这条评论？', '删除').then(() => {
+        this.loading = true
+        deleteSpotComment(commentId).then(() => {
+          this.$message.success('删除成功')
+          this.loadComments(this.pageParam.page)
+        }, e => {
+          this.$message.error(e.message)
+        }).then(() => {
+          this.loading = false
+        })
+      }, () => { })
+    },
     showLogin () {
       Tour.Auth.showAuthDialog()
     }
@@ -162,18 +195,30 @@ export default {
         color: gray;
       }
 
-      .like {
+      .extra {
         user-select: none;
         position: absolute;
         top: 20px;
         right: 20px;
 
-        & > i {
-          cursor: pointer;
+        & > div {
+          display: inline-block;
         }
 
-        .yes {
-          color: rgb(255, 64, 0);
+        .like {
+          & > i {
+            cursor: pointer;
+          }
+
+          .yes {
+            color: rgb(255, 64, 0);
+          }
+        }
+
+        .delete {
+          i {
+            color: red;
+          }
         }
       }
     }

@@ -1,0 +1,80 @@
+.travel-note {
+  width: 800px;
+  margin: 40px auto;
+  background-color: #fff;
+  padding: 20px 30px;
+  position: relative;
+}
+
+.travel-note .info {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.travel-note .info .author {
+  margin-right: 20px;
+}
+
+.travel-note .info .author a {
+  text-decoration: none;
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+}
+
+.travel-note .info .author .avatar {
+  width: 40px;
+  height: 40px;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+
+.travel-note .info .time {
+  margin-right: 30px;
+}
+
+.travel-note .content img {
+  max-width: 100%;
+}
+
+.travel-note .notes-menu {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.img-bg-v {
+  font-size: 16px;
+  width: 300px;
+  height: 169px;
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img-bg-v .cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.img-bg-v .img-bg-v-title {
+  color: #fff;
+  text-shadow: 0 0 2px #000;
+  text-decoration: none;
+  z-index: 2;
+}
+
+.travel-note .spots {
+  margin: 20px 0;
+}
+
+.travel-note .spots-list {
+  white-space: nowrap;
+  overflow-x: auto;
+}

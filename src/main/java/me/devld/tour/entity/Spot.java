@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tour_spot")
-public class Spot extends BaseEntity {
+public class Spot extends BaseStateEntity {
 
     private String name;
 

@@ -4,6 +4,8 @@ import me.devld.tour.entity.TourUser;
 import me.devld.tour.service.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.token.Token;
@@ -31,12 +33,18 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider {
         return createAuthentication(tokenAuthentication, username);
     }
 
-    private Authentication createAuthentication(ApiTokenAuthentication apiTokenAuthentication, String username) {
+    private Authentication createAuthentication(ApiTokenAuthentication apiTokenAuthentication, String username) throws AuthenticationException {
         TourUser user = userService.findUserByUsername(username);
         if (user == null) {
             throw new BadCredentialsException("bad api token");
         }
         TourUserDetails principal = new TourUserDetails(user);
+        if (!principal.isAccountNonLocked()) {
+            throw new LockedException("account locked");
+        }
+        if (!principal.isEnabled()) {
+            throw new DisabledException("account disabled");
+        }
         ApiTokenAuthentication authentication = new ApiTokenAuthentication((String) apiTokenAuthentication.getCredentials(), principal, principal.getAuthorities());
         authentication.setAuthenticated(true);
         return authentication;

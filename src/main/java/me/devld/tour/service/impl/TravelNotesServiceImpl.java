@@ -5,6 +5,7 @@ import me.devld.tour.dto.travel.TravelNotesDetailsOut;
 import me.devld.tour.dto.travel.TravelNotesIn;
 import me.devld.tour.entity.Spot;
 import me.devld.tour.entity.SpotPhoto;
+import me.devld.tour.entity.TourUser;
 import me.devld.tour.entity.TravelNotes;
 import me.devld.tour.entity.rel.LikeCollectRel;
 import me.devld.tour.entity.rel.RelObjectType;
@@ -17,8 +18,6 @@ import me.devld.tour.repository.TravelNotesRepository;
 import me.devld.tour.service.LikeCollectService;
 import me.devld.tour.service.TravelNotesService;
 import me.devld.tour.service.UserService;
-import me.devld.tour.util.HtmlUtils;
-import me.devld.tour.util.ImageProp;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -96,6 +95,9 @@ public class TravelNotesServiceImpl implements TravelNotesService {
         if (!travelNotes.isPresent()) {
             throw new NotFoundException();
         }
+        if (travelNotes.get().getState() == TravelNotes.STATE_DELETED && userId != null && !userId.equals(travelNotes.get().getAuthorId())) {
+            throw new NotFoundException();
+        }
 
         TravelNotesDetailsOut out = new TravelNotesDetailsOut(travelNotes.get(), userService.getUserInfo(travelNotes.get().getAuthorId()), travelNotes.get().getSpots());
         if (userId != null) {
@@ -109,7 +111,7 @@ public class TravelNotesServiceImpl implements TravelNotesService {
 
     @Override
     public Page<TravelNotesDetailsOut> getTravelNotesBySpot(long spotId, PageParam pageParam) {
-        return processTravelNotes(travelNotesRepository.findAllBySpots(new Spot(spotId), parsePageParam(pageParam)));
+        return processTravelNotes(travelNotesRepository.findAllBySpots(spotId, parsePageParam(pageParam)));
     }
 
     private Pageable parsePageParam(PageParam pageParam) {
@@ -127,20 +129,7 @@ public class TravelNotesServiceImpl implements TravelNotesService {
     }
 
     private Page<TravelNotesDetailsOut> processTravelNotes(Page<TravelNotes> travelNotes) {
-        return travelNotes.map(e -> {
-            TravelNotesDetailsOut out = new TravelNotesDetailsOut(e, userService.getUserInfo(e.getAuthorId()), null);
-            String content = e.getContent();
-            List<ImageProp> images = HtmlUtils.extractImagesFromHtml(content);
-            if (!images.isEmpty()) {
-                out.setCoverUrl(images.get(0).getSrc());
-            }
-            String shortContent = HtmlUtils.htmlToText(content);
-            if (shortContent.length() > 100) {
-                shortContent = shortContent.substring(0, 100) + "...";
-            }
-            out.setShortContent(shortContent);
-            return out;
-        });
+        return travelNotes.map(e -> new TravelNotesDetailsOut(e, userService.getUserInfo(e.getAuthorId()), null));
     }
 
     @Override
@@ -177,5 +166,20 @@ public class TravelNotesServiceImpl implements TravelNotesService {
         if (!likeCollectService.markRelation(state, new LikeCollectRel(userId, travelNotesId, RelObjectType.TRAVEL_NOTES, RelType.COLLECT))) {
             throw new ForbiddenException(state ? "msg.collected" : "msg.not_collected");
         }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteTravelNotes(long travelNotesId, long userId) {
+        Optional<TravelNotes> notes = travelNotesRepository.findById(travelNotesId);
+        if (!notes.isPresent() || notes.get().getState() == TravelNotes.STATE_DELETED) {
+            throw new NotFoundException();
+        }
+        if (notes.get().getAuthorId() != userId) {
+            if (userService.findUserById(userId).getUserType() != TourUser.UserType.ADMIN) {
+                throw new ForbiddenException();
+            }
+        }
+        travelNotesRepository.softDeleteById(travelNotesId);
     }
 }

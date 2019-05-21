@@ -5,46 +5,7 @@
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
   <title th:text="${note.travelNotes.title} + ' - ' + #{app.name}"></title>
-  <style>
-    .travel-note {
-      width: 800px;
-      margin: 40px auto;
-      background-color: #fff;
-      padding: 20px 30px;
-    }
-
-    .travel-note .info {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-    }
-
-    .travel-note .info .author {
-      margin-right: 20px;
-    }
-
-    .travel-note .info .author a {
-      text-decoration: none;
-      color: #000;
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .travel-note .info .author .avatar {
-      width: 40px;
-      height: 40px;
-      margin-right: 8px;
-      border-radius: 50%;
-    }
-
-    .travel-note .info .time {
-      margin-right: 30px;
-    }
-
-    .travel-note .content img {
-      max-width: 100%;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/static/css/travel-notes/notesDetail.css}">
 </head>
 <body>
 <div class="wrapper" layout:fragment="content">
@@ -67,7 +28,21 @@
         <travel-notes-mark-view :notes-id="notesId" v-model="marks"></travel-notes-mark-view>
       </div>
     </div>
+    <div class="spots">
+      <span th:text="#{ui.along_spots}"></span>
+      <div class="spots-list">
+        <div class="spot img-bg-v" th:each="spot : ${note.spots}">
+          <img th:src="@{${spot.coverUrl}}" th:alt="${spot.name}" class="cover">
+          <a class="img-bg-v-title" th:href="@{/spot/} + ${spot.id}"><span class="spot-title"
+                                                                           th:text="${spot.name}"></span></a>
+        </div>
+      </div>
+    </div>
     <div class="content" th:utext="${note.travelNotes.content}"></div>
+    <div class="notes-menu">
+      <a href="javascript: void(0)" @click="deleteNotes" class="link link-danger"
+         th:text="#{ui.delete_travel_notes}"></a>
+    </div>
   </article>
   <script>
     new Tour.Vue({
@@ -86,6 +61,21 @@
               count: +'[[${note.travelNotes.collectCount}]]'
             }
           }
+        }
+      },
+      methods: {
+        deleteNotes() {
+          Tour.confirm('[[#{ui.dialog.delete_notes_confirm}]]', '[[#{ui.delete_travel_notes}]]').then(() => {
+            Tour.api.deleteSpot(this.spotId).then(() => {
+              Tour.msg.success('[[#{ui.delete_successfully}]]')
+              setTimeout(() => {
+                window.location.href = '[[@{/}]]'
+              }, 1000)
+            }, e => {
+              Tour.msg.error(e.message)
+            })
+          }, () => {
+          })
         }
       }
     })

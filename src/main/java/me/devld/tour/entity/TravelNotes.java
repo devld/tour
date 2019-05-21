@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "tour_travel_notes")
-public class TravelNotes extends BaseEntity {
+public class TravelNotes extends BaseStateEntity {
 
     private String title;
 

@@ -53,7 +53,6 @@ export default {
         this.ing = true
         return login(this.loginForm.user, this.loginForm.password)
       }).then(res => {
-        this.$message.success('登录成功: ' + res.nickname)
         this.$refs.loginForm.resetFields()
         this.$emit('login', res.user)
       }).catch(e => {

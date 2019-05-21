@@ -12,10 +12,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TravelNotesRepository extends JpaRepository<TravelNotes, Long> {
 
-    Page<TravelNotes> findAllBySpots(Spot spot, Pageable pageable);
+    @Query("SELECT tn FROM TravelNotes tn LEFT JOIN tn.spots tns WHERE tns.id = ?1 AND tn.state = 0")
+    Page<TravelNotes> findAllBySpots(long spotId, Pageable pageable);
 
     @Modifying
-    @Query("UPDATE TravelNotes tn SET tn.likeCount = tn.likeCount + ?2, tn.collectCount = tn.collectCount + ?3, tn.shareCount = tn.shareCount + ?4 WHERE tn.id = ?1")
+    @Query("UPDATE TravelNotes tn SET tn.likeCount = tn.likeCount + ?2, tn.collectCount = tn.collectCount + ?3, tn.shareCount = tn.shareCount + ?4 WHERE tn.id = ?1 AND tn.state = 0")
     int incrementCountById(long id, int like, int collect, int share);
+
+    @Query("SELECT tn FROM TravelNotes tn WHERE tn.state = 0")
+    @Override
+    Page<TravelNotes> findAll(Pageable pageable);
+
+    @Query("UPDATE TravelNotes tn SET tn.state = 1 WHERE tn.id = ?1")
+    @Modifying
+    int softDeleteById(long travelNotesId);
 
 }

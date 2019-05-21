@@ -1,6 +1,7 @@
 package me.devld.tour.controller.web;
 
 import me.devld.tour.dto.PageParam;
+import me.devld.tour.dto.travel.TravelNotesDetailsOutVO;
 import me.devld.tour.service.SpotService;
 import me.devld.tour.service.TravelNotesService;
 import me.devld.tour.util.SecurityUtil;
@@ -31,7 +32,7 @@ public class IndexController {
 
         // 热门游记
         model.addAttribute("hotNotes",
-                travelNotesService.getHotTravelNotes(PageParam.from(1, 5))
+                travelNotesService.getHotTravelNotes(PageParam.from(1, 5)).map(TravelNotesDetailsOutVO::from)
         );
 
         Long userId = SecurityUtil.userIdOrNull();

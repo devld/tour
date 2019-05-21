@@ -19,6 +19,7 @@ import {
 import 'element-ui/lib/theme-chalk/index.css'
 
 export const msg = Message
+export const confirm = MessageBox.confirm
 
 export function install (Vue) {
   Vue.use(Form)

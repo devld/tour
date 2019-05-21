@@ -22,6 +22,9 @@ public class SecurityUtil {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new UnauthorizedException();
         }
+        if (!(authentication.getPrincipal() instanceof TourUserDetails)) {
+            throw new UnauthorizedException();
+        }
         return (TourUserDetails) authentication.getPrincipal();
     }
 

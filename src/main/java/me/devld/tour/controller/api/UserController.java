@@ -36,4 +36,16 @@ public class UserController {
         return userService.getUserInfo(SecurityUtil.username());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public void toggleUserState(@PathVariable("id") long userId, @RequestParam("enabled") boolean enabled) {
+        userService.toggleUserEnabled(userId, enabled);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable("id") long userId) {
+        userService.deleteUser(userId);
+    }
+
 }

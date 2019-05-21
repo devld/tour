@@ -5,7 +5,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tour_spot_comment")
-public class SpotComment extends BaseEntity {
+public class SpotComment extends BaseStateEntity {
 
     private Long spotId;
 

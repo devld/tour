@@ -17,11 +17,6 @@ public class WebVariableHandling {
         this.userService = userService;
     }
 
-    @ModelAttribute("userDetail")
-    public TourUserDetails currentUser() {
-        return SecurityUtil.userOrNull().orElse(null);
-    }
-
     @ModelAttribute("user")
     public UserProfile currentUserInfo() {
         return userService.fillUserInfo(SecurityUtil.userOrNull().orElse(null));

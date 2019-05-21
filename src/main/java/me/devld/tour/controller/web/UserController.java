@@ -34,4 +34,10 @@ public class UserController {
         return "user/user-info";
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/change-password")
+    public String changePassword() {
+        return "user/changePassword";
+    }
+
 }

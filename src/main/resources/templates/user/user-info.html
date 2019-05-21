@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/default}">
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
@@ -47,7 +48,43 @@
         <a @click="edit" class="link" href="#" th:text="#{ui.edit_profile}"></a>
       </div>
     </div>
-    <profile @cancel="editMode = false" @save="save" v-else/>
+    <profile th:if="${mine}" @cancel="editMode = false" @save="save" v-else/>
+    <div sec:authorize="hasRole('ADMIN')" class="admin-menus">
+      <a id="user-state-toggle" href="javascript: void(0)" class="link" th:attr="data-state=${user_info.state}"
+         th:text="${user_info.state == 0} ? #{ui.disable_user} : #{ui.enable_user}"></a>
+      <a id="user-delete" href="javascript: void(0)" class="link link-danger"
+         th:text="#{ui.delete_user}"></a>
+      <script>
+        $('#user-state-toggle').click(function () {
+          const state = this.dataset.state
+          Tour.confirm(
+            state === '2' ? '[[#{ui.dialog.enable_user_confirm}]]' : '[[#{ui.dialog.disable_user_confirm}]]',
+            state === '2' ? '[[#{ui.enable_user}]]' : '[[#{ui.disable_user}]]').then(() => {
+            Tour.api.user.toggleUserEnabled(+'[[${user_info.id}]]', state === '2').then(() => {
+              Tour.msg.success('[[#{ui.operation_success}]]')
+              setTimeout(() => {
+                window.location.reload()
+              }, 700)
+            }, e => {
+              Tour.msg.error(e.message)
+            })
+          }, () => {
+          })
+        })
+        $('#user-delete').click(function () {
+          Tour.confirm('[[#{ui.dialog.delete_user_confirm}]]', '[[#{ui.delete_user}]]').then(() => {
+            Tour.api.user.deleteUserAccount(+'[[${user_info.id}]]').then(() => {
+              Tour.msg.success('[[#{ui.operation_success}]]')
+              setTimeout(() => {
+                window.location.href = '[[@{/}]]'
+              }, 700)
+            }, e => {
+              Tour.msg.error(e.message)
+            })
+          })
+        })
+      </script>
+    </div>
   </div>
   <script th:if="${mine}">
     new Tour.Vue({

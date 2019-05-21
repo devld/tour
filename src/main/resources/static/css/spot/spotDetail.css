@@ -1,0 +1,133 @@
+.spot-detail {
+  position: relative;
+  background-color: #fff;
+  padding: 20px 40px;
+  width: 800px;
+  margin: 40px auto;
+}
+
+.spot-detail .spot-admin-menu {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.title {
+}
+
+.user-mark {
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+.photos {
+  display: flex;
+  position: relative;
+  user-select: none;
+}
+
+.photos .photo-count {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  padding: 0 6px;
+}
+
+.photos img {
+  width: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.photos .left {
+  width: 66.66%;
+}
+
+.photos .left img {
+  height: 100%;
+}
+
+.photos .right img {
+  height: 50%;
+}
+
+.photos .right {
+  width: 33.33%;
+}
+
+.intro {
+  text-indent: 2em;
+  margin: 20px 0;
+}
+
+.info {
+  display: flex;
+  border-top: solid 1px rgba(0, 0, 0, 0.1);
+}
+
+.info > div {
+  display: flex;
+  flex-direction: column;
+  width: 33.33%;
+  padding: 0 20px;
+  margin: 10px 0;
+  border-right: solid 1px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 640px) {
+  .info {
+    flex-direction: column;
+  }
+
+  .info > div {
+    width: 100%;
+    border-right: none;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+}
+
+.info > div:last-child {
+  border-right: none;
+}
+
+.info > div > .info-title {
+  color: #999;
+}
+
+.big-title {
+  font-size: 22px;
+}
+
+.info > div > span {
+  margin: 6px 0;
+}
+
+.transport, .tickets, .open-time {
+  margin: 10px 0;
+}
+
+.transport .info-title, .tickets .info-title, .open-time .info-title {
+  display: block;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.spot-map .spot-map-view {
+  width: 100%;
+  height: 300px;
+}
+
+.spot-comments {
+  margin-top: 20px;
+}
+
+.deleted-tip {
+  text-align: center;
+  margin: 40px 0 20px;
+  padding: 20px;
+  background-color: #fff59d;
+}

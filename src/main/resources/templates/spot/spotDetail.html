@@ -6,135 +6,7 @@
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
   <title th:text="${spot.spot.name}"></title>
-  <style>
-    .spot-detail {
-      position: relative;
-      background-color: #fff;
-      padding: 20px 40px;
-      width: 800px;
-      margin: 40px auto;
-    }
-
-    .spot-detail .spot-edit-button {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
-
-    .title {
-    }
-
-    .user-mark {
-      margin-bottom: 10px;
-      text-align: right;
-    }
-
-    .photos {
-      display: flex;
-      position: relative;
-      user-select: none;
-    }
-
-    .photos .photo-count {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      color: #fff;
-      background-color: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
-      padding: 0 6px;
-    }
-
-    .photos img {
-      width: 100%;
-      display: block;
-      object-fit: contain;
-    }
-
-    .photos .left {
-      width: 66.66%;
-    }
-
-    .photos .left img {
-      height: 100%;
-    }
-
-    .photos .right img {
-      height: 50%;
-    }
-
-    .photos .right {
-      width: 33.33%;
-    }
-
-    .intro {
-      text-indent: 2em;
-      margin: 20px 0;
-    }
-
-    .info {
-      display: flex;
-      border-top: solid 1px rgba(0, 0, 0, 0.1);
-    }
-
-    .info > div {
-      display: flex;
-      flex-direction: column;
-      width: 33.33%;
-      padding: 0 20px;
-      margin: 10px 0;
-      border-right: solid 1px rgba(0, 0, 0, 0.1);
-    }
-
-    @media screen and (max-width: 640px) {
-      .info {
-        flex-direction: column;
-      }
-
-      .info > div {
-        width: 100%;
-        border-right: none;
-        padding: 0;
-        margin-bottom: 20px;
-      }
-    }
-
-    .info > div:last-child {
-      border-right: none;
-    }
-
-    .info > div > .info-title {
-      color: #999;
-    }
-
-    .big-title {
-      font-size: 22px;
-    }
-
-    .info > div > span {
-      margin: 6px 0;
-    }
-
-    .transport, .tickets, .open-time {
-      margin: 10px 0;
-    }
-
-    .transport .info-title, .tickets .info-title, .open-time .info-title {
-      display: block;
-      font-weight: bold;
-      margin: 10px 0;
-    }
-
-    .spot-map .spot-map-view {
-      width: 100%;
-      height: 300px;
-    }
-
-    .spot-comments {
-      margin-top: 20px;
-    }
-
-  </style>
+  <link rel="stylesheet" th:href="@{/static/css/spot/spotDetail.css}">
 </head>
 <body>
 
@@ -144,6 +16,7 @@
 </div>
 
 <div class="spot-detail" layout:fragment="content">
+  <div th:if="${spot.spot.state == 1}" class="deleted-tip" th:text="#{ui.deleted_spot_tip}">deleted spot</div>
   <div class="title">
     <h1 class="name" th:text="${spot.spot.name}">景点名称</h1>
   </div>
@@ -151,10 +24,11 @@
     <spot-mark-view :spot-id="spotId" v-model="marks"></spot-mark-view>
   </div>
   <div class="photos">
-    <div class="left"><img th:src="@{${photo1?.imgUrl}}" th:alt="${spot.spot.name}"></div>
+    <div class="left"><img th:src="@{${photo1 != null} ? ${photo1.imgUrl} : '/static/image/spot.png'}"
+                           th:alt="${spot.spot.name}"></div>
     <div class="right">
-      <img th:src="@{${photo2?.imgUrl}}" th:alt="${spot.spot.name}">
-      <img th:src="@{${photo3?.imgUrl}}" th:alt="${spot.spot.name}">
+      <img th:src="@{${photo2 != null} ? ${photo2.imgUrl} : '/static/image/spot.png'}" th:alt="${spot.spot.name}">
+      <img th:src="@{${photo3 != null} ? ${photo3.imgUrl} : '/static/image/spot.png'}" th:alt="${spot.spot.name}">
     </div>
     <div class="photo-count" th:text="#{ui.spot_photo_count(${spot.spot.photoCount})}"></div>
   </div>
@@ -199,13 +73,17 @@
     <location-map-view class="spot-map-view" :lng="lng" :lat="lat"></location-map-view>
   </div>
 
-  <div class="spot-comments">
+  <div class="spot-comments" th:if="${spot.spot.state == 0}">
     <span class="comment-title big-title" th:text="#{ui.spot_comment_title}"></span>
-    <spot-comment-view :spot-id="spotId" :login="loggedIn"/>
+    <spot-comment-view :spot-id="spotId" :user-id="userId" :user-type="userType"/>
   </div>
 
-  <a sec:authorize="hasRole('ADMIN')" th:href="@{/spot/edit(id=${spot.spot.id})}" class="link spot-edit-button"
-     th:text="#{ui.edit_spot}"></a>
+  <div class="spot-admin-menu" sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/spot/edit(id=${spot.spot.id})}" class="link"
+       th:text="#{ui.edit_spot}"></a>
+    <a th:if="${spot.spot.state == 0}" href="javascript: void(0)" @click="deleteSpot" class="link link-danger"
+       th:text="#{ui.delete_spot}"></a>
+  </div>
 
   <script>
     new Tour.Vue({
@@ -220,7 +98,8 @@
           lng: +'[[${spot.spot.location.longitude}]]',
           lat: +'[[${spot.spot.location.latitude}]]',
           spotId: +'[[${spot.spot.id}]]',
-          loggedIn: '[[${user != null}]]' === 'true',
+          userId: +'[[${user?.id}]]',
+          userType: +'[[${user?.userType?.ordinal()}]]',
           marks: {
             went: {
               state: '[[${spot.went}]]' === 'true',
@@ -231,6 +110,21 @@
               count: +'[[${spot.spot.collectCount}]]'
             }
           }
+        }
+      },
+      methods: {
+        deleteSpot() {
+          Tour.confirm('[[#{ui.dialog.delete_spot_confirm}]]', '[[#{ui.delete_spot}]]').then(() => {
+            Tour.api.spot.deleteSpot(this.spotId).then(() => {
+              Tour.msg.success('[[#{ui.delete_successfully}]]')
+              setTimeout(() => {
+                window.location.href = '[[@{/}]]'
+              }, 1000)
+            }, e => {
+              Tour.msg.error(e.message)
+            })
+          }, () => {
+          })
         }
       }
     })

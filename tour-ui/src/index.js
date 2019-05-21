@@ -42,10 +42,17 @@ import TravelNotesMarkView from './views/travel-notes/travel-notes-mark'
 import LocationSelectorView from './views/part/location-selector'
 import LocationMapView from './views/part/location-map'
 
+import ChangePasswordView from './views/auth/change-password'
+
+
+// exported http api
+import api from './api'
+
 window.$ = $
 
 export default {
   msg: ElementUI.msg,
+  confirm: ElementUI.confirm,
   Auth,
   Vue,
   Views: {
@@ -56,6 +63,8 @@ export default {
     TravelNotesEditView,
     TravelNotesMarkView,
     LocationSelectorView,
-    LocationMapView
-  }
+    LocationMapView,
+    ChangePasswordView
+  },
+  api
 }

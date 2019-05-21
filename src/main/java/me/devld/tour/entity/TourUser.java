@@ -7,7 +7,9 @@ import java.sql.Date;
 
 @Entity
 @Table(name = "tour_user")
-public class TourUser extends BaseEntity {
+public class TourUser extends BaseStateEntity {
+
+    public static final byte STATE_DISABLED = 2;
 
     private String username;
 
@@ -31,8 +33,6 @@ public class TourUser extends BaseEntity {
     private UserType userType;
 
     private String password;
-
-    private Boolean enabled;
 
     public String getUsername() {
         return username;
@@ -114,14 +114,6 @@ public class TourUser extends BaseEntity {
         this.password = password;
     }
 
-    public boolean isEnabled() {
-        return enabled != null && enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public enum UserType {
         USER, ADMIN
     }
@@ -141,7 +133,6 @@ public class TourUser extends BaseEntity {
                 ", regionId=" + regionId +
                 ", email='" + email + '\'' +
                 ", userType=" + userType +
-                ", enabled=" + enabled +
                 '}';
     }
 }
