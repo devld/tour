@@ -153,7 +153,7 @@ public class SecurityConfig {
             @Override
             public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
 
-                String uri = request.getRequestURL().toString();
+                String uri = request.getRequestURI();
                 String qs = request.getQueryString();
 
                 String redirectTo = uri + (qs != null ? ("?" + qs) : "");
