@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
@@ -26,7 +27,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -141,6 +141,11 @@ public class SecurityConfig {
                     new CookieApiTokenAuthenticationFilter(authenticationManager(), apiTokenConfig.getCookieKey()),
                     BasicAuthenticationFilter.class
             );
+        }
+
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring().mvcMatchers("/static/**");
         }
 
         class WebAuthenticationEntryPoint implements AuthenticationEntryPoint {
