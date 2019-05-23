@@ -42,7 +42,7 @@
           </div>
         </div>
         <el-form-item prop="content">
-          <rich-text-editor class="content" v-model="notes.content"/>
+          <rich-text-editor class="content" :img-wm="true" v-model="notes.content"/>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="goMarkPhoto">下一步</el-button>

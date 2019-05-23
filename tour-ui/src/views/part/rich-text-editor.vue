@@ -1,5 +1,9 @@
 <template>
-  <div class="editor-wrapper" v-loading="imageUploading">
+  <div
+    class="editor-wrapper"
+    :element-loading-text="loadingProgress + '%'"
+    v-loading="imageUploading"
+  >
     <div ref="toolbar" class="toolbar"></div>
     <div ref="editor" class="editor"></div>
   </div>
@@ -23,7 +27,8 @@ const editorMenus = [
 export default {
   name: 'rich-text-editor',
   props: {
-    value: String
+    value: String,
+    imgWm: Boolean
   },
   watch: {
     value () {
@@ -34,7 +39,8 @@ export default {
     return {
       editor: null,
       lastContent: '',
-      imageUploading: false
+      imageUploading: false,
+      loadingProgress: 0
     }
   },
   mounted () {
@@ -53,7 +59,12 @@ export default {
     uploadImage (files, insert) {
       this.imageUploading = true
       const file = files[0]
-      uploadFile(file, FileType.IMAGE).then(res => {
+      const options = {}
+      if (this.imgWm) { options.wm = '1' }
+      this.loadingProgress = 0
+      uploadFile(file, FileType.IMAGE, options, ({ percent }) => {
+        this.loadingProgress = Math.round(percent)
+      }).then(res => {
         insert(res.url)
       }, e => {
         this.$message.error('上传失败: ' + e.message)

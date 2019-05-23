@@ -33,13 +33,15 @@ export function uploadFile (file, type, options, onprogress) {
   return uploadPrepare(file, type, options).then(({ token, key, baseUrl }) => {
     return new Promise((resolve, reject) => {
       qiniu.upload(file, key, token, {}, {}).subscribe({
-        complete: ({ key }) => {
+        next ({ total }) {
+          onprogress && onprogress(total)
+        },
+        complete ({ key }) {
           resolve({
             url: baseUrl + key
           })
         },
-        error: reject,
-        next: onprogress
+        error: reject
       })
     })
   })
