@@ -1,5 +1,6 @@
 package me.devld.tour.controller.web;
 
+import me.devld.tour.controller.Request;
 import me.devld.tour.service.UserService;
 import me.devld.tour.util.SecurityUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Request("个人资料页面")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("")
     public String myProfile(Model model) {
@@ -27,6 +29,7 @@ public class UserController {
         return "user/user-info";
     }
 
+    @Request("用户资料页面")
     @GetMapping("/{username}")
     public String userProfile(@PathVariable("username") String username, Model model) {
         model.addAttribute("mine", false);
@@ -34,6 +37,7 @@ public class UserController {
         return "user/user-info";
     }
 
+    @Request("修改密码页面")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/change-password")
     public String changePassword() {

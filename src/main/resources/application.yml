@@ -33,4 +33,11 @@ app:
     max-file-size: 10485760
     file-prefix:
     base-url:
+  a-map-config:
+    api-key:
+    poi-code:
+      # 不要修改，详见 https://lbs.amap.com/api/webservice/download POI 分类编码
+      FOOD: "050000"
+      HOTEL: "100000"
+
 

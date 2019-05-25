@@ -1,8 +1,11 @@
 package me.devld.tour.config;
 
+import me.devld.tour.dto.poi.PoiType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Map;
 
 @EnableConfigurationProperties(AppConfig.class)
 @ConfigurationProperties(prefix = "app")
@@ -12,6 +15,8 @@ public class AppConfig {
     private ApiTokenConfig apiToken;
 
     private QiNiuFileConfig qiNiuFileConfig;
+
+    private AMapConfig aMapConfig;
 
     public ApiTokenConfig getApiToken() {
         return apiToken;
@@ -27,6 +32,35 @@ public class AppConfig {
 
     public void setQiNiuFileConfig(QiNiuFileConfig qiNiuFileConfig) {
         this.qiNiuFileConfig = qiNiuFileConfig;
+    }
+
+    public AMapConfig getaMapConfig() {
+        return aMapConfig;
+    }
+
+    public void setaMapConfig(AMapConfig aMapConfig) {
+        this.aMapConfig = aMapConfig;
+    }
+
+    public static class AMapConfig {
+        private String apiKey;
+        private Map<PoiType, String> poiCode;
+
+        public String getApiKey() {
+            return apiKey;
+        }
+
+        public void setApiKey(String apiKey) {
+            this.apiKey = apiKey;
+        }
+
+        public Map<PoiType, String> getPoiCode() {
+            return poiCode;
+        }
+
+        public void setPoiCode(Map<PoiType, String> poiCode) {
+            this.poiCode = poiCode;
+        }
     }
 
     public static class QiNiuFileConfig {

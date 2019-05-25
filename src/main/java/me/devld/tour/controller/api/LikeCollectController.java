@@ -1,6 +1,7 @@
 package me.devld.tour.controller.api;
 
 import me.devld.tour.controller.ApiController;
+import me.devld.tour.controller.Request;
 import me.devld.tour.entity.rel.LikeCollectRel;
 import me.devld.tour.entity.rel.RelObjectType;
 import me.devld.tour.entity.rel.RelType;
@@ -23,6 +24,7 @@ public class LikeCollectController {
         this.likeCollectService = likeCollectService;
     }
 
+    @Request("获取用户标记")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("")
     public List<LikeCollectRel> getRel(

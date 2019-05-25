@@ -1,5 +1,6 @@
 package me.devld.tour.controller.web;
 
+import me.devld.tour.controller.Request;
 import me.devld.tour.dto.PageParam;
 import me.devld.tour.dto.travel.TravelNotesDetailsOutVO;
 import me.devld.tour.service.SpotService;
@@ -20,6 +21,7 @@ public class IndexController {
         this.travelNotesService = travelNotesService;
     }
 
+    @Request("首页")
     @GetMapping("/")
     public String index(Model model) {
         // 目的地列表

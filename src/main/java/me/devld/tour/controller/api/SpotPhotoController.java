@@ -1,6 +1,7 @@
 package me.devld.tour.controller.api;
 
 import me.devld.tour.controller.ApiController;
+import me.devld.tour.controller.Request;
 import me.devld.tour.service.SpotPhotoService;
 import me.devld.tour.util.SecurityUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ public class SpotPhotoController {
         this.spotPhotoService = spotPhotoService;
     }
 
+    @Request("景点照片点赞")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/photo/{photoId}/like")
     public void toggleLikeSpotPhoto(@PathVariable("photoId") long photoId, @RequestParam("s") boolean state) {

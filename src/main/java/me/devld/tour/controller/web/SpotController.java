@@ -1,5 +1,6 @@
 package me.devld.tour.controller.web;
 
+import me.devld.tour.controller.Request;
 import me.devld.tour.dto.PageParam;
 import me.devld.tour.dto.spot.SpotDetailsOut;
 import me.devld.tour.entity.Spot;
@@ -30,6 +31,7 @@ public class SpotController {
         this.districtService = districtService;
     }
 
+    @Request("景点列表页面")
     @GetMapping("")
     public String spotList(
             @RequestParam(value = "lid", required = false) Integer locationId,
@@ -51,6 +53,7 @@ public class SpotController {
         return "spot/spotList";
     }
 
+    @Request("景点详情页面")
     @GetMapping("/{spotId}")
     public String spotDetail(@PathVariable("spotId") long spotId, Model model) {
         SpotDetailsOut details = spotService.getSpotDetails(spotId, SecurityUtil.userIdOrNull());
@@ -70,6 +73,7 @@ public class SpotController {
         return "spot/spotDetail";
     }
 
+    @Request("推荐景点页面")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/recommend")
     public String recommendSpots(PageParam pageParam, Model model) {
@@ -78,6 +82,7 @@ public class SpotController {
         return "spot/spotList";
     }
 
+    @Request("热门景点页面")
     @GetMapping("/hot")
     public String hotSpots(PageParam pageParam, Model model) {
         model.addAttribute("title", "hot");
@@ -85,6 +90,7 @@ public class SpotController {
         return "spot/spotList";
     }
 
+    @Request("编辑景点页面")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/edit")
     public String editSpot(@RequestParam(value = "id", required = false) Long spotId, Model model) {

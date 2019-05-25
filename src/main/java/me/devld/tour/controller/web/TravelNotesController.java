@@ -1,6 +1,7 @@
 package me.devld.tour.controller.web;
 
 
+import me.devld.tour.controller.Request;
 import me.devld.tour.dto.PageParam;
 import me.devld.tour.dto.travel.TravelNotesDetailsOutVO;
 import me.devld.tour.service.SpotService;
@@ -26,6 +27,7 @@ public class TravelNotesController {
         this.spotService = spotService;
     }
 
+    @Request("景点游记列表页面")
     @GetMapping("/spot/{spotId}")
     public String travelNotesList(@PathVariable("spotId") long spotId, PageParam pageParam, Model model) {
 
@@ -36,6 +38,7 @@ public class TravelNotesController {
         return "travel-notes/notesList";
     }
 
+    @Request("热门游记页面")
     @GetMapping("/hot")
     public String hotTravelNotesList(PageParam pageParam, Model model) {
 
@@ -45,12 +48,14 @@ public class TravelNotesController {
         return "travel-notes/notesList";
     }
 
+    @Request("游记详情页面")
     @GetMapping("/{id}")
     public String travelNotesDetail(@PathVariable("id") long notesId, Model model) {
         model.addAttribute("note", TravelNotesDetailsOutVO.from(travelNotesService.getTravelNotesDetails(notesId, SecurityUtil.userIdOrNull())));
         return "travel-notes/notesDetail";
     }
 
+    @Request("编辑游记页面")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/edit")
     public String editTravelNotes(@RequestParam(value = "id", required = false) Long notesId, Model model) {

@@ -1,6 +1,7 @@
 package me.devld.tour.controller.web;
 
 import me.devld.tour.controller.ApiController;
+import me.devld.tour.controller.Request;
 import me.devld.tour.dto.file.FileType;
 import me.devld.tour.dto.file.FileUploadIn;
 import me.devld.tour.service.FileService;
@@ -23,6 +24,7 @@ public class FileController {
         this.fileService = fileService;
     }
 
+    @Request("上传文件(prepare)")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/upload/prepare")
     public Object getFileUploadKey(
