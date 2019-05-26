@@ -2,28 +2,27 @@ package me.devld.tour.dto.poi;
 
 import me.devld.tour.entity.District;
 
-import java.util.Date;
 import java.util.List;
 
 public class WeatherForecast {
 
-    private Date reportTime;
+    private Long reportTime;
 
     private District district;
 
     private List<WeatherWrapper> weathers;
 
-    public WeatherForecast(Date reportTime, District district, List<WeatherWrapper> weathers) {
+    public WeatherForecast(Long reportTime, District district, List<WeatherWrapper> weathers) {
         this.reportTime = reportTime;
         this.district = district;
         this.weathers = weathers;
     }
 
-    public Date getReportTime() {
+    public Long getReportTime() {
         return reportTime;
     }
 
-    public void setReportTime(Date reportTime) {
+    public void setReportTime(Long reportTime) {
         this.reportTime = reportTime;
     }
 
@@ -44,7 +43,7 @@ public class WeatherForecast {
     }
 
     public static class WeatherWrapper {
-        private Date date;
+        private Long date;
 
         /**
          * 白天天气
@@ -56,17 +55,17 @@ public class WeatherForecast {
          */
         private Weather night;
 
-        public WeatherWrapper(Date date, Weather day, Weather night) {
+        public WeatherWrapper(Long date, Weather day, Weather night) {
             this.date = date;
             this.day = day;
             this.night = night;
         }
 
-        public Date getDate() {
+        public Long getDate() {
             return date;
         }
 
-        public void setDate(Date date) {
+        public void setDate(Long date) {
             this.date = date;
         }
 

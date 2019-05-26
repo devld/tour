@@ -13,6 +13,7 @@ import me.devld.tour.service.DistrictService;
 import me.devld.tour.service.PoiService;
 import me.devld.tour.util.JsonUtil;
 import me.devld.tour.util.MapUtil;
+import me.devld.tour.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -23,8 +24,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -83,14 +83,14 @@ public class AMapPoiServiceImpl implements PoiService {
         Map<String, Object> forecast = extractWeatherData(queryWeather("all", district.getCode()), "forecasts");
         try {
             return new WeatherForecast(
-                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(MapUtil.getString(forecast, "reporttime")),
+                    TimeUtil.parseNormalTime(MapUtil.getString(forecast, "reporttime"), TimeUtil.ZONE_CHINA),
                     district,
                     MapUtil.getListMap(forecast, "casts").stream()
                             .map(this::mapWeatherWrapper)
                             .sorted(Comparator.comparing(WeatherForecast.WeatherWrapper::getDate))
                             .collect(Collectors.toList())
             );
-        } catch (ParseException e) {
+        } catch (DateTimeParseException e) {
             throw new ThirdPartException("invalid datetime", e);
         }
     }
@@ -101,8 +101,8 @@ public class AMapPoiServiceImpl implements PoiService {
         Map<String, Object> live = extractWeatherData(queryWeather("base", district.getCode()), "lives");
         WeatherLive weatherLive = new WeatherLive();
         try {
-            weatherLive.setReportTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(MapUtil.getString(live, "reporttime")));
-        } catch (ParseException e) {
+            weatherLive.setReportTime(TimeUtil.parseNormalTime(MapUtil.getString(live, "reporttime"), TimeUtil.ZONE_CHINA));
+        } catch (DateTimeParseException e) {
             throw new ThirdPartException("invalid date time", e);
         }
         Weather weather = new Weather();
@@ -133,8 +133,8 @@ public class AMapPoiServiceImpl implements PoiService {
         night.setWindPower(MapUtil.getString(map, "nightpower"));
 
         try {
-            return new WeatherForecast.WeatherWrapper(new SimpleDateFormat("yyyy-MM-dd").parse(MapUtil.getString(map, "date")), day, night);
-        } catch (ParseException e) {
+            return new WeatherForecast.WeatherWrapper(TimeUtil.parseNormalDate(MapUtil.getString(map, "date"), TimeUtil.ZONE_CHINA), day, night);
+        } catch (DateTimeParseException e) {
             throw new ThirdPartException("invalid date", e);
         }
     }

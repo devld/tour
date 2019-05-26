@@ -12,7 +12,7 @@ public class WeatherLive {
 
     private District district;
 
-    private Date reportTime;
+    private Long reportTime;
 
     public Weather getWeather() {
         return weather;
@@ -30,11 +30,11 @@ public class WeatherLive {
         this.district = district;
     }
 
-    public Date getReportTime() {
+    public Long getReportTime() {
         return reportTime;
     }
 
-    public void setReportTime(Date reportTime) {
+    public void setReportTime(Long reportTime) {
         this.reportTime = reportTime;
     }
 }

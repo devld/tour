@@ -7,8 +7,6 @@ import me.devld.tour.dto.poi.WeatherForecast;
 import me.devld.tour.dto.poi.WeatherLive;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public interface PoiService {
 
     /**
