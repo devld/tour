@@ -41,7 +41,7 @@
 <script>
 import DistrictSelectorView from './district-selector'
 
-import { debounce } from '../../util'
+import { debounce, calcLocationCenter } from '../../util'
 import { getDistrictByCode } from '../../api/district'
 
 import { AMapManager } from 'vue-amap'
@@ -133,20 +133,12 @@ export default {
       this.onLocationSelected(position.lng, position.lat)
     },
     onMapSearchResult (pois) {
-      let latSum = 0
-      let lngSum = 0
       this.map.markers.splice(0)
       if (pois.length > 0) {
         pois.forEach(poi => {
-          let { lng, lat } = poi
-          lngSum += lng
-          latSum += lat
           this.map.markers.push([poi.lng, poi.lat])
-        });
-        let center = {
-          lng: lngSum / pois.length,
-          lat: latSum / pois.length
-        };
+        })
+        const center = calcLocationCenter(pois)
         this.map.center = [center.lng, center.lat]
       }
     },

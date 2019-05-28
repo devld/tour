@@ -7,6 +7,11 @@
 <head>
   <title th:text="${spot.spot.name}"></title>
   <link rel="stylesheet" th:href="@{/static/css/spot/spotDetail.css}">
+  <style>
+    .weather-icon {
+      background-image: url("[[@{/static/image/weather.png}]]") !important;
+    }
+  </style>
 </head>
 <body>
 
@@ -50,6 +55,11 @@
     </div>
   </div>
 
+  <div class="spot-weather-wrapper">
+    <span class="info-title" th:text="#{ui.spot_weather}">交通</span>
+    <weather-view class="spot-weather" :location-id="locationId"></weather-view>
+  </div>
+
   <div class="transport">
     <span class="info-title" th:text="#{ui.spot_transport}">交通</span>
     <div th:text="${spot.spot.transport}"></div>
@@ -70,7 +80,24 @@
 
   <div class="spot-map">
     <span class="map-title big-title" th:text="#{ui.spot_location_title}"></span>
-    <location-map-view class="spot-map-view" :lng="lng" :lat="lat"></location-map-view>
+    <location-map-view @m-click="markerClick" @click="markerClick" :markers="markers" class="spot-map-view" :lng="lng"
+                       :lat="lat"></location-map-view>
+  </div>
+
+  <div class="spot-poi-wrapper">
+    <span class="spot-poi-title big-title" th:text="#{ui.spot_poi}"></span>
+    <div class="spot-poi">
+      <div class="food">
+        <span class="info-title" th:text="#{ui.spot_poi_food}"></span>
+        <poi-list-view @click="poiClicked('food', $event)" class="poi-list" :lng="lng" :lat="lat"
+                       type="FOOD"></poi-list-view>
+      </div>
+      <div class="hotel">
+        <span class="info-title" th:text="#{ui.spot_poi_hotel}"></span>
+        <poi-list-view @click="poiClicked('hotel', $event)" class="poi-list" :lng="lng" :lat="lat"
+                       type="HOTEL"></poi-list-view>
+      </div>
+    </div>
   </div>
 
   <div class="spot-comments" th:if="${spot.spot.state == 0}">
@@ -91,12 +118,16 @@
       components: {
         LocationMapView: Tour.Views.LocationMapView,
         SpotCommentView: Tour.Views.SpotCommentView,
-        SpotMarkView: Tour.Views.SpotMarkView
+        SpotMarkView: Tour.Views.SpotMarkView,
+        WeatherView: Tour.Views.WeatherView,
+        PoiListView: Tour.Views.PoiListView
       },
       data() {
         return {
+          name: '[[${spot.spot.name}]]',
           lng: +'[[${spot.spot.location.longitude}]]',
           lat: +'[[${spot.spot.location.latitude}]]',
+          locationId: +'[[${spot.spot.location.locationId}]]',
           spotId: +'[[${spot.spot.id}]]',
           userId: +'[[${user?.id}]]',
           userType: +'[[${user?.userType?.ordinal()}]]',
@@ -109,10 +140,33 @@
               state: '[[${spot.collected}]]' === 'true',
               count: +'[[${spot.spot.collectCount}]]'
             }
-          }
+          },
+          food: [],
+          hotel: []
+        }
+      },
+      computed: {
+        markers() {
+          const r = []
+          this.food.forEach(e => r.push(e))
+          this.hotel.forEach(e => r.push(e))
+          return r
         }
       },
       methods: {
+        markerClick: function (loc) {
+          window.open('https://uri.amap.com/navigation?to=' + loc.lng + ',' + loc.lat + ',' + encodeURIComponent(loc.name || this.name))
+        },
+        poiClicked(type, item) {
+          this[type].splice(0)
+          this[type].push({
+            ...item,
+            lng: item.location.longitude,
+            lat: item.location.latitude,
+            tip: '导航去 ' + item.name
+          })
+          window.scrollTo($('.map-title').position())
+        },
         deleteSpot() {
           Tour.confirm('[[#{ui.dialog.delete_spot_confirm}]]', '[[#{ui.delete_spot}]]').then(() => {
             Tour.api.spot.deleteSpot(this.spotId).then(() => {

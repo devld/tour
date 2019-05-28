@@ -31,19 +31,7 @@ VueAMap.initAMapApiLoader({
 
 import Auth from './views/auth'
 
-import UpdateProfileView from './views/user/update-profile'
-import SpotEditView from './views/spot/spot-edit'
-import SpotCommentView from './views/spot/spot-comment'
-import SpotMarkView from './views/spot/spot-mark'
-
-import TravelNotesEditView from './views/travel-notes/travel-notes-edit'
-import TravelNotesMarkView from './views/travel-notes/travel-notes-mark'
-
-import LocationSelectorView from './views/part/location-selector'
-import LocationMapView from './views/part/location-map'
-
-import ChangePasswordView from './views/auth/change-password'
-
+import Views from './views'
 
 // exported http api
 import api from './api'
@@ -55,16 +43,6 @@ export default {
   confirm: ElementUI.confirm,
   Auth,
   Vue,
-  Views: {
-    UpdateProfileView,
-    SpotEditView,
-    SpotCommentView,
-    SpotMarkView,
-    TravelNotesEditView,
-    TravelNotesMarkView,
-    LocationSelectorView,
-    LocationMapView,
-    ChangePasswordView
-  },
+  Views,
   api
 }

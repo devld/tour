@@ -18,10 +18,6 @@
 
 <body>
   <div>
-    <p style="text-align:center;">item 11 item</p>
-    <p style="text-align:center;">item 21 item</p>
-    <p style="text-align:center;">item 31 item</p>
-    <p style="text-align:center;">item 41 item</p>
 
     <button onclick="Tour.Auth.showAuthDialog(() => { console.log('ok') })">Show Dialog</button>
 
@@ -30,15 +26,17 @@
       <div id="app">
         <div style="height: 300px; width: 600px;">
 
-          <spot-comment-view :spot-id="2"></spot-comment-view>
+          <weather-view :location-id="3020"></weather-view>
+
+          <location-map-view @m-click="markerClick" @click="mapClick" :lng="108.9398" :lat="34.3416" :markers="markers">
+          </location-map-view>
+
+          <poi-list-view @click="itemClick" :lng="108.9398" :lat="34.3416" type="HOTEL"></poi-list-view>
 
         </div>
       </div>
 
     </div>
-
-    <p style="text-align:center;">item 51 item</p>
-    <p style="text-align:center;">item 61 item</p>
 
   </div>
 
@@ -48,9 +46,27 @@
     el: '#app',
     data() {
       return {
+        markers: []
       }
     },
-    components: { SpotCommentView: Tour.Views.SpotCommentView }
+    methods: {
+      itemClick(item) {
+        this.markers.splice(0)
+        this.markers.push({
+          ...item,
+          lng: item.location.longitude,
+          lat: item.location.latitude,
+          tip: '导航去 ' + item.name
+        })
+      },
+      markerClick: function (loc) {
+        window.open('https://uri.amap.com/navigation?to=' + loc.lng + ',' + loc.lat + ',' + encodeURIComponent(loc.name))
+      },
+      mapClick: function (loc) {
+        window.open('https://uri.amap.com/navigation?to=' + loc.lng + ',' + loc.lat + ',haha')
+      }
+    },
+    components: { PoiListView: Tour.Views.PoiListView, LocationMapView: Tour.Views.LocationMapView, WeatherView: Tour.Views.WeatherView }
   })
 </script>
 

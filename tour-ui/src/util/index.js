@@ -12,3 +12,16 @@ export function debounce (func, delay) {
     inDebounce = setTimeout(() => func.apply(context, args), delay)
   }
 }
+
+export function calcLocationCenter (locations, lngKey = 'lng', latKey = 'lat') {
+  let result = locations.reduce((p, c) => {
+    return {
+      lng: p[lngKey] + c[lngKey],
+      lat: p[latKey] + c[latKey]
+    }
+  })
+  return {
+    lng: result[lngKey] / locations.length,
+    lat: result[latKey] / locations.length
+  }
+}

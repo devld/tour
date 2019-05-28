@@ -2,7 +2,7 @@
   position: relative;
   background-color: #fff;
   padding: 20px 40px;
-  width: 800px;
+  width: 900px;
   margin: 40px auto;
 }
 
@@ -109,7 +109,7 @@
   margin: 10px 0;
 }
 
-.transport .info-title, .tickets .info-title, .open-time .info-title {
+.transport .info-title, .tickets .info-title, .open-time .info-title, .spot-weather-wrapper .info-title {
   display: block;
   font-weight: bold;
   margin: 10px 0;
@@ -129,4 +129,50 @@
   margin: 40px 0 20px;
   padding: 20px;
   background-color: #fff59d;
+}
+
+.spot-poi-wrapper {
+  margin-top: 10px;
+}
+
+.spot-poi {
+  margin-top: 10px;
+  display: flex;
+}
+
+.spot-poi > div {
+  width: 50%;
+  margin-right: 10px;
+}
+
+.spot-poi > div:last-child {
+  margin-right: 0;
+}
+
+.spot-poi .poi-list {
+  height: 400px;
+  overflow-y: auto;
+}
+
+.spot-poi .poi-list::-webkit-scrollbar {
+  background-color: #fff;
+  width: 6px;
+}
+
+.spot-poi .poi-list::-webkit-scrollbar-track {
+  border-radius: 3px;
+}
+
+.spot-poi .poi-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.spot-weather-wrapper {
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.spot-weather {
+  margin: 20px 0;
 }

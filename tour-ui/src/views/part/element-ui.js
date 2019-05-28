@@ -13,7 +13,8 @@ import {
   InputNumber,
   Loading,
   MessageBox,
-  Message
+  Message,
+  Rate
 } from 'element-ui'
 
 import 'element-ui/lib/theme-chalk/index.css'
@@ -33,6 +34,7 @@ export function install (Vue) {
   Vue.use(Upload)
   Vue.use(DatePicker)
   Vue.use(InputNumber)
+  Vue.use(Rate)
 
   Vue.use(Loading.directive)
 

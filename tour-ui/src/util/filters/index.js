@@ -30,3 +30,10 @@ export function timeFormatter (timestamp) {
     return date.getFullYear() + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
   }
 }
+
+export function formatDistance (meter) {
+  if (meter < 1000) {
+    return meter + ' 米'
+  }
+  return (meter / 1000).toFixed(1) + ' 千米'
+}

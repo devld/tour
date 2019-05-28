@@ -20,15 +20,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -196,7 +194,8 @@ public class AMapPoiServiceImpl implements PoiService {
         location.setLocation(MapUtil.getString(aMapPoi, "address"));
         poi.setLocation(location);
 
-        poi.setPhone(Arrays.asList(MapUtil.getString(aMapPoi, "tel").split(";")));
+        String telTemp = MapUtil.getString(aMapPoi, "tel");
+        poi.setPhone(StringUtils.isEmpty(telTemp) ? Collections.emptyList() : Arrays.asList(telTemp.split(";")));
         poi.setDistance(Integer.valueOf(MapUtil.getString(aMapPoi, "distance")));
 
         poi.setPhotos(MapUtil.getListMap(aMapPoi, "photos").stream().map(e -> MapUtil.getString(e, "url")).collect(Collectors.toList()));
