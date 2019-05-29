@@ -46,8 +46,8 @@
 
 .img-bg-v {
   font-size: 16px;
-  width: 300px;
-  height: 169px;
+  width: 200px;
+  height: 113px;
   position: relative;
   display: inline-flex;
   justify-content: center;
@@ -71,6 +71,8 @@
 }
 
 .travel-note .spots {
+  border-bottom: solid 1px rgba(0, 0, 0, 0.1);
+  padding-bottom: 10px;
   margin: 20px 0;
 }
 

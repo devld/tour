@@ -4,7 +4,7 @@
       layout:decorate="~{layout/default}">
 <!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
 <head>
-  <title th:text="${note.travelNotes.title} + ' - ' + #{app.name}"></title>
+  <title th:text="${note.travelNotes.title}"></title>
   <link rel="stylesheet" th:href="@{/static/css/travel-notes/notesDetail.css}">
 </head>
 <body>

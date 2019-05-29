@@ -24,6 +24,7 @@
   display: flex;
   position: relative;
   user-select: none;
+  height: 360px;
 }
 
 .photos .photo-count {
@@ -39,7 +40,7 @@
 .photos img {
   width: 100%;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .photos .left {
