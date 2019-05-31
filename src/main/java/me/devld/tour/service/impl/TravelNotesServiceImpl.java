@@ -180,6 +180,6 @@ public class TravelNotesServiceImpl implements TravelNotesService {
                 throw new ForbiddenException();
             }
         }
-        travelNotesRepository.softDeleteById(travelNotesId);
+        travelNotesRepository.deleteById(travelNotesId);
     }
 }

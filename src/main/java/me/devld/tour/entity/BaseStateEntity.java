@@ -8,7 +8,7 @@ public abstract class BaseStateEntity extends BaseEntity {
     public static final byte STATE_NORMAL = 0;
     public static final byte STATE_DELETED = 1;
 
-    private Byte state = 0;
+    private Byte state = STATE_NORMAL;
 
     public Byte getState() {
         return state;

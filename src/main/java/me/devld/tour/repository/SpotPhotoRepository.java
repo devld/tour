@@ -1,6 +1,8 @@
 package me.devld.tour.repository;
 
 import me.devld.tour.entity.SpotPhoto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,5 +18,7 @@ public interface SpotPhotoRepository extends JpaRepository<SpotPhoto, Long> {
     int incrementCountById(long id, int likeCount);
 
     List<SpotPhoto> findTop3BySpotIdOrderByLikeCountDesc(long spotId);
+
+    Page<SpotPhoto> findAllBySpotId(long spotId, Pageable pageable);
 
 }

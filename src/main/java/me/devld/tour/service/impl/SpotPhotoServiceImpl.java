@@ -1,5 +1,7 @@
 package me.devld.tour.service.impl;
 
+import me.devld.tour.dto.PageParam;
+import me.devld.tour.entity.SpotPhoto;
 import me.devld.tour.entity.rel.LikeCollectRel;
 import me.devld.tour.entity.rel.RelObjectType;
 import me.devld.tour.entity.rel.RelType;
@@ -8,6 +10,8 @@ import me.devld.tour.exception.NotFoundException;
 import me.devld.tour.repository.SpotPhotoRepository;
 import me.devld.tour.service.LikeCollectService;
 import me.devld.tour.service.SpotPhotoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,5 +36,14 @@ public class SpotPhotoServiceImpl implements SpotPhotoService {
         if (!likeCollectService.markRelation(state, new LikeCollectRel(userId, photoId, RelObjectType.SPOT_PHOTO, RelType.LIKE))) {
             throw new ForbiddenException(state ? "msg.already_liked" : "msg.not_liked");
         }
+    }
+
+    @Override
+    public Page<SpotPhoto> getSpotPhotosBySpot(long spotId, PageParam pageParam) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "likeCount");
+        if ("latest".equals(pageParam.getSort())) {
+            sort = Sort.by(Sort.Direction.DESC, "updatedAt");
+        }
+        return spotPhotoRepository.findAllBySpotId(spotId, pageParam.toPageable(sort));
     }
 }

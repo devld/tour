@@ -95,7 +95,7 @@ public class SpotServiceImpl implements SpotService {
 
     @Override
     public SpotDetailsOut getSpotDetails(long id, Long userId) {
-        Optional<Spot> spot = spotRepository.findById(id);
+        Optional<Spot> spot = spotRepository.findEntityById(id);
         if (!spot.isPresent()) {
             throw new NotFoundException();
         }
@@ -203,8 +203,9 @@ public class SpotServiceImpl implements SpotService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteSpot(long spotId, long userId) {
-        if (spotRepository.softDeleteById(spotId) != 1) {
+        if (!spotRepository.existsById(spotId)) {
             throw new NotFoundException();
         }
+        spotRepository.deleteById(spotId);
     }
 }

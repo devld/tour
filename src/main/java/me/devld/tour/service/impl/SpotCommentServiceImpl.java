@@ -100,8 +100,6 @@ public class SpotCommentServiceImpl implements SpotCommentService {
                 throw new ForbiddenException();
             }
         }
-        if (spotCommentRepository.softDeleteById(commentId) != 1) {
-            throw new NotFoundException();
-        }
+        spotCommentRepository.deleteById(commentId);
     }
 }
