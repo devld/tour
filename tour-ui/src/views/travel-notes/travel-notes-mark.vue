@@ -20,13 +20,22 @@
       <i @click.stop="toggleCollect(true)" v-else class="iconfont no" title="收藏景点">&#xe600;</i>
       <span class="count">{{ thisValue.collect.count }}</span>
     </div>
+    <div class="share">
+      <i class="iconfont" title="分享">&#xe60f;</i>
+      <span class="count">{{ thisValue.share.count }}</span>
+      <share-view @click="shareNotes"/>
+    </div>
   </div>
 </template>
 <script>
 import { toggleNotesLike, toggleNotesCollect, shareNotes } from '../../api/travel-notes'
 
+import share from '../../util/share'
+import ShareView from '../part/share-view'
+
 export default {
   name: 'TravelNotesMarkView',
+  components: { ShareView },
   props: {
     notesId: {
       type: Number,
@@ -34,6 +43,10 @@ export default {
     },
     value: {
       type: Object
+    },
+    shareMeta: {
+      type: Object,
+      required: true
     }
   },
   watch: {
@@ -59,6 +72,9 @@ export default {
         },
         collect: {
           state: false,
+          count: 0
+        },
+        share: {
           count: 0
         }
       }
@@ -95,8 +111,17 @@ export default {
         this.collectLoading = false
       })
     },
-    share () {
-      shareNotes(this.notesId)
+    shareNotes (via) {
+      share(via, {
+        title: this.shareMeta.title,
+        desc: this.shareMeta.content,
+        url: window.location.href,
+        image: this.shareMeta.image
+      }).then(() => {
+        shareNotes(this.notesId, via)
+      }, e => {
+        this.$message.error(e)
+      })
     },
     copyValue (src, dst) {
       dst = dst || {}
@@ -106,6 +131,8 @@ export default {
       dst.collect = dst.collect || {}
       dst.collect.state = src.collect.state
       dst.collect.count = src.collect.count
+      dst.share = dst.share || {}
+      dst.share.count = src.share.count
       return dst
     }
   }
@@ -113,9 +140,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@keyframes share-anim {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .spot-mark {
   .like,
-  .collect {
+  .collect,
+  .share {
     display: inline-block;
     & > i {
       font-size: 26px;
@@ -130,6 +169,20 @@ export default {
   .collect {
     .yes {
       color: gold;
+    }
+  }
+  .share {
+    position: relative;
+    .share-view {
+      right: 0;
+      display: none;
+      position: absolute;
+      animation: share-anim 0.4s;
+    }
+    &:hover {
+      .share-view {
+        display: block;
+      }
     }
   }
 }

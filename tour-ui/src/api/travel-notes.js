@@ -20,8 +20,12 @@ export function toggleNotesCollect (notesId, state) {
   })
 }
 
-export function shareNotes (notesId) {
-  return axios.post(`/travel/${notesId}/share`)
+export function shareNotes (notesId, via) {
+  return axios.post(`/travel/${notesId}/share`, null, {
+    params: {
+      via
+    }
+  })
 }
 
 export function deleteNotes (notesId) {

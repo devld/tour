@@ -14,30 +14,36 @@
       background-image: url('./src/assets/bg.jpg');
     }
   </style>
+  <script src="static/iconfont/iconfont.js"></script>
+  <style>
+    .iconfont-svg {
+      width: 1em;
+      height: 1em;
+      vertical-align: -0.15em;
+      fill: currentColor;
+      overflow: hidden;
+    }
+  </style>
 </head>
 
 <body>
   <div>
 
     <button onclick="Tour.Auth.showAuthDialog(() => { console.log('ok') })">Show Dialog</button>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <div>
 
       <div id="app">
-        <div style=" ">
-
-          <spot-photos-view @click="a" :spot-id="5"></spot-photos-view>
-
-        </div>
+        <travel-notes-mark-view :notes-id="1" :share-meta="meta" v-model="ddd"></travel-notes-mark-view>
       </div>
 
     </div>
@@ -60,14 +66,32 @@
     el: '#app',
     data() {
       return {
+        meta: {
+          title: 'Hello World',
+          content: 'This is a test for sharing to social media',
+          image: 'http://qq.com'
+        },
+        ddd: {
+          like: {
+            state: true,
+            count: 123
+          },
+          collect: {
+            state: false,
+            count: 123
+          },
+          share: {
+            count: 123
+          }
+        }
       }
     },
     methods: {
-      a (item) {
+      a(item) {
         console.log(item.id)
-      } 
+      }
     },
-    components: { SpotPhotosView: Tour.Views.SpotPhotosView }
+    components: { TravelNotesMarkView: Tour.Views.TravelNotesMarkView }
   })
 </script>
 

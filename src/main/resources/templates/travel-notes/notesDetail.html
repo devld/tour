@@ -10,7 +10,7 @@
 <body>
 <div class="wrapper" layout:fragment="content">
   <article class="travel-note">
-    <h1 th:text="${note.travelNotes.title}"></h1>
+    <h1 class="note-title" th:text="${note.travelNotes.title}"></h1>
     <div class="info">
       <div class="author">
         <a target="_blank" th:href="@{${'/user/' + note.author.username}}">
@@ -25,7 +25,7 @@
           th:text="${#dates.format(new java.util.Date(note.travelNotes.createdAt), 'yyyy-MM-dd HH:mm:ss')}"></time>
       </div>
       <div class="user-mark">
-        <travel-notes-mark-view :notes-id="notesId" v-model="marks"></travel-notes-mark-view>
+        <travel-notes-mark-view :notes-id="notesId" v-model="marks" :share-meta="shareMeta"></travel-notes-mark-view>
       </div>
     </div>
     <div class="spots">
@@ -68,7 +68,15 @@
             collect: {
               state: '[[${note.collected}]]' === 'true',
               count: +'[[${note.travelNotes.collectCount}]]'
+            },
+            share: {
+              count: +'[[${note.travelNotes.shareCount}]]'
             }
+          },
+          shareMeta: {
+            title: $('.travel-note .note-title')[0].innerText,
+            content: $('.travel-note .content')[0].innerText.substr(0, 100),
+            image: ($('.travel-note .content img')[0] || {}).src || '[[@{/static/image/travel-notes.png}]]'
           }
         }
       },
