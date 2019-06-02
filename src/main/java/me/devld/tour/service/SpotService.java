@@ -46,12 +46,20 @@ public interface SpotService {
     Page<Spot> searchSpot(String keywords, PageParam pageParam);
 
     /**
-     * 获取景点
+     * 获取景点和景点门票
      *
      * @param id spotId
      * @return spot
      */
-    SpotDetailsOut getSpotById(long id);
+    SpotDetailsOut getSpotWithTicketsById(long id);
+
+    /**
+     * 获取景点
+     *
+     * @param id 景点 id
+     * @return 景点
+     */
+    Spot getSpotById(long id);
 
     /**
      * 根据 {@link me.devld.tour.entity.District} 的 id 获取该地(及其子地域)的所有景点

@@ -1,5 +1,5 @@
 <template>
-  <div class="spot-mark">
+  <div class="spot-photo-mark">
     <div class="like">
       <i
         @click.stop="toggleLike(false)"
@@ -10,25 +10,15 @@
       <i @click.stop="toggleLike(true)" v-else class="iconfont no" title="点赞">&#xe8c4;</i>
       <span class="count">{{ thisValue.like.count }}</span>
     </div>
-    <div class="collect">
-      <i
-        @click.stop="toggleCollect(false)"
-        v-if="thisValue.collect.state"
-        class="iconfont yes"
-        title="取消收藏"
-      >&#xe69e;</i>
-      <i @click.stop="toggleCollect(true)" v-else class="iconfont no" title="收藏景点">&#xe600;</i>
-      <span class="count">{{ thisValue.collect.count }}</span>
-    </div>
   </div>
 </template>
 <script>
-import { toggleNotesLike, toggleNotesCollect, shareNotes } from '../../api/travel-notes'
+import { toggleSpotPhotoLike } from '../../api/spot'
 
 export default {
-  name: 'TravelNotesMarkView',
+  name: 'SpotPhotoMarkView',
   props: {
-    notesId: {
+    photoId: {
       type: Number,
       required: true
     },
@@ -50,14 +40,9 @@ export default {
   data () {
     return {
       likeLoading: false,
-      collectLoading: false,
 
       thisValue: {
         like: {
-          state: false,
-          count: 0
-        },
-        collect: {
           state: false,
           count: 0
         }
@@ -70,7 +55,7 @@ export default {
         return
       }
       this.likeLoading = true
-      toggleNotesLike(this.notesId, state).then(() => {
+      toggleSpotPhotoLike(this.photoId, state).then(() => {
         this.thisValue.like.state = state
         this.thisValue.like.count += state ? 1 : -1
         this.$emit('input', this.copyValue(this.thisValue))
@@ -80,56 +65,26 @@ export default {
         this.likeLoading = false
       })
     },
-    toggleCollect (state) {
-      if (this.collectLoading) {
-        return
-      }
-      this.collectLoading = true
-      toggleNotesCollect(this.notesId, state).then(() => {
-        this.thisValue.collect.state = state
-        this.thisValue.collect.count += state ? 1 : -1
-        this.$emit('input', this.copyValue(this.thisValue))
-      }, e => {
-        console.error(e.message)
-      }).then(() => {
-        this.collectLoading = false
-      })
-    },
-    share () {
-      shareNotes(this.notesId)
-    },
     copyValue (src, dst) {
       dst = dst || {}
       dst.like = dst.like || {}
       dst.like.state = src.like.state
       dst.like.count = src.like.count
-      dst.collect = dst.collect || {}
-      dst.collect.state = src.collect.state
-      dst.collect.count = src.collect.count
       return dst
     }
   }
 }
 </script>
-
 <style lang="scss" scoped>
-.spot-mark {
-  .like,
-  .collect {
+.spot-photo-mark {
+  .like {
     display: inline-block;
     & > i {
       font-size: 26px;
       cursor: pointer;
     }
-  }
-  .like {
     .yes {
       color: rgb(255, 64, 0);
-    }
-  }
-  .collect {
-    .yes {
-      color: gold;
     }
   }
 }

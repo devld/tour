@@ -70,18 +70,16 @@ public class SpotServiceImpl implements SpotService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Spot updateSpot(long spotId, SpotIn spotIn) {
-        Optional<Spot> spot = spotRepository.findById(spotId);
-        if (!spot.isPresent()) {
-            throw new NotFoundException();
-        }
+        Spot spot = spotRepository.findById(spotId).orElseThrow(NotFoundException::new);
         Location newLocation = spotIn.getLocation();
         if (newLocation != null) {
-            BeanUtil.copyPropertiesButNull(newLocation, spot.get().getLocation());
+            BeanUtil.copyPropertiesButNull(newLocation, spot.getLocation());
         }
         spotIn.setLocation(null);
-        BeanUtil.copyPropertiesButNull(spotIn, spot.get());
-        spot.get().setUpdatedAt(System.currentTimeMillis());
-        spotRepository.save(spot.get());
+        BeanUtil.copyPropertiesButNull(spotIn, spot);
+        spot.setUpdatedAt(System.currentTimeMillis());
+        spot.setIntro(HtmlUtils.sanitizer(spot.getIntro()));
+        spotRepository.save(spot);
 
         spotTicketRepository.findAllBySpotId(spotId);
         List<SpotTicket> tickets = spotIn.getTickets();
@@ -90,18 +88,15 @@ public class SpotServiceImpl implements SpotService {
             spotTicketRepository.saveAll(tickets);
         }
 
-        return spot.get();
+        return spot;
     }
 
     @Override
     public SpotDetailsOut getSpotDetails(long id, Long userId) {
-        Optional<Spot> spot = spotRepository.findEntityById(id);
-        if (!spot.isPresent()) {
-            throw new NotFoundException();
-        }
+        Spot spot = spotRepository.findEntityById(id).orElseThrow(NotFoundException::new);
         List<SpotTicket> tickets = spotTicketRepository.findAllBySpotId(id);
         List<SpotPhoto> photos = spotPhotoRepository.findTop3BySpotIdOrderByLikeCountDesc(id);
-        SpotDetailsOut out = new SpotDetailsOut(spot.get(), tickets, photos);
+        SpotDetailsOut out = new SpotDetailsOut(spot, tickets, photos);
         if (userId != null) {
             Map<RelType, LikeCollectRel> rel = likeCollectService.getRelBy(
                     userId,
@@ -121,10 +116,15 @@ public class SpotServiceImpl implements SpotService {
     }
 
     @Override
-    public SpotDetailsOut getSpotById(long id) {
+    public SpotDetailsOut getSpotWithTicketsById(long id) {
         Spot spot = spotRepository.findById(id).orElseThrow(NotFoundException::new);
         List<SpotTicket> tickets = spotTicketRepository.findAllBySpotId(id);
         return new SpotDetailsOut(spot, tickets, null);
+    }
+
+    @Override
+    public Spot getSpotById(long id) {
+        return spotRepository.findEntityById(id).orElseThrow(NotFoundException::new);
     }
 
     @Override

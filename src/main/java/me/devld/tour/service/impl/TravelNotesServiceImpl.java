@@ -3,6 +3,7 @@ package me.devld.tour.service.impl;
 import me.devld.tour.dto.PageParam;
 import me.devld.tour.dto.travel.TravelNotesDetailsOut;
 import me.devld.tour.dto.travel.TravelNotesIn;
+import me.devld.tour.dto.user.UserProfile;
 import me.devld.tour.entity.Spot;
 import me.devld.tour.entity.SpotPhoto;
 import me.devld.tour.entity.TourUser;
@@ -18,6 +19,7 @@ import me.devld.tour.repository.TravelNotesRepository;
 import me.devld.tour.service.LikeCollectService;
 import me.devld.tour.service.TravelNotesService;
 import me.devld.tour.service.UserService;
+import me.devld.tour.util.HtmlUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.ListUtils;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,13 +60,9 @@ public class TravelNotesServiceImpl implements TravelNotesService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public TravelNotes createTravelNotes(TravelNotesIn travelNotesIn, long authorId) {
+        travelNotesIn.setContent(HtmlUtils.sanitizer(travelNotesIn.getContent()));
         List<Long> spotIds = travelNotesIn.getSpotIds();
-        if (spotIds != null && !spotIds.isEmpty()) {
-            if (spotRepository.countByIdIn(spotIds) != spotIds.size()) {
-                throw new NotFoundException("msg.spot_not_exists");
-            }
-        }
-        travelNotesIn.setContent(travelNotesIn.getContent());
+        checkSpots(spotIds);
         TravelNotes travelNotes = new TravelNotes();
         BeanUtils.copyProperties(travelNotesIn, travelNotes);
         travelNotes.setAuthorId(authorId);
@@ -71,35 +72,78 @@ public class TravelNotesServiceImpl implements TravelNotesService {
         travelNotesRepository.save(travelNotes);
         List<TravelNotesIn.TravelNotesPhoto> photos = travelNotesIn.getPhotos();
         if (!ListUtils.isEmpty(photos)) {
-            spotPhotoRepository.saveAll(
-                    photos.stream()
-                            .filter(e -> !StringUtils.isEmpty(e.getSrc()))
-                            .map(e -> new SpotPhoto(e.getSrc(), e.getAlt(), e.getSpotId(),
-                                    travelNotes.getId(), SpotPhoto.PhotoFrom.TRAVEL_NOTES, authorId))
-                            .collect(Collectors.toList())
-            );
-            Map<Long, List<TravelNotesIn.TravelNotesPhoto>> photoList = photos.stream().filter(e -> e.getSpotId() != null).collect(Collectors.groupingBy(TravelNotesIn.TravelNotesPhoto::getSpotId));
-            for (Long spotId : photoList.keySet()) {
-                int c = photoList.get(spotId).size();
-                if (c > 0) {
-                    spotRepository.incrementPhotoCount(spotId, c);
-                }
-            }
+            processNotesPhotos(authorId, travelNotes, photos);
         }
         return travelNotes;
     }
 
     @Override
-    public TravelNotesDetailsOut getTravelNotesDetails(long id, Long userId) {
-        Optional<TravelNotes> travelNotes = travelNotesRepository.findById(id);
-        if (!travelNotes.isPresent()) {
-            throw new NotFoundException();
+    @Transactional(rollbackFor = Exception.class)
+    public TravelNotes editTravelNotes(long id, TravelNotesIn travelNotesIn, long userId) {
+        travelNotesIn.setContent(HtmlUtils.sanitizer(travelNotesIn.getContent()));
+        TravelNotes travelNotes = travelNotesRepository.findById(id).orElseThrow(NotFoundException::new);
+        if (!travelNotes.getAuthorId().equals(userId)) {
+            throw new ForbiddenException();
         }
-        if (travelNotes.get().getState() == TravelNotes.STATE_DELETED && userId != null && !userId.equals(travelNotes.get().getAuthorId())) {
+        List<Long> spotIds = travelNotesIn.getSpotIds();
+        checkSpots(spotIds);
+        BeanUtils.copyProperties(travelNotesIn, travelNotes);
+        if (spotIds != null) {
+            travelNotes.setSpots(spotIds.stream().map(Spot::new).collect(Collectors.toList()));
+        }
+        travelNotesRepository.save(travelNotes);
+        List<TravelNotesIn.TravelNotesPhoto> photos = travelNotesIn.getPhotos();
+        if (!ListUtils.isEmpty(photos)) {
+            processNotesPhotos(travelNotes.getAuthorId(), travelNotes, photos);
+        }
+        return travelNotes;
+    }
+
+    private void processNotesPhotos(long authorId, TravelNotes travelNotes, List<TravelNotesIn.TravelNotesPhoto> photos) {
+        List<SpotPhoto> spotPhotos = photos.stream()
+                .filter(e -> !StringUtils.isEmpty(e.getSrc()))
+                .map(e -> new SpotPhoto(e.getSrc(), e.getAlt(), e.getSpotId(),
+                        travelNotes.getId(), SpotPhoto.PhotoFrom.TRAVEL_NOTES, authorId))
+                .collect(Collectors.toList());
+        spotPhotoRepository.saveAll(spotPhotos);
+        Map<Long, List<TravelNotesIn.TravelNotesPhoto>> photoList = photos.stream().filter(e -> e.getSpotId() != null)
+                .collect(Collectors.groupingBy(TravelNotesIn.TravelNotesPhoto::getSpotId));
+        for (Long spotId : photoList.keySet()) {
+            int c = photoList.get(spotId).size();
+            if (c > 0) {
+                spotRepository.incrementPhotoCount(spotId, c);
+            }
+        }
+        Map<String, SpotPhoto> photoMap = spotPhotos.stream().collect(Collectors.toMap(e -> e.getImgUrl() + e.getDescription(), e -> e));
+        travelNotes.setContent(
+                HtmlUtils.buildSanitizer(((tagName, modifier) -> {
+                    if ("img".equals(tagName)) {
+                        SpotPhoto photo = photoMap.get(modifier.attr("src") + modifier.attr("alt"));
+                        if (photo != null) {
+                            modifier.attr("data-id", String.valueOf(photo.getId()));
+                        }
+                    }
+                })).get().sanitizer(travelNotes.getContent())
+        );
+        travelNotesRepository.save(travelNotes);
+    }
+
+    private void checkSpots(List<Long> spotIds) {
+        if (spotIds != null && !spotIds.isEmpty()) {
+            if (spotRepository.countByIdIn(spotIds) != spotIds.size()) {
+                throw new NotFoundException("msg.spot_not_exists");
+            }
+        }
+    }
+
+    @Override
+    public TravelNotesDetailsOut getTravelNotesDetails(long id, Long userId) {
+        TravelNotes travelNotes = travelNotesRepository.findById(id).orElseThrow(NotFoundException::new);
+        if (travelNotes.getState() == TravelNotes.STATE_DELETED && userId != null && !userId.equals(travelNotes.getAuthorId())) {
             throw new NotFoundException();
         }
 
-        TravelNotesDetailsOut out = new TravelNotesDetailsOut(travelNotes.get(), userService.getUserInfo(travelNotes.get().getAuthorId()), travelNotes.get().getSpots());
+        TravelNotesDetailsOut out = new TravelNotesDetailsOut(travelNotes, userService.getUserInfo(travelNotes.getAuthorId()), travelNotes.getSpots());
         if (userId != null) {
             Map<RelType, LikeCollectRel> rel = likeCollectService.getRelBy(userId, RelObjectType.TRAVEL_NOTES, Arrays.asList(RelType.LIKE, RelType.COLLECT), Collections.singletonList(id))
                     .stream().collect(Collectors.toMap(LikeCollectRel::getRelType, e -> e));
@@ -129,7 +173,8 @@ public class TravelNotesServiceImpl implements TravelNotesService {
     }
 
     private Page<TravelNotesDetailsOut> processTravelNotes(Page<TravelNotes> travelNotes) {
-        return travelNotes.map(e -> new TravelNotesDetailsOut(e, userService.getUserInfo(e.getAuthorId()), null));
+        Map<Long, UserProfile> userProfiles = userService.getUserInfos(travelNotes.stream().map(TravelNotes::getAuthorId).collect(Collectors.toList()));
+        return travelNotes.map(e -> new TravelNotesDetailsOut(e, userProfiles.get(e.getAuthorId()), null));
     }
 
     @Override
@@ -171,11 +216,8 @@ public class TravelNotesServiceImpl implements TravelNotesService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteTravelNotes(long travelNotesId, long userId) {
-        Optional<TravelNotes> notes = travelNotesRepository.findById(travelNotesId);
-        if (!notes.isPresent() || notes.get().getState() == TravelNotes.STATE_DELETED) {
-            throw new NotFoundException();
-        }
-        if (notes.get().getAuthorId() != userId) {
+        TravelNotes notes = travelNotesRepository.findById(travelNotesId).orElseThrow(NotFoundException::new);
+        if (notes.getAuthorId() != userId) {
             if (userService.findUserById(userId).getUserType() != TourUser.UserType.ADMIN) {
                 throw new ForbiddenException();
             }

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
+<head>
+  <title th:text="${photo.photo.description} + ' - ' + ${photo.spot.name}"></title>
+  <link rel="stylesheet" th:href="@{/static/css/spot/spotPhotoDetail.css}">
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="photo-wrapper">
+    <div class="spot">
+      <span class="spot-name" th:text="#{ui.photos_of_spot(${photo.spot.name})}"></span><span class="photo-count"
+                                                                                              th:text="#{ui.photo_unit(${photo.spot.photoCount})}"></span>
+    </div>
+    <div class="photo">
+      <img th:src="@{${photo.photo.imgUrl}}" th:alt="${photo.photo.description}">
+      <div class="photo-mark"></div>
+      <a class="arrow prev iconfont" th:title="#{ui.prev_photo}" th:if="${photo.prev != null}"
+         th:href="@{'/spot/photo/' + ${photo.prev}}">&#xe609;</a>
+      <a class="arrow next iconfont" th:title="#{ui.next_photo}" th:if="${photo.next != null}"
+         th:href="@{'/spot/photo/' + ${photo.next}}">&#xe609;</a>
+    </div>
+    <div class="info">
+      <a class="author link" target="_blank" th:href="@{'/user/' + ${photo.author.username}}"
+         th:text="${photo.author.nickname}"></a>
+      <span th:text="#{ui.photo_taken_at}"></span>
+      <span class="time"
+            th:text="${#dates.format(new java.util.Date(photo.photo.createdAt), 'yyyy-MM-dd HH:mm:ss')}"></span>
+      <span th:text="#{ui.word_publish_in}"></span>
+      <a th:if="${photo.from instanceof T(me.devld.tour.entity.TravelNotes)}" class="from link" target="_blank"
+         th:href="@{'/travel/' + ${photo.from.id}}" th:text="${photo.from.title}"></a>
+    </div>
+  </div>
+  <script>
+    new Tour.Vue({
+      render: (h) => h(Tour.Views.SpotPhotoMarkView, {
+        props: {
+          photoId: +'[[${photo.photo.id}]]',
+          value: {
+            like: {
+              state: '[[${photo.liked}]]' === 'true',
+              count: +'[[${photo.photo.likeCount}]]'
+            }
+          }
+        }
+      })
+    }).$mount('.photo-mark')
+  </script>
+</div>
+</body>
+</html>

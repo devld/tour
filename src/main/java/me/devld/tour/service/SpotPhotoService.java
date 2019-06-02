@@ -1,7 +1,8 @@
 package me.devld.tour.service;
 
 import me.devld.tour.dto.PageParam;
-import me.devld.tour.entity.SpotPhoto;
+import me.devld.tour.dto.spot.SpotPhotoDetailsOut;
+import me.devld.tour.dto.spot.SpotPhotoOut;
 import org.springframework.data.domain.Page;
 
 public interface SpotPhotoService {
@@ -19,9 +20,19 @@ public interface SpotPhotoService {
      * 获取景点的照片
      *
      * @param spotId    景点 id
+     * @param userId    用户 id
      * @param pageParam 分页
      * @return 照片列表
      */
-    Page<SpotPhoto> getSpotPhotosBySpot(long spotId, PageParam pageParam);
+    Page<SpotPhotoOut> getSpotPhotosBySpot(long spotId, Long userId, PageParam pageParam);
+
+    /**
+     * 获取照片详情
+     *
+     * @param photoId 照片 id
+     * @param userId  用户 id
+     * @return 照片详情
+     */
+    SpotPhotoDetailsOut getPhotoDetails(long photoId, Long userId);
 
 }

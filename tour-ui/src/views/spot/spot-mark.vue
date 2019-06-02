@@ -2,22 +2,22 @@
   <div class="spot-mark">
     <div class="went">
       <i
-        @click="toggleWent(false)"
+        @click.stop="toggleWent(false)"
         v-if="thisValue.went.state"
         class="iconfont yes"
         title="取消标记"
       >&#xe61a;</i>
-      <i @click="toggleWent(true)" v-else class="iconfont no" title="标记为去过">&#xe637;</i>
+      <i @click.stop="toggleWent(true)" v-else class="iconfont no" title="标记为去过">&#xe637;</i>
       <span class="count">{{ thisValue.went.count }}</span>
     </div>
     <div class="collect">
       <i
-        @click="toggleCollect(false)"
+        @click.stop="toggleCollect(false)"
         v-if="thisValue.collect.state"
         class="iconfont yes"
         title="取消收藏"
       >&#xe69e;</i>
-      <i @click="toggleCollect(true)" v-else class="iconfont no" title="收藏景点">&#xe600;</i>
+      <i @click.stop="toggleCollect(true)" v-else class="iconfont no" title="收藏景点">&#xe600;</i>
       <span class="count">{{ thisValue.collect.count }}</span>
     </div>
   </div>

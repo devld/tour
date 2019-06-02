@@ -21,4 +21,10 @@ public interface SpotPhotoRepository extends JpaRepository<SpotPhoto, Long> {
 
     Page<SpotPhoto> findAllBySpotId(long spotId, Pageable pageable);
 
+    @Query(value = "SELECT id FROM tour_spot_photo WHERE id < ?1 AND spot_id = ?2 ORDER BY id DESC LIMIT 1", nativeQuery = true)
+    Long findPreId(long id, long spotId);
+
+    @Query(value = "SELECT id FROM tour_spot_photo WHERE id > ?1 AND spot_id = ?2 ORDER BY id ASC LIMIT 1", nativeQuery = true)
+    Long findNextId(long id, long spotId);
+
 }

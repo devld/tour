@@ -28,15 +28,18 @@
   <div class="user-mark">
     <spot-mark-view :spot-id="spotId" v-model="marks"></spot-mark-view>
   </div>
-  <div class="photos">
-    <div class="left"><img th:src="@{${photo1 != null} ? ${photo1.imgUrl} : '/static/image/spot.png'}"
-                           th:alt="${spot.spot.name}"></div>
-    <div class="right">
-      <img th:src="@{${photo2 != null} ? ${photo2.imgUrl} : '/static/image/spot.png'}" th:alt="${spot.spot.name}">
-      <img th:src="@{${photo3 != null} ? ${photo3.imgUrl} : '/static/image/spot.png'}" th:alt="${spot.spot.name}">
+
+  <a th:href="@{'/spot/' + ${spot.spot.id} + '/photo'}" th:title="#{ui.view_all_spot_photos}">
+    <div class="photos">
+      <div class="left"><img th:src="@{${photo1 != null} ? ${photo1.imgUrl} : '/static/image/spot.png'}"
+                             th:alt="${spot.spot.name}"></div>
+      <div class="right">
+        <img th:src="@{${photo2 != null} ? ${photo2.imgUrl} : '/static/image/spot.png'}" th:alt="${spot.spot.name}">
+        <img th:src="@{${photo3 != null} ? ${photo3.imgUrl} : '/static/image/spot.png'}" th:alt="${spot.spot.name}">
+      </div>
+      <div class="photo-count" th:text="#{ui.spot_photo_count(${spot.spot.photoCount})}"></div>
     </div>
-    <div class="photo-count" th:text="#{ui.spot_photo_count(${spot.spot.photoCount})}"></div>
-  </div>
+  </a>
 
   <div class="intro rich-text" th:utext="${spot.spot.intro}">景点介绍 - rich text</div>
 

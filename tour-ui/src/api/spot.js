@@ -69,3 +69,20 @@ export function deleteSpot (spotId) {
 export function deleteSpotComment (commentId) {
   return axios.delete(`/spot/comment/${commentId}`)
 }
+
+export function getSpotPhotos (spotId, { page, pageSize, sort }) {
+  return axios.get('/spot/photo', {
+    params: {
+      spotId,
+      page, pageSize, sort
+    }
+  })
+}
+
+export function toggleSpotPhotoLike (photoId, like) {
+  return axios.post(`/spot/photo/${photoId}/like`, null, {
+    params: {
+      s: like
+    }
+  })
+}

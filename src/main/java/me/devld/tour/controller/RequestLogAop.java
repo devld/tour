@@ -1,6 +1,5 @@
-package me.devld.tour.aop;
+package me.devld.tour.controller;
 
-import me.devld.tour.controller.Request;
 import me.devld.tour.util.SecurityUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

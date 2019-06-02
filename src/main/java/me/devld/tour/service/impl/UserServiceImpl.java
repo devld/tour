@@ -17,9 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -129,11 +128,7 @@ public class UserServiceImpl implements UserService {
     )
     @Override
     public TourUser updateProfile(String username, UserProfileIn newUser) {
-        Optional<TourUser> userOptional = tourUserRepository.findByUsername(username);
-        if (!userOptional.isPresent()) {
-            throw new NotFoundException();
-        }
-        TourUser user = userOptional.get();
+        TourUser user = tourUserRepository.findByUsername(username).orElseThrow(NotFoundException::new);
         if (!StringUtils.isEmpty(newUser.getUsername())) {
             // 修改用户名
             if (userExists(newUser.getUsername())) {
@@ -171,11 +166,7 @@ public class UserServiceImpl implements UserService {
     )
     @Override
     public TourUser updateUserPassword(String username, String newPassword) {
-        Optional<TourUser> userOptional = tourUserRepository.findByUsername(username);
-        if (!userOptional.isPresent()) {
-            throw new NotFoundException();
-        }
-        TourUser user = userOptional.get();
+        TourUser user = tourUserRepository.findByUsername(username).orElseThrow(NotFoundException::new);
         user.setPassword(newPassword);
         return tourUserRepository.save(user);
     }
@@ -226,6 +217,11 @@ public class UserServiceImpl implements UserService {
         user.setState(TourUser.STATE_DELETED);
 
         tourUserRepository.save(user);
+    }
+
+    @Override
+    public Map<Long, UserProfile> getUserInfos(List<Long> userIds) {
+        return userIds.stream().distinct().map(e -> self.getUserInfo(e)).collect(Collectors.toMap(UserProfile::getId, e -> e));
     }
 
     @Autowired

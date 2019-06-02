@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<!--/*@thymesVar id="user" type="me.devld.tour.dto.user.UserProfile"*/-->
+<head>
+  <title th:text="#{ui.photos_of_spot(${spot.name})}"></title>
+  <style>
+    .wrapper {
+      margin-top: 30px;
+    }
+
+    .photos-waterfall {
+      background-color: #fff;
+    }
+
+    .photos-waterfall .item > img {
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="wrapper">
+    <div class="photos"></div>
+  </div>
+  <script>
+    new Tour.Vue({
+      render: (h) =>
+        h(Tour.Views.SpotPhotosView, {
+          props: {
+            spotId: +'[[${spot.id}]]'
+          },
+          on: {
+            click(item) {
+              window.location.href = '[[@{/spot/photo/}]]' + item.id
+            }
+          }
+        })
+
+    }).$mount('.photos')
+  </script>
+</div>
+</body>
+</html>

@@ -9,7 +9,6 @@ import me.devld.tour.entity.Spot;
 import me.devld.tour.service.SpotService;
 import me.devld.tour.util.SecurityUtil;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +47,7 @@ public class SpotController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{spotId}")
     public SpotDetailsOut getSpot(@PathVariable("spotId") long spotId) {
-        return spotService.getSpotById(spotId);
+        return spotService.getSpotWithTicketsById(spotId);
     }
 
 

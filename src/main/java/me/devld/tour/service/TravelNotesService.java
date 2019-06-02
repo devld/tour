@@ -18,6 +18,16 @@ public interface TravelNotesService {
     TravelNotes createTravelNotes(TravelNotesIn travelNotes, long authorId);
 
     /**
+     * 编辑游记
+     *
+     * @param id          游记 id
+     * @param travelNotes 游记新内容
+     * @param userId      当前用户
+     * @return travelNotes
+     */
+    TravelNotes editTravelNotes(long id, TravelNotesIn travelNotes, long userId);
+
+    /**
      * 获取游记详情
      *
      * @param id     游记 id

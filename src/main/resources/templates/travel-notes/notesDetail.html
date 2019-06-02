@@ -45,6 +45,15 @@
     </div>
   </article>
   <script>
+    $('img[data-id]').each(function (i, e) {
+      const a = document.createElement('a')
+      a.href = '[[@{/spot/photo/}]]' + e.dataset.id
+      a.target = '_blank'
+      e.parentNode.replaceChild(a, e)
+      a.appendChild(e)
+    })
+  </script>
+  <script>
     new Tour.Vue({
       el: '.wrapper',
       components: {TravelNotesMarkView: Tour.Views.TravelNotesMarkView},

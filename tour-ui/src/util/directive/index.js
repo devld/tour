@@ -1,5 +1,7 @@
-import VImg from './v-img'
+import Img from './img'
+import Waterfall from './waterfall'
 
 export default {
-  img: VImg
+  img: Img,
+  waterfall: Waterfall
 }

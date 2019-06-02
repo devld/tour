@@ -3,6 +3,7 @@ package me.devld.tour.service.impl;
 import me.devld.tour.dto.PageParam;
 import me.devld.tour.dto.spot.SpotCommentIn;
 import me.devld.tour.dto.spot.SpotCommentOut;
+import me.devld.tour.dto.user.UserProfile;
 import me.devld.tour.entity.SpotComment;
 import me.devld.tour.entity.TourUser;
 import me.devld.tour.entity.rel.LikeCollectRel;
@@ -22,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,19 +49,21 @@ public class SpotCommentServiceImpl implements SpotCommentService {
         if ("like".equals(pageParam.getSort())) {
             sort = Sort.by(Sort.Direction.DESC, "likeCount", "updatedAt");
         }
-        Page<SpotCommentOut> comments = spotCommentRepository.findAllBySpotId(spotId, pageParam.toPageable(sort))
-                .map(e -> new SpotCommentOut(e, userService.getUserInfo(e.getAuthorId())));
+        Page<SpotComment> comments = spotCommentRepository.findAllBySpotId(spotId, pageParam.toPageable(sort));
+        Map<Long, UserProfile> userProfileMap = userService.getUserInfos(comments.stream().map(SpotComment::getAuthorId).collect(Collectors.toList()));
+        Page<SpotCommentOut> commentOuts = comments
+                .map(e -> new SpotCommentOut(e, userProfileMap.get(e.getAuthorId())));
 
         if (userId != null) {
             Map<Long, LikeCollectRel> likeRel = likeCollectService.getRelBy(
                     userId, RelObjectType.SPOT_COMMENT, Collections.singletonList(RelType.LIKE),
-                    comments.map(e -> e.getComment().getId()).getContent()).stream().collect(Collectors.toMap(LikeCollectRel::getObjId, e -> e));
-            for (SpotCommentOut o : comments) {
+                    commentOuts.map(e -> e.getComment().getId()).getContent()).stream().collect(Collectors.toMap(LikeCollectRel::getObjId, e -> e));
+            for (SpotCommentOut o : commentOuts) {
                 o.setLiked(likeRel.containsKey(o.getComment().getId()));
             }
         }
 
-        return comments;
+        return commentOuts;
     }
 
     @Override
@@ -91,11 +93,8 @@ public class SpotCommentServiceImpl implements SpotCommentService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteComment(long commentId, long userId) {
-        Optional<SpotComment> comment = spotCommentRepository.findById(commentId);
-        if (!comment.isPresent() || comment.get().getState() == SpotComment.STATE_DELETED) {
-            throw new NotFoundException();
-        }
-        if (comment.get().getAuthorId() != userId) {
+        SpotComment comment = spotCommentRepository.findById(commentId).orElseThrow(NotFoundException::new);
+        if (comment.getAuthorId() != userId) {
             if (userService.findUserById(userId).getUserType() != TourUser.UserType.ADMIN) {
                 throw new ForbiddenException();
             }

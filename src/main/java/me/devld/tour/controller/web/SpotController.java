@@ -6,6 +6,7 @@ import me.devld.tour.dto.spot.SpotDetailsOut;
 import me.devld.tour.entity.Spot;
 import me.devld.tour.entity.SpotPhoto;
 import me.devld.tour.service.DistrictService;
+import me.devld.tour.service.SpotPhotoService;
 import me.devld.tour.service.SpotService;
 import me.devld.tour.util.SecurityUtil;
 import org.springframework.data.domain.Page;
@@ -25,10 +26,12 @@ public class SpotController {
 
     private final SpotService spotService;
     private final DistrictService districtService;
+    private final SpotPhotoService spotPhotoService;
 
-    public SpotController(SpotService spotService, DistrictService districtService) {
+    public SpotController(SpotService spotService, DistrictService districtService, SpotPhotoService spotPhotoService) {
         this.spotService = spotService;
         this.districtService = districtService;
+        this.spotPhotoService = spotPhotoService;
     }
 
     @Request("景点列表页面")
@@ -71,6 +74,20 @@ public class SpotController {
         }
 
         return "spot/spotDetail";
+    }
+
+    @Request("查看景点照片页面")
+    @GetMapping("/{spotId}/photo")
+    public String spotPhotoList(@PathVariable("spotId") long spotId, Model model) {
+        model.addAttribute("spot", spotService.getSpotById(spotId));
+        return "spot/spotPhotoList";
+    }
+
+    @Request("景点照片详情页面")
+    @GetMapping("/photo/{photoId}")
+    public String spotPhotoDetail(@PathVariable("photoId") long photoId, Model model) {
+        model.addAttribute("photo", spotPhotoService.getPhotoDetails(photoId, SecurityUtil.userIdOrNull()));
+        return "spot/spotPhotoDetail";
     }
 
     @Request("推荐景点页面")

@@ -32,7 +32,7 @@ public class TravelNotesController {
     public String travelNotesList(@PathVariable("spotId") long spotId, PageParam pageParam, Model model) {
 
         model.addAttribute("notes", travelNotesService.getTravelNotesBySpot(spotId, pageParam).map(TravelNotesDetailsOutVO::from));
-        model.addAttribute("spot", spotService.getSpotById(spotId));
+        model.addAttribute("spot", spotService.getSpotWithTicketsById(spotId));
         model.addAttribute("title", "spot");
 
         return "travel-notes/notesList";

@@ -4,6 +4,9 @@ import me.devld.tour.dto.user.UserProfile;
 import me.devld.tour.dto.user.UserProfileIn;
 import me.devld.tour.entity.TourUser;
 
+import java.util.List;
+import java.util.Map;
+
 public interface UserService {
 
     TourUser findUserById(long id);
@@ -31,5 +34,7 @@ public interface UserService {
     TourUser toggleUserEnabled(long userId, boolean enabled);
 
     void deleteUser(long userId);
+
+    Map<Long, UserProfile> getUserInfos(List<Long> userIds);
 
 }
