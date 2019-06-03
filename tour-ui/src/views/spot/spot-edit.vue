@@ -28,25 +28,25 @@
           </el-upload>
         </div>
       </el-form-item>
-      <el-form-item label="景点位置">
+      <el-form-item label="景点位置" prop="location">
         <location-selector-view v-model="spot.location"/>
       </el-form-item>
-      <el-form-item label="景点电话">
+      <el-form-item label="景点电话" prop="phone">
         <el-input v-model="spot.phone"/>
       </el-form-item>
-      <el-form-item label="景点网站">
+      <el-form-item label="景点网站" prop="website">
         <el-input v-model="spot.website"/>
       </el-form-item>
-      <el-form-item label="游览用时参考">
+      <el-form-item label="游览用时参考" prop="timeUsage">
         <el-input v-model="spot.timeUsage"/>
       </el-form-item>
-      <el-form-item label="景点交通">
+      <el-form-item label="景点交通" prop="transport">
         <el-input v-model="spot.transport" type="textarea"/>
       </el-form-item>
-      <el-form-item label="开放时间">
+      <el-form-item label="开放时间" prop="openTime">
         <el-input v-model="spot.openTime" type="textarea"/>
       </el-form-item>
-      <el-form-item label="门票">
+      <el-form-item label="门票" prop="tickets">
         <div class="ticket" v-for="(t, i) in spot.tickets" :key="t.id">
           <el-input class="name" v-model="t.name" placeholder="门票描述" :maxlength="128"/>
           <el-input-number class="price" v-model="t.price" :min="0"/>
@@ -78,7 +78,7 @@ export default {
   name: 'SpotEditView',
   components: { RichTextEditor, LocationSelectorView },
   props: {
-    spotId: String
+    spotId: Number
   },
   watch: {
     spotId: {

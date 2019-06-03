@@ -80,6 +80,10 @@ export default {
       if (this.value !== this.lastContent) {
         this.editor.txt.html(this.value)
       }
+    },
+    processImages (cb) {
+      cb(this.$refs.editor.getElementsByTagName('img'))
+      this.contentChanged(this.editor.txt.html())
     }
   }
 }

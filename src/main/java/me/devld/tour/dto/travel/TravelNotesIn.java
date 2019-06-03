@@ -14,7 +14,7 @@ public class TravelNotesIn {
 
     private Long startTime;
 
-    private Float daysUsage;
+    private Float daysUsed;
 
     private Integer costAverage;
 
@@ -46,12 +46,12 @@ public class TravelNotesIn {
         this.startTime = startTime;
     }
 
-    public Float getDaysUsage() {
-        return daysUsage;
+    public Float getDaysUsed() {
+        return daysUsed;
     }
 
-    public void setDaysUsage(Float daysUsage) {
-        this.daysUsage = daysUsage;
+    public void setDaysUsed(Float daysUsed) {
+        this.daysUsed = daysUsed;
     }
 
     public Integer getCostAverage() {
@@ -81,6 +81,7 @@ public class TravelNotesIn {
     public static class TravelNotesPhoto {
         private Long spotId;
         private String src;
+        @Size(max = 64)
         private String alt;
 
         public Long getSpotId() {

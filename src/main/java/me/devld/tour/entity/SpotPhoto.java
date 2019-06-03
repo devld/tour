@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tour_spot_photo")
-public class SpotPhoto extends BaseEntity {
+public class SpotPhoto extends BaseStateEntity {
 
     private String imgUrl;
 

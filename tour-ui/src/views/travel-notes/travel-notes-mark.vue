@@ -143,11 +143,11 @@ export default {
 @keyframes share-anim {
   from {
     opacity: 0;
-    transform: translateY(-100%);
+    transform: translateX(-100%);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
   }
 }
 

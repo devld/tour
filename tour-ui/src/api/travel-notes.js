@@ -4,6 +4,14 @@ export function createTravelNotes (notes) {
   return axios.post('/travel', notes)
 }
 
+export function getNotesDetails (notesId) {
+  return axios.get(`/travel/${notesId}`)
+}
+
+export function editTravelNotes (notesId, notes) {
+  return axios.put(`/travel/${notesId}`, notes)
+}
+
 export function toggleNotesLike (notesId, state) {
   return axios.post(`/travel/${notesId}/like`, null, {
     params: {

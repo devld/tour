@@ -121,6 +121,7 @@ CREATE TABLE IF NOT EXISTS `tour_spot_photo`
     `photo_from`  TINYINT                                                            NULL COMMENT 'from_id 对应的类型',
     `author_id`   BIGINT(20)                                                         NULL DEFAULT NULL COMMENT '上传者',
     `like_count`  INT                                                                NULL DEFAULT 0,
+    `state`       TINYINT                                                            NULL,
     `created_at`  BIGINT(20)                                                         NULL DEFAULT NULL,
     `updated_at`  BIGINT(20)                                                         NULL DEFAULT NULL,
     PRIMARY KEY (`id`),

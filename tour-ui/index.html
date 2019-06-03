@@ -43,7 +43,7 @@
     <div>
 
       <div id="app">
-        <travel-notes-mark-view :notes-id="1" :share-meta="meta" v-model="ddd"></travel-notes-mark-view>
+        <travel-notes-edit-view></travel-notes-edit-view>
       </div>
 
     </div>
@@ -91,7 +91,7 @@
         console.log(item.id)
       }
     },
-    components: { TravelNotesMarkView: Tour.Views.TravelNotesMarkView }
+    components: { TravelNotesEditView: Tour.Views.TravelNotesEditView }
   })
 </script>
 

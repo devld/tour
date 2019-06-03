@@ -11,6 +11,7 @@ import me.devld.tour.entity.TravelNotes;
 import me.devld.tour.entity.rel.LikeCollectRel;
 import me.devld.tour.entity.rel.RelObjectType;
 import me.devld.tour.entity.rel.RelType;
+import me.devld.tour.exception.BadRequestException;
 import me.devld.tour.exception.ForbiddenException;
 import me.devld.tour.exception.NotFoundException;
 import me.devld.tour.repository.SpotPhotoRepository;
@@ -66,13 +67,11 @@ public class TravelNotesServiceImpl implements TravelNotesService {
         TravelNotes travelNotes = new TravelNotes();
         BeanUtils.copyProperties(travelNotesIn, travelNotes);
         travelNotes.setAuthorId(authorId);
-        if (spotIds != null) {
-            travelNotes.setSpots(spotIds.stream().map(Spot::new).collect(Collectors.toList()));
-        }
+        travelNotes.setSpots(spotIds.stream().map(Spot::new).collect(Collectors.toList()));
         travelNotesRepository.save(travelNotes);
         List<TravelNotesIn.TravelNotesPhoto> photos = travelNotesIn.getPhotos();
         if (!ListUtils.isEmpty(photos)) {
-            processNotesPhotos(authorId, travelNotes, photos);
+            processNotesPhotos(authorId, travelNotes, photos, 0);
         }
         return travelNotes;
     }
@@ -81,25 +80,24 @@ public class TravelNotesServiceImpl implements TravelNotesService {
     @Transactional(rollbackFor = Exception.class)
     public TravelNotes editTravelNotes(long id, TravelNotesIn travelNotesIn, long userId) {
         travelNotesIn.setContent(HtmlUtils.sanitizer(travelNotesIn.getContent()));
+        List<Long> spotIds = travelNotesIn.getSpotIds();
+        checkSpots(spotIds);
         TravelNotes travelNotes = travelNotesRepository.findById(id).orElseThrow(NotFoundException::new);
         if (!travelNotes.getAuthorId().equals(userId)) {
             throw new ForbiddenException();
         }
-        List<Long> spotIds = travelNotesIn.getSpotIds();
-        checkSpots(spotIds);
         BeanUtils.copyProperties(travelNotesIn, travelNotes);
-        if (spotIds != null) {
-            travelNotes.setSpots(spotIds.stream().map(Spot::new).collect(Collectors.toList()));
-        }
+        travelNotes.setSpots(spotIds.stream().map(Spot::new).collect(Collectors.toList()));
         travelNotesRepository.save(travelNotes);
         List<TravelNotesIn.TravelNotesPhoto> photos = travelNotesIn.getPhotos();
+        int deletedCount = spotPhotoRepository.deleteAllByFromIdAndPhotoFrom(travelNotes.getId(), SpotPhoto.PhotoFrom.TRAVEL_NOTES);
         if (!ListUtils.isEmpty(photos)) {
-            processNotesPhotos(travelNotes.getAuthorId(), travelNotes, photos);
+            processNotesPhotos(travelNotes.getAuthorId(), travelNotes, photos, deletedCount);
         }
         return travelNotes;
     }
 
-    private void processNotesPhotos(long authorId, TravelNotes travelNotes, List<TravelNotesIn.TravelNotesPhoto> photos) {
+    private void processNotesPhotos(long authorId, TravelNotes travelNotes, List<TravelNotesIn.TravelNotesPhoto> photos, int deletedCount) {
         List<SpotPhoto> spotPhotos = photos.stream()
                 .filter(e -> !StringUtils.isEmpty(e.getSrc()))
                 .map(e -> new SpotPhoto(e.getSrc(), e.getAlt(), e.getSpotId(),
@@ -111,7 +109,7 @@ public class TravelNotesServiceImpl implements TravelNotesService {
         for (Long spotId : photoList.keySet()) {
             int c = photoList.get(spotId).size();
             if (c > 0) {
-                spotRepository.incrementPhotoCount(spotId, c);
+                spotRepository.incrementPhotoCount(spotId, c - deletedCount);
             }
         }
         Map<String, SpotPhoto> photoMap = spotPhotos.stream().collect(Collectors.toMap(e -> e.getImgUrl() + e.getDescription(), e -> e));
@@ -129,10 +127,11 @@ public class TravelNotesServiceImpl implements TravelNotesService {
     }
 
     private void checkSpots(List<Long> spotIds) {
-        if (spotIds != null && !spotIds.isEmpty()) {
-            if (spotRepository.countByIdIn(spotIds) != spotIds.size()) {
-                throw new NotFoundException("msg.spot_not_exists");
-            }
+        if (spotIds == null || spotIds.isEmpty()) {
+            throw new BadRequestException();
+        }
+        if (spotRepository.countByIdIn(spotIds) != spotIds.size()) {
+            throw new NotFoundException("msg.spot_not_exists");
         }
     }
 

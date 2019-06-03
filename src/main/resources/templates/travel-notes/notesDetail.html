@@ -39,7 +39,9 @@
       </div>
     </div>
     <div class="content" th:utext="${note.travelNotes.content}"></div>
-    <div class="notes-menu">
+    <div class="notes-menu" th:if="${user != null && user.id == note.travelNotes.authorId}">
+      <a th:href="@{/travel/edit(id=${note.travelNotes.id})}" class="link"
+         th:text="#{ui.edit_travel_notes}"></a>
       <a href="javascript: void(0)" @click="deleteNotes" class="link link-danger"
          th:text="#{ui.delete_travel_notes}"></a>
     </div>
@@ -83,7 +85,7 @@
       methods: {
         deleteNotes() {
           Tour.confirm('[[#{ui.dialog.delete_notes_confirm}]]', '[[#{ui.delete_travel_notes}]]').then(() => {
-            Tour.api.deleteSpot(this.spotId).then(() => {
+            Tour.api.travelNotes.deleteNotes(this.notesId).then(() => {
               Tour.msg.success('[[#{ui.delete_successfully}]]')
               setTimeout(() => {
                 window.location.href = '[[@{/}]]'

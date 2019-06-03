@@ -2,6 +2,7 @@ package me.devld.tour.controller.api;
 
 import me.devld.tour.controller.ApiController;
 import me.devld.tour.controller.Request;
+import me.devld.tour.dto.travel.TravelNotesDetailsOut;
 import me.devld.tour.dto.travel.TravelNotesIn;
 import me.devld.tour.entity.TravelNotes;
 import me.devld.tour.service.TravelNotesService;
@@ -26,6 +27,20 @@ public class TravelNotesController {
     @PostMapping("")
     public TravelNotes createTravelNotes(@RequestBody @Valid TravelNotesIn travelNotesIn) {
         return travelNotesService.createTravelNotes(travelNotesIn, SecurityUtil.userId());
+    }
+
+    @Request("获取游记详情")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{notesId}")
+    public TravelNotesDetailsOut getTravelNotesDetails(@PathVariable("notesId") long id) {
+        return travelNotesService.getTravelNotesDetails(id, null);
+    }
+
+    @Request("编辑游记")
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{notesId}")
+    public TravelNotes editTravelNotes(@PathVariable("notesId") long id, @RequestBody @Valid TravelNotesIn travelNotesIn) {
+        return travelNotesService.editTravelNotes(id, travelNotesIn, SecurityUtil.userId());
     }
 
     @Request("删除游记")

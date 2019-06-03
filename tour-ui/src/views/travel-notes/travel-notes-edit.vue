@@ -8,18 +8,18 @@
         <div class="spots-wrapper">
           <el-form-item ref="spotsFormItem" prop="spots" label="景点">
             <spot-selector-view size="small" @select="spotSelected" placeholder="景点名称..."/>
-          </el-form-item>
-          <div class="spots">
-            <div
-              class="spot"
-              v-for="(s, i) in notes.spots"
-              :key="s.id"
-              :style="{ 'background-image': `url(${s.coverUrl})` }"
-            >
-              <span>{{ s.name }}</span>
-              <i class="spot-delete el-icon-delete" title="删除" @click="notes.spots.splice(i, 1)"/>
+            <div class="spots">
+              <div
+                class="spot"
+                v-for="(s, i) in notes.spots"
+                :key="s.id"
+                :style="{ 'background-image': `url(${s.coverUrl})` }"
+              >
+                <span>{{ s.name }}</span>
+                <i class="spot-delete el-icon-delete" title="删除" @click="notes.spots.splice(i, 1)"/>
+              </div>
             </div>
-          </div>
+          </el-form-item>
         </div>
         <div class="meta">
           <div class="start-time">
@@ -30,8 +30,8 @@
           </div>
           <div class="days-usage">
             <span class="label">用时(天)</span>
-            <el-form-item prop="daysUsage">
-              <el-input-number v-model="notes.daysUsage" :precision="1" :min="0.1"/>
+            <el-form-item prop="daysUsed">
+              <el-input-number v-model="notes.daysUsed" :precision="1" :min="0.1"/>
             </el-form-item>
           </div>
           <div class="cost-average">
@@ -42,7 +42,12 @@
           </div>
         </div>
         <el-form-item prop="content">
-          <rich-text-editor class="content" :img-wm="true" v-model="notes.content"/>
+          <rich-text-editor
+            ref="contentEditor"
+            class="content"
+            :img-wm="true"
+            v-model="notes.content"
+          />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="goMarkPhoto">下一步</el-button>
@@ -76,7 +81,7 @@
       </div>
       <div>
         <el-button @click="step = 0">返回上一步</el-button>
-        <el-button type="primary" @click="publishNotes">发表</el-button>
+        <el-button type="primary" @click="publishNotes">{{ notesId ? '保存' : '发表' }}</el-button>
       </div>
     </div>
     <!-- 标记照片 -->
@@ -86,13 +91,24 @@
 import RichTextEditor from '../part/rich-text-editor'
 import SpotSelectorView from './spot-selector'
 
-import { createTravelNotes } from '../../api/travel-notes'
+import { createTravelNotes, getNotesDetails, editTravelNotes } from '../../api/travel-notes'
 
 let id = 1
 
 export default {
   name: 'TravelNotesEditView',
   components: { RichTextEditor, SpotSelectorView },
+  props: {
+    notesId: Number
+  },
+  watch: {
+    notesId: {
+      immediate: true,
+      handler () {
+        this.loadNodes()
+      }
+    }
+  },
   data () {
     return {
       step: 0,
@@ -100,7 +116,7 @@ export default {
         title: '',
         content: '',
         startTime: null,
-        daysUsage: 1,
+        daysUsed: 1,
         costAverage: 1,
         spots: [],
         photos: []
@@ -108,8 +124,7 @@ export default {
       notesRules: {
         title: [{ required: true, message: '请填写标题哦' }],
         content: [{ required: true, message: '请填写内容' }],
-        startTime: [{ required: true, message: '请选择开始时间' }],
-        spots: [{ type: 'array', range: { min: 1 }, message: '请至少选择一个景点' }]
+        startTime: [{ required: true, message: '请选择开始时间' }]
       },
 
       photos: [],
@@ -119,23 +134,19 @@ export default {
   },
   methods: {
     publishNotes () {
-      const imagesMap = {}
-      for (const p of this.photos) {
-        imagesMap[p.url] = p
-      }
-      const div = document.createElement('div')
-      div.innerHTML = this.notes.content
-      for (const img of div.getElementsByTagName('img')) {
-        if (imagesMap[img.src]) {
-          img.alt = imagesMap[img.src].desc
+      this.$refs.contentEditor.processImages((imgs) => {
+        for (const img of imgs) {
+          const photo = this.photos.find(e => e.id === +img.dataset.eid)
+          if (photo) {
+            img.alt = photo.desc
+          }
         }
-      }
-      const content = div.innerHTML
+      })
       const notes = {
         title: this.notes.title,
-        content,
+        content: this.notes.content,
         startTime: this.notes.startTime.getTime(),
-        daysUsage: this.notes.daysUsage,
+        daysUsed: this.notes.daysUsed,
         costAverage: this.notes.costAverage,
         spotIds: this.notes.spots.map(e => e.id),
         photos: this.photos.filter(e => !!e.spot).map(e => {
@@ -147,10 +158,32 @@ export default {
         })
       }
       this.loading = true
-      createTravelNotes(notes).then(res => {
-        this.$message.success('发表成功')
+      const resultPromise = this.notesId ? editTravelNotes(this.notesId, notes) : createTravelNotes(notes)
+      resultPromise.then(res => {
+        this.$message.success((this.notesId ? '保存' : '发表') + '成功')
         this.step = 0
-        this.$refs.notesForm.resetFields()
+        if (!this.notesId) {
+          this.$refs.notesForm.resetFields()
+          this.notes.spots = []
+        }
+      }, e => {
+        this.$message.error(e.message)
+      }).then(() => {
+        this.loading = false
+      })
+    },
+    loadNodes () {
+      if (!this.notesId) {
+        return
+      }
+      this.loading = true
+      getNotesDetails(this.notesId).then(notes => {
+        this.notes.title = notes.title
+        this.notes.content = notes.content
+        this.notes.startTime = new Date(notes.startTime)
+        this.notes.daysUsed = notes.daysUsed
+        this.notes.costAverage = notes.costAverage
+        this.notes.spots = notes.spots
       }, e => {
         this.$message.error(e.message)
       }).then(() => {
@@ -158,8 +191,11 @@ export default {
       })
     },
     goMarkPhoto () {
+      if (!this.notes.spots.length) {
+        return this.$message('请至少选择一个景点')
+      }
       this.$refs.notesForm.validate().then(v => {
-        this.extractPhotosFromContent()
+        this.processContentImages()
         if (this.photos.length === 0) {
           this.$confirm('还没有添加照片哦，是否直接发布？', '发布游记', {
             confirmButtonText: '直接发布',
@@ -172,23 +208,23 @@ export default {
         }
       }, () => { })
     },
-    extractPhotosFromContent () {
-      const content = this.notes.content
-      const re = /<img[^>]+src="(.*?)"[^>]*>/gi
-      let img
-      this.photos.splice(0)
-      while ((img = re.exec(content))) {
-        const url = img[1]
-        if (this.photos.findIndex(e => e.url === url) === -1) {
+    processContentImages () {
+      const imgs = this.$refs.contentEditor.processImages((imgs) => {
+        this.photos.splice(0)
+        for (const img of imgs) {
+          const url = img.src
+          const spot = img.dataset.id ? this.notes.spots.find(e => e.id === +img.dataset.id) : null
+          const eid = id++
+          img.dataset.eid = eid
           this.photos.push({
-            id: id++,
+            id: eid,
             url,
-            spot: null,
-            desc: '',
+            spot,
+            desc: img.alt || '',
             spotSelecting: false
           })
         }
-      }
+      })
     },
 
     spotSelected (spot) {
@@ -270,24 +306,28 @@ export default {
   }
 
   .photos {
-    display: flex;
-    flex-wrap: wrap;
     .photo {
+      display: inline-block;
       border: solid 1px rgba(0, 0, 0, 0.1);
       position: relative;
       width: 240px;
       margin: 20px;
       transition: all 0.3s;
       cursor: pointer;
-      padding: 6px;
       img {
         width: 100%;
+        height: 120px;
+        object-fit: cover;
       }
       &:hover {
         border: none;
         transform: scale(1.1);
         box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
         border-radius: 4px;
+
+        img {
+          border-radius: 4px;
+        }
       }
       .photo-delete {
         position: absolute;
@@ -297,6 +337,7 @@ export default {
         right: 6px;
       }
       .photo-meta {
+        margin: 6px;
         & > * {
           margin: 5px 0;
         }
