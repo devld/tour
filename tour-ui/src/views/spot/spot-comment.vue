@@ -116,7 +116,7 @@ export default {
   },
   methods: {
     loadComments (page) {
-      this.pageParam.page = page || 1
+      this.pageParam.page = typeof (page) === 'number' ? page : 1
       this.loading = true
       getSpotComments(this.spotId, this.pageParam).then(pageData => {
         this.pageParam.page = pageData.page
@@ -125,6 +125,7 @@ export default {
           e.loading = false
         })
         this.comments = pageData.data
+        this.loadError = null
       }, e => {
         this.$message.error('加载评论失败' + e.message)
         this.loadError = e
