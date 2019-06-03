@@ -193,6 +193,9 @@ CREATE TABLE IF NOT EXISTS `tour_travel_notes_spot_rel`
     COLLATE = utf8mb4_unicode_ci;
 
 
+ALTER TABLE `tour`.`tour_like_collect_rel`
+    ADD INDEX `idx_tour_collect_rel_obj_id` (`obj_id` ASC);
+
 SET SQL_MODE = @OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;

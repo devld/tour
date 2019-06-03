@@ -16,6 +16,7 @@ import me.devld.tour.repository.SpotTicketRepository;
 import me.devld.tour.service.DistrictService;
 import me.devld.tour.service.LikeCollectService;
 import me.devld.tour.service.SpotService;
+import me.devld.tour.service.StatisticsService;
 import me.devld.tour.util.BeanUtil;
 import me.devld.tour.util.HtmlUtils;
 import org.springframework.beans.BeanUtils;
@@ -35,17 +36,20 @@ public class SpotServiceImpl implements SpotService {
     private final SpotTicketRepository spotTicketRepository;
     private final SpotPhotoRepository spotPhotoRepository;
 
+    private final StatisticsService statisticsService;
     private final DistrictService districtService;
     private final LikeCollectService likeCollectService;
 
     public SpotServiceImpl(SpotRepository spotRepository,
                            SpotTicketRepository spotTicketRepository,
                            SpotPhotoRepository spotPhotoRepository,
+                           StatisticsService statisticsService,
                            DistrictService districtService,
                            LikeCollectService likeCollectService) {
         this.spotRepository = spotRepository;
         this.spotTicketRepository = spotTicketRepository;
         this.spotPhotoRepository = spotPhotoRepository;
+        this.statisticsService = statisticsService;
         this.districtService = districtService;
         this.likeCollectService = likeCollectService;
     }
@@ -189,15 +193,22 @@ public class SpotServiceImpl implements SpotService {
 
     @Override
     public Page<Spot> getRecommendSpots(long userId, PageParam pageParam) {
-        // TODO implement it
-        return getSpotList(pageParam);
+        Page<Long> spotIds = statisticsService.getRecommendSpotId(userId, pageParam);
+        if (spotIds.isEmpty()) {
+            return getHotSpots(pageParam);
+        }
+        Map<Long, Spot> spots = spotRepository.findAllEntityById(spotIds.getContent()).stream().collect(Collectors.toMap(BaseEntity::getId, e -> e));
+        return spotIds.map(spots::get);
     }
 
     @Override
     public Page<Spot> getHotSpots(PageParam pageParam) {
-        // TODO implement it
-        pageParam.setSort("went");
-        return getSpotList(pageParam);
+        Page<Long> spotIds = statisticsService.getHotSpotId(pageParam);
+        if (spotIds.isEmpty()) {
+            return Page.empty(pageParam.toPageable());
+        }
+        Map<Long, Spot> spots = spotRepository.findAllEntityById(spotIds.getContent()).stream().collect(Collectors.toMap(BaseEntity::getId, e -> e));
+        return spotIds.map(spots::get);
     }
 
     @Transactional(rollbackFor = Exception.class)

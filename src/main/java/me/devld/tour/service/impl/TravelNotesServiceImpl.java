@@ -4,10 +4,7 @@ import me.devld.tour.dto.PageParam;
 import me.devld.tour.dto.travel.TravelNotesDetailsOut;
 import me.devld.tour.dto.travel.TravelNotesIn;
 import me.devld.tour.dto.user.UserProfile;
-import me.devld.tour.entity.Spot;
-import me.devld.tour.entity.SpotPhoto;
-import me.devld.tour.entity.TourUser;
-import me.devld.tour.entity.TravelNotes;
+import me.devld.tour.entity.*;
 import me.devld.tour.entity.rel.LikeCollectRel;
 import me.devld.tour.entity.rel.RelObjectType;
 import me.devld.tour.entity.rel.RelType;
@@ -18,6 +15,7 @@ import me.devld.tour.repository.SpotPhotoRepository;
 import me.devld.tour.repository.SpotRepository;
 import me.devld.tour.repository.TravelNotesRepository;
 import me.devld.tour.service.LikeCollectService;
+import me.devld.tour.service.StatisticsService;
 import me.devld.tour.service.TravelNotesService;
 import me.devld.tour.service.UserService;
 import me.devld.tour.util.HtmlUtils;
@@ -43,17 +41,20 @@ public class TravelNotesServiceImpl implements TravelNotesService {
     private final SpotRepository spotRepository;
     private final SpotPhotoRepository spotPhotoRepository;
 
+    private final StatisticsService statisticsService;
     private final UserService userService;
     private final LikeCollectService likeCollectService;
 
     public TravelNotesServiceImpl(TravelNotesRepository travelNotesRepository,
                                   SpotRepository spotRepository,
                                   SpotPhotoRepository spotPhotoRepository,
+                                  StatisticsService statisticsService,
                                   UserService userService,
                                   LikeCollectService likeCollectService) {
         this.travelNotesRepository = travelNotesRepository;
         this.spotRepository = spotRepository;
         this.spotPhotoRepository = spotPhotoRepository;
+        this.statisticsService = statisticsService;
         this.userService = userService;
         this.likeCollectService = likeCollectService;
     }
@@ -178,13 +179,17 @@ public class TravelNotesServiceImpl implements TravelNotesService {
 
     @Override
     public Page<TravelNotesDetailsOut> getHotTravelNotes(PageParam pageParam) {
-        pageParam.setSort("share");
-        return processTravelNotes(travelNotesRepository.findAll(parsePageParam(pageParam)));
+        Page<Long> notesIds = statisticsService.getHotTravelNotesId(pageParam);
+        if (notesIds.isEmpty()) {
+            return Page.empty(pageParam.toPageable());
+        }
+        Map<Long, TravelNotes> notes = travelNotesRepository.findAllEntityById(notesIds.getContent()).stream().collect(Collectors.toMap(BaseEntity::getId, e -> e));
+        return processTravelNotes(notesIds.map(notes::get));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void shareTravelNotes(long travelNotesId, long userId) {
+    public void shareTravelNotes(long travelNotesId, Long userId) {
         if (travelNotesRepository.incrementCountById(travelNotesId, 0, 0, 1) != 1) {
             throw new NotFoundException();
         }

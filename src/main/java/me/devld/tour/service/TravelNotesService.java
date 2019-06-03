@@ -59,7 +59,7 @@ public interface TravelNotesService {
      * @param travelNotesId travelNotesId
      * @param userId        userId
      */
-    void shareTravelNotes(long travelNotesId, long userId);
+    void shareTravelNotes(long travelNotesId, Long userId);
 
     /**
      * 用户切换点赞 travelNotes

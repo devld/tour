@@ -51,10 +51,9 @@ public class TravelNotesController {
     }
 
     @Request("分享游记")
-    @PreAuthorize("isAuthenticated()")
     @PostMapping("/{notesId}/share")
     public void shareTravelNotes(@PathVariable("notesId") long id) {
-        travelNotesService.shareTravelNotes(id, SecurityUtil.userId());
+        travelNotesService.shareTravelNotes(id, SecurityUtil.userIdOrNull());
     }
 
     @Request("游记点赞")
