@@ -40,6 +40,10 @@
   display: inline-block;
 }
 
+.destinations .dest dt {
+  margin-right: 2em;
+}
+
 .destinations .dest dt a {
   text-decoration: underline;
   color: #787878;

@@ -19,9 +19,9 @@ import java.util.Objects;
 public class StatisticsServiceImpl implements StatisticsService {
 
     /**
-     * 热门统计时间，七天内
+     * 热门统计时间，一个月内
      */
-    private static final long HOT_PERIOD = 86400000 * 7;
+    private static final long HOT_PERIOD = 86400000 * 30L;
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -33,9 +33,9 @@ public class StatisticsServiceImpl implements StatisticsService {
     public Page<Long> getHotSpotId(PageParam pageParam) {
         long now = System.currentTimeMillis();
         // language=SQL
-        String sql = "SELECT DISTINCT t.obj_id FROM tour_like_collect_rel t WHERE t.obj_type = " +
+        String sql = "SELECT spot_ids.id FROM (SELECT DISTINCT t.obj_id id, COUNT(t.obj_id) FROM tour_like_collect_rel t WHERE t.obj_type = " +
                 RelObjectType.SPOT.ordinal() +
-                " AND t.created_at BETWEEN ? AND ? GROUP BY t.obj_id ORDER BY COUNT(t.obj_id) DESC";
+                " AND t.created_at BETWEEN ? AND ? GROUP BY t.obj_id ORDER BY COUNT(t.obj_id) DESC) spot_ids";
         return pageQuery(sql, pageParam.toPageable(), new SingleColumnRowMapper<>(Long.class), now - HOT_PERIOD, now);
     }
 
@@ -84,9 +84,9 @@ public class StatisticsServiceImpl implements StatisticsService {
     public Page<Long> getHotTravelNotesId(PageParam pageParam) {
         long now = System.currentTimeMillis();
         // language=SQL
-        String sql = "SELECT DISTINCT t.obj_id FROM tour_like_collect_rel t WHERE t.obj_type = " +
+        String sql = "SELECT notes_ids.id FROM (SELECT DISTINCT t.obj_id id, COUNT(t.obj_id) FROM tour_like_collect_rel t WHERE t.obj_type = " +
                 RelObjectType.TRAVEL_NOTES.ordinal() +
-                " AND t.created_at BETWEEN ? AND ? GROUP BY t.obj_id ORDER BY COUNT(t.obj_id) DESC";
+                " AND t.created_at BETWEEN ? AND ? GROUP BY t.obj_id ORDER BY COUNT(t.obj_id) DESC) notes_ids";
         return pageQuery(sql, pageParam.toPageable(), new SingleColumnRowMapper<>(Long.class), now - HOT_PERIOD, now);
     }
 

@@ -28,3 +28,5 @@ HELP.md
 *.http
 
 *-dev.yml
+
+/tour-test-db.mv.db

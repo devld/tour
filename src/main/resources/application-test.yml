@@ -1,0 +1,12 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    data: classpath:/sql/test/data.sql
+    schema: classpath:/sql/test/schema-h2.sql
+    sql-script-encoding: UTF-8
+
