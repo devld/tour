@@ -9,4 +9,17 @@ spring:
     data: classpath:/sql/test/data.sql
     schema: classpath:/sql/test/schema-h2.sql
     sql-script-encoding: UTF-8
+#    url: jdbc:h2:./tour-test-db;DB_CLOSE_ON_EXIT=FALSE
+# 如果需要持久化 h2 数据到磁盘，需要在*非*首次运行时注释掉上面的 data 和 schema，或者在首次运行时通过命令行传入这两个参数
+
+app:
+  qi-niu-file-config: # 七牛云上传文件的配置
+    access-key: # accessKey
+    secret-key: # secretKey
+    bucket-name: # bucket
+    max-file-size: #  最大文件大小
+    file-prefix: # 文件 key 前缀
+    base-url: # 上传完成后访问文件的路径前缀，即 bucket 绑定的域名 如 http://example.com/
+  a-map-config:
+    api-key: # 高德地图	Web 服务 的 API key
 

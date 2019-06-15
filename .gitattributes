@@ -1,0 +1,3 @@
+src/main/resources/sql/* linguist-detectable=false
+src/main/resources/static/iconfont/* linguist-vendored
+src/main/resources/static/js/tour.js linguist-vendored

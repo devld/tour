@@ -5,7 +5,8 @@ import com.qiniu.util.StringMap;
 import me.devld.tour.config.AppConfig;
 import me.devld.tour.dto.file.FileType;
 import me.devld.tour.dto.file.FileUploadIn;
-import me.devld.tour.dto.file.FileUploadKey;
+import me.devld.tour.dto.file.FileUploadKeyWrapper;
+import me.devld.tour.dto.file.QiniuFileUploadKey;
 import me.devld.tour.dto.user.UserProfile;
 import me.devld.tour.exception.BadRequestException;
 import me.devld.tour.exception.ForbiddenException;
@@ -32,7 +33,7 @@ public class QiNiuFileServiceImpl implements FileService {
     }
 
     @Override
-    public FileUploadKey prepareUpload(FileUploadIn fileUpload, long userId) {
+    public FileUploadKeyWrapper prepareUpload(FileUploadIn fileUpload, long userId) {
         if (fileUpload.getType() == null || StringUtils.isEmpty(fileUpload.getFilename())) {
             throw new BadRequestException();
         }
@@ -54,7 +55,8 @@ public class QiNiuFileServiceImpl implements FileService {
         if (!StringUtils.isEmpty(persistentOps)) {
             policy.put("persistentOps", persistentOps);
         }
-        return new FileUploadKey(auth.uploadToken(config.getBucketName(), fileKey, 3600L, policy), fileKey, config.getBaseUrl());
+        QiniuFileUploadKey fileUploadKey = new QiniuFileUploadKey(auth.uploadToken(config.getBucketName(), fileKey, 3600L, policy), fileKey, config.getBaseUrl());
+        return new FileUploadKeyWrapper("qiniu", fileUploadKey);
     }
 
     private String getPersistentOps(String fileKey, FileUploadIn fileUpload, long userId) {

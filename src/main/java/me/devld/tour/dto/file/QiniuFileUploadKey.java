@@ -1,6 +1,6 @@
 package me.devld.tour.dto.file;
 
-public class FileUploadKey {
+public class QiniuFileUploadKey {
 
     private String token;
 
@@ -8,7 +8,7 @@ public class FileUploadKey {
 
     private String baseUrl;
 
-    public FileUploadKey(String token, String key, String baseUrl) {
+    public QiniuFileUploadKey(String token, String key, String baseUrl) {
         this.token = token;
         this.key = key;
         this.baseUrl = baseUrl;
@@ -37,4 +37,5 @@ public class FileUploadKey {
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
     }
+
 }

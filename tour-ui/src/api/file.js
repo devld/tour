@@ -16,6 +16,27 @@ export const FileType = {
   IMAGE: 'IMAGE'
 }
 
+const UploadServices = {
+  'qiniu': function ({ token, key, baseUrl }, file, onprogress) {
+    return new Promise((resolve, reject) => {
+      qiniu.upload(file, key, token, {}, {}).subscribe({
+        next ({ total }) {
+          onprogress && onprogress(total)
+        },
+        complete ({ key }) {
+          resolve({
+            url: baseUrl + key
+          })
+        },
+        error (e) {
+          console.error('upload file failed', e)
+          reject({ code: -1, message: e.message })
+        }
+      })
+    })
+  }
+}
+
 /**
  * @typedef UploadResult
  * @property {string} url 图片链接
@@ -30,19 +51,11 @@ export const FileType = {
  * @returns {Promise<UploadResult>}
  */
 export function uploadFile (file, type, options, onprogress) {
-  return uploadPrepare(file, type, options).then(({ token, key, baseUrl }) => {
-    return new Promise((resolve, reject) => {
-      qiniu.upload(file, key, token, {}, {}).subscribe({
-        next ({ total }) {
-          onprogress && onprogress(total)
-        },
-        complete ({ key }) {
-          resolve({
-            url: baseUrl + key
-          })
-        },
-        error: reject
-      })
-    })
+  return uploadPrepare(file, type, options).then(({ service, opts }) => {
+    const uploadService = UploadServices[service]
+    if (!uploadService) {
+      return Promise.reject({ code: 500, message: 'unknown upload service' })
+    }
+    return uploadService(opts, file, onprogress)
   })
 }
